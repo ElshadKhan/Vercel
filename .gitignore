@@ -2,12 +2,7 @@
 /dist
 /node_modules
 .env
-.eslintrc.js
-.gitignore
-.prettierrc
-nest-cli.json
-tsconfig.build.json
-README.md
+
 
 # Logs
 logs
