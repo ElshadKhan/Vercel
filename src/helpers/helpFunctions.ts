@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import  * as bcrypt from "bcrypt";
 
 export const getSkipNumber = (pageNumber: number,pageSize: number) => {
         return (pageNumber - 1) * pageSize

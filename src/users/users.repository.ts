@@ -2,15 +2,14 @@ import {User, UserDbType} from "./users.entity";
 import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
 import {Injectable} from "@nestjs/common";
-import {UserAccount, UserAccountDBType} from "./users.service";
+import {UserAccountDBType} from "./users.service";
 
 @Injectable()
 export class UsersRepository {
     @InjectModel(User.name) private userModel: Model<UserDbType>
 
-    async createUser(user: UserAccount) {
-        const newUser = await this.userModel.create(user)
-        return newUser.save()
+    async createUser(user: UserAccountDBType) {
+        return this.userModel.create(user)
     }
 
     async deleteUser(id: string) {
