@@ -1,11 +1,7 @@
 import {Prop, raw, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {HydratedDocument} from 'mongoose';
-import {
-    EmailConfirmationType,
-    PasswordConfirmationType,
-    UserAccountDBType,
-    UsersAccountDataType
-} from "./users.service";
+import {EmailConfirmationType, PasswordConfirmationType, UsersAccountDataType} from "./userTypes";
+
 
 @Schema({id: false})
 export class UsersAccountData {

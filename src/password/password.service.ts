@@ -17,7 +17,6 @@ export class PasswordService {
         return bcrypt.hash(password , salt)
     }
 
-
     async generateSaltAndHash(password: string){
         const salt = await this.generateSalt()
         const hash = await this.generateHash(password, salt)

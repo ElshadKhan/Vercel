@@ -1,8 +1,8 @@
-import {User, UserDbType} from "./users.entity";
+import {User, UserDbType} from "./domain/users.entity";
 import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
 import {Injectable} from "@nestjs/common";
-import {UserAccountDBType} from "./users.service";
+import {UserAccountDBType} from "./domain/userTypes";
 
 @Injectable()
 export class UsersRepository {
@@ -17,7 +17,7 @@ export class UsersRepository {
         return result.deletedCount === 1
     }
 
-    async deleteAllUser() {
+    async deleteAllUsers() {
         return await this.userModel.deleteMany({})
     }
 

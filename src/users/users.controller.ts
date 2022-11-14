@@ -1,6 +1,8 @@
 import {Body, Controller, Delete, Get, HttpCode, Param, Post, Query} from '@nestjs/common';
-import {CreateUserInputModelType, UsersService} from "./users.service";
+import {UsersService} from "./users.service";
 import {UsersQueryRepository} from "./users.queryRepository";
+import {pagination} from "../middleware/queryValidation";
+import {CreateUserInputModelType} from "./domain/userTypes";
 
 @Controller("users")
 export class UsersController {
@@ -8,12 +10,12 @@ export class UsersController {
               private usersQueryRepository: UsersQueryRepository) {}
 
   @Get()
-  getUsers(@Query() query: { term: string }): object {
-    return this.usersQueryRepository.getUsers(query.term);
+  getUsers(@Query() query: any ) {
+    return this.usersQueryRepository.getUsers(pagination(query));
   }
 
   @Get(":id")
-  getUser(@Param("id") userId: string): object {
+  getUser(@Param("id") userId: string) {
     return this.usersQueryRepository.getUser(userId);
   }
 
@@ -24,8 +26,14 @@ export class UsersController {
 
   @Delete(":id")
   @HttpCode(204)
-  deleteUser(@Param("id") userId: string): object {
+  deleteUser(@Param("id") userId: string) {
     return this.usersService.deleteUser(userId);
+  }
+
+  @Delete()
+  @HttpCode(204)
+  deleteAllUsers() {
+    return this.usersService.deleteAllUsers();
   }
 
   // @Put(":id")
