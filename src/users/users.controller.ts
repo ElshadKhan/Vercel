@@ -1,21 +1,32 @@
-import {Body, Controller, Delete, Get, HttpCode, Param, Post, Query} from '@nestjs/common';
-import {UsersService} from "./users.service";
-import {UsersQueryRepository} from "./users.queryRepository";
-import {pagination} from "../middleware/queryValidation";
-import {CreateUserInputModelType} from "./domain/userTypes";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { UsersService } from './users.service';
+import { UsersQueryRepository } from './users.queryRepository';
+import { pagination } from '../middleware/queryValidation';
+import { CreateUserInputModelType } from './domain/userTypes';
 
-@Controller("users")
+@Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService,
-              private usersQueryRepository: UsersQueryRepository) {}
+  constructor(
+    private usersService: UsersService,
+    private usersQueryRepository: UsersQueryRepository,
+  ) {}
 
   @Get()
-  getUsers(@Query() query: any ) {
+  getUsers(@Query() query: any) {
     return this.usersQueryRepository.getUsers(pagination(query));
   }
 
-  @Get(":id")
-  getUser(@Param("id") userId: string) {
+  @Get(':id')
+  getUser(@Param('id') userId: string) {
     return this.usersQueryRepository.getUser(userId);
   }
 
@@ -24,9 +35,9 @@ export class UsersController {
     return this.usersService.createUser(inputModel);
   }
 
-  @Delete(":id")
+  @Delete(':id')
   @HttpCode(204)
-  deleteUser(@Param("id") userId: string) {
+  deleteUser(@Param('id') userId: string) {
     return this.usersService.deleteUser(userId);
   }
 
@@ -41,4 +52,3 @@ export class UsersController {
   //   return this.usersService.updateUser(userId, inputModel.name, inputModel.childrenCount);
   // }
 }
-
