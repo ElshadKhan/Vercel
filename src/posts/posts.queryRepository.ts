@@ -5,9 +5,11 @@ import { getPagesCounts, getSkipNumber } from '../helpers/helpFunctions';
 import { Post, PostDbType } from './entities/post.entity';
 import { QueryValidationType } from '../middleware/queryValidation';
 import { CreatePostDbType, PostsBusinessType } from './dto/create-post.dto';
+import { BlogsQueryRepository } from '../blogs/blogs.queryRepository';
 
 @Injectable()
 export class PostsQueryRepository {
+  constructor(private blogsQueryRepository: BlogsQueryRepository) {}
   @InjectModel(Post.name) private postModel: Model<PostDbType>;
 
   async findAll({
@@ -51,9 +53,18 @@ export class PostsQueryRepository {
     blogId: string,
     { pageNumber, pageSize, sortBy, sortDirection }: QueryValidationType,
   ): Promise<PostsBusinessType> {
-    const posts = await this.postModel.find({ blogId });
-    const totalCountPosts = await this.postModel.find().count();
-    if (posts) {
+    const blog = await this.blogsQueryRepository.findOne(blogId);
+    const findPosts = await this.postModel
+      .find({ blogId })
+      .sort([[sortBy, sortDirection]])
+      .skip(getSkipNumber(pageNumber, pageSize))
+      .limit(pageSize)
+      .lean();
+    const totalCountPosts = await this.postModel
+      .find({ blogId })
+      .sort([[sortBy, sortDirection]])
+      .count();
+    if (blog) {
       const promise = posts.map(async (post: PostDbType) => {
         return {
           id: post!.id,
