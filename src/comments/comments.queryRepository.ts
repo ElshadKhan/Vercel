@@ -5,6 +5,11 @@ import { Model } from 'mongoose';
 import { QueryValidationType } from '../middleware/queryValidation';
 import { UserAccountDBType } from '../users/dto/user.db';
 import { CommentsBusinessType } from './dto/create-comment.dto';
+import {
+  getPagesCounts,
+  getSkipNumber,
+  LikeStatusEnam,
+} from '../helpers/helpFunctions';
 
 @Injectable()
 export class CommentsQueryRepository {
@@ -55,34 +60,36 @@ export class CommentsQueryRepository {
     { pageNumber, pageSize, sortBy, sortDirection }: QueryValidationType,
     user?: UserAccountDBType,
   ): Promise<CommentsBusinessType | null> {
-    const comment = await CommentModelClass.findOne({ postId: postId });
-    const findComments = await CommentModelClass.find({ postId: postId })
+    const comment = await this.commentModel.findOne({ postId: postId });
+    const findComments = await this.commentModel
+      .find({ postId: postId })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
-    const totalCountComments = await CommentModelClass.find({ postId: postId })
+    const totalCountComments = await this.commentModel
+      .find({ postId: postId })
       .sort([[sortBy, sortDirection]])
       .count();
     if (comment) {
       const promis = findComments.map(async (c) => {
-        let myStatus = LikeStatusEnam.None;
+        const myStatus = LikeStatusEnam.None;
 
-        if (user) {
-          const result = await this.likeStatusRepository.getLikeStatus(
-            c.id,
-            user.id,
-          );
-          myStatus = result?.type || LikeStatusEnam.None;
-        }
-        const likesCount = await this.likeStatusRepository.getLikesCount(
-          c.id,
-          LikeStatusEnam.Like,
-        );
-        const dislikesCount = await this.likeStatusRepository.getDislikesCount(
-          c.id,
-          LikeStatusEnam.Dislike,
-        );
+        // if (user) {
+        //   const result = await this.likeStatusRepository.getLikeStatus(
+        //     c.id,
+        //     user.id,
+        //   );
+        //   myStatus = result?.type || LikeStatusEnam.None;
+        // }
+        // const likesCount = await this.likeStatusRepository.getLikesCount(
+        //   c.id,
+        //   LikeStatusEnam.Like,
+        // );
+        // const dislikesCount = await this.likeStatusRepository.getDislikesCount(
+        //   c.id,
+        //   LikeStatusEnam.Dislike,
+        // );
         return {
           id: c.id,
           content: c.content,
@@ -90,8 +97,8 @@ export class CommentsQueryRepository {
           userLogin: c.userLogin,
           createdAt: c.createdAt,
           likesInfo: {
-            likesCount: likesCount,
-            dislikesCount: dislikesCount,
+            likesCount: 1,
+            dislikesCount: 2,
             myStatus: myStatus,
           },
         };
@@ -105,6 +112,6 @@ export class CommentsQueryRepository {
         items: items,
       };
     }
-    return comment;
+    return null;
   }
 }
