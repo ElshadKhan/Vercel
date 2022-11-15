@@ -23,20 +23,20 @@ export class UsersQueryRepository {
       .find({
         $or: [
           {
-            'accountData.userName': {
+            'accountData.login': {
               $regex: searchLoginTerm,
               $options: '(?i)a(?-i)cme',
             },
           },
           {
-            'emailConfirmation.confirmationCode': {
+            'accountData.email': {
               $regex: searchEmailTerm,
               $options: '(?i)a(?-i)cme',
             },
           },
         ],
       })
-      .sort([[sortBy, sortDirection]])
+      .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
@@ -44,13 +44,13 @@ export class UsersQueryRepository {
       .find({
         $or: [
           {
-            'accountData.userName': {
+            'accountData.login': {
               $regex: searchLoginTerm,
               $options: '(?i)a(?-i)cme',
             },
           },
           {
-            'emailConfirmation.confirmationCode': {
+            'accountData.email': {
               $regex: searchEmailTerm,
               $options: '(?i)a(?-i)cme',
             },
