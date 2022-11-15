@@ -2,8 +2,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { getPagesCounts, getSkipNumber } from '../helpers/helpFunctions';
-import { Post, PostDbType } from './domain/post.entity';
-import { QueryValidationResult } from '../middleware/queryValidation';
+import { Post, PostDbType } from './entities/post.entity';
+import { QueryValidationType } from '../middleware/queryValidation';
 import { CreatePostDbType, PostsBusinessType } from './dto/create-post.dto';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class PostsQueryRepository {
     pageSize,
     sortBy,
     sortDirection,
-  }: QueryValidationResult): Promise<PostsBusinessType> {
+  }: QueryValidationType): Promise<PostsBusinessType> {
     const posts = await this.postModel
       .find()
       .sort([[sortBy, sortDirection]])
@@ -49,7 +49,7 @@ export class PostsQueryRepository {
 
   async findOneByBlogId(
     blogId: string,
-    { pageNumber, pageSize, sortBy, sortDirection }: QueryValidationResult,
+    { pageNumber, pageSize, sortBy, sortDirection }: QueryValidationType,
   ): Promise<PostsBusinessType> {
     const posts = await this.postModel.find({ blogId });
     const totalCountPosts = await this.postModel.find().count();

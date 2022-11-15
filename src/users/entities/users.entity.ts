@@ -1,10 +1,10 @@
-import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import {
   EmailConfirmationType,
   PasswordConfirmationType,
   UsersAccountDataType,
-} from './userTypes';
+} from '../dto/user.db';
 
 @Schema({ id: false })
 export class UsersAccountData {
@@ -43,7 +43,7 @@ const UsersEmailConfirmationDataSchema = SchemaFactory.createForClass(
 );
 
 @Schema({ id: false })
-export class UsersPasswordConfirmationData {
+class UsersPasswordConfirmationData {
   @Prop({ required: true })
   confirmationCode: string;
 
@@ -60,10 +60,7 @@ const UsersPasswordConfirmationDataSchema = SchemaFactory.createForClass(
 
 export type UserDbType = HydratedDocument<User>;
 
-@Schema({
-  // _id: false,
-  id: false,
-})
+@Schema()
 export class User {
   @Prop({ required: true, unique: true })
   id: string;

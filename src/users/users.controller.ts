@@ -11,7 +11,7 @@ import {
 import { UsersService } from './users.service';
 import { UsersQueryRepository } from './users.queryRepository';
 import { pagination } from '../middleware/queryValidation';
-import { CreateUserInputModelType } from './domain/userTypes';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -31,20 +31,20 @@ export class UsersController {
   }
 
   @Post()
-  createUser(@Body() inputModel: CreateUserInputModelType) {
-    return this.usersService.createUser(inputModel);
+  createUser(@Body() inputModel: CreateUserDto) {
+    return this.usersService.create(inputModel);
   }
 
   @Delete(':id')
   @HttpCode(204)
   deleteUser(@Param('id') userId: string) {
-    return this.usersService.deleteUser(userId);
+    return this.usersService.delete(userId);
   }
 
   @Delete()
   @HttpCode(204)
   deleteAllUsers() {
-    return this.usersService.deleteAllUsers();
+    return this.usersService.deleteAll();
   }
 
   // @Put(":id")

@@ -1,12 +1,24 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Delete, HttpCode } from '@nestjs/common';
+import { UsersService } from './users/users.service';
+import { BlogsService } from './blogs/blogs.service';
+import { PostsService } from './posts/posts.service';
+import { CommentsService } from './comments/comments.service';
 
-@Controller()
+@Controller('testing')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private usersService: UsersService,
+    private blogsService: BlogsService,
+    private postsService: PostsService,
+    private commentsService: CommentsService,
+  ) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Delete('all-data')
+  @HttpCode(204)
+  deleteAllUsers() {
+    this.usersService.deleteAll();
+    this.blogsService.deleteAll();
+    this.postsService.deleteAll();
+    this.commentsService.deleteAll();
   }
 }

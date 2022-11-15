@@ -1,13 +1,11 @@
-import { User, UserDbType } from './domain/users.entity';
+import { User, UserDbType } from './entities/users.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { getPagesCounts, getSkipNumber } from '../helpers/helpFunctions';
-import {
-  QueryUserType,
-  UserAccountDBType,
-  UsersBusinessType,
-} from './domain/userTypes';
+import { UsersBusinessType } from './dto/user-business.dto';
+import { UserAccountDBType } from './dto/user.db';
+import { QueryValidationType } from '../middleware/queryValidation';
 
 @Injectable()
 export class UsersQueryRepository {
@@ -20,7 +18,7 @@ export class UsersQueryRepository {
     pageSize,
     sortBy,
     sortDirection,
-  }: QueryUserType): Promise<UsersBusinessType> {
+  }: QueryValidationType): Promise<UsersBusinessType> {
     const users = await this.userModel
       .find({
         $or: [

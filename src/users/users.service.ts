@@ -4,10 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { add } from 'date-fns';
 import { ConfigService } from '@nestjs/config';
 import { PasswordService } from '../password/password.service';
-import {
-  CreateUserInputModelType,
-  UserAccountDBType,
-} from './domain/userTypes';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UserAccountDBType } from './dto/user.db';
 
 @Injectable()
 export class UsersService {
@@ -24,7 +22,7 @@ export class UsersService {
   // getUser(userId: string) {
   //     return this.usersRepository.getUser(userId);
   // }
-  async createUser(inputModel: CreateUserInputModelType) {
+  async create(inputModel: CreateUserDto) {
     const { passwordSalt, passwordHash } =
       await this.passwordService.generateSaltAndHash(inputModel.password);
     const newUser = new UserAccountDBType(
@@ -47,7 +45,7 @@ export class UsersService {
         isConfirmed: false,
       },
     );
-    await this.usersRepository.createUser(newUser);
+    await this.usersRepository.create(newUser);
     return {
       id: newUser.id,
       login: newUser.accountData.login,
@@ -56,12 +54,12 @@ export class UsersService {
     };
   }
 
-  deleteUser(userId: string) {
-    return this.usersRepository.deleteUser(userId);
+  delete(userId: string) {
+    return this.usersRepository.delete(userId);
   }
 
-  deleteAllUsers() {
-    return this.usersRepository.deleteAllUsers();
+  deleteAll() {
+    return this.usersRepository.deleteAll();
   }
 
   // updateUser(userId: string, name: string, childrenCount: number) {

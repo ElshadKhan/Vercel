@@ -57,14 +57,6 @@ export class NewestLikesType {
     public login: string,
   ) {}
 }
-export class QueryPostType {
-  constructor(
-    public pageNumber: number,
-    public pageSize: number,
-    public sortBy: string,
-    public sortDirection: SortDirection,
-  ) {}
-}
 
 export class PostsBusinessType {
   constructor(

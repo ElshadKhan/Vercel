@@ -1,5 +1,3 @@
-import { SortDirection } from '../../middleware/queryValidation';
-
 export class UserAccountDBType {
   constructor(
     public id: string,
@@ -34,34 +32,3 @@ export class PasswordConfirmationType {
     public isConfirmed: boolean,
   ) {}
 }
-
-export type UserDto = {
-  id: string;
-  login: string;
-  email: string;
-  createdAt: string;
-};
-export type QueryUserType = {
-  searchLoginTerm: string;
-  searchEmailTerm: string;
-  pageNumber: number;
-  pageSize: number;
-  sortBy: string;
-  sortDirection: SortDirection;
-};
-
-export class UsersBusinessType {
-  constructor(
-    public pagesCount: number,
-    public page: number,
-    public pageSize: number,
-    public totalCount: number,
-    public items: Array<UserDto>,
-  ) {}
-}
-
-export type CreateUserInputModelType = {
-  password: string;
-  login: string;
-  email: string;
-};

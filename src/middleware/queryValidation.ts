@@ -3,7 +3,7 @@ export enum SortDirection {
   desc = 'desc',
 }
 
-export type QueryValidationResult = {
+export type QueryValidationType = {
   pageNumber: number;
   pageSize: number;
   sortBy: string;
@@ -16,7 +16,7 @@ export type QueryValidationResult = {
 const defaultPageSize = 10;
 const defaultPageNumber = 1;
 
-export const pagination = (query: any): QueryValidationResult => {
+export const pagination = (query: any): QueryValidationType => {
   let pageNumber = query.pageNumber;
   const parsedPageNumber = parseInt(pageNumber, 10);
   if (!pageNumber || !parsedPageNumber || parsedPageNumber <= 0)
