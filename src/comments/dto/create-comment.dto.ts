@@ -12,6 +12,10 @@ export class CreateCommentDbType {
   ) {}
 }
 
+export class CreateCommentType {
+  constructor(public content: string) {}
+}
+
 export class CommentDtoType {
   constructor(
     public id: string,

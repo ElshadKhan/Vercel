@@ -1,5 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { CommentDbType } from '../comments/entities/comment.entity';
+import { Comment, CommentDbType } from '../comments/entities/comment.entity';
 import { Model } from 'mongoose';
 import { CreateCommentDbType } from './dto/create-comment.dto';
 

@@ -4,7 +4,7 @@ import { Comment, CommentDbType } from '../comments/entities/comment.entity';
 import { Model } from 'mongoose';
 import { QueryValidationType } from '../middleware/queryValidation';
 import { UserAccountDBType } from '../users/dto/user.db';
-import { CommentsBusinessType } from './dto/create-comment.dto';
+import { CommentDtoType, CommentsBusinessType } from './dto/create-comment.dto';
 import {
   getPagesCounts,
   getSkipNumber,
@@ -51,8 +51,21 @@ export class CommentsQueryRepository {
   //   };
   // }
 
-  async findCommentById(id: string): Promise<CommentDbType | null> {
-    return await this.commentModel.findOne({ id });
+  async findCommentById(id: string): Promise<CommentDtoType | null> {
+    const comment = await this.commentModel.findOne({ id });
+    const myStatus = LikeStatusEnam.None;
+    return {
+      id: comment.id,
+      content: comment.content,
+      userId: comment.userId,
+      userLogin: comment.userLogin,
+      createdAt: comment.createdAt,
+      likesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: myStatus,
+      },
+    };
   }
 
   async findCommentsByPostIdAndUserId(
@@ -97,8 +110,8 @@ export class CommentsQueryRepository {
           userLogin: c.userLogin,
           createdAt: c.createdAt,
           likesInfo: {
-            likesCount: 1,
-            dislikesCount: 2,
+            likesCount: 0,
+            dislikesCount: 0,
             myStatus: myStatus,
           },
         };

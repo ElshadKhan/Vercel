@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type PostDbType = HydratedDocument<Post>;
 
-@Schema({ _id: false, id: true })
+@Schema()
 export class Post {
   @Prop({ required: true, unique: true })
   id: string;
