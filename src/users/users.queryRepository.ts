@@ -36,7 +36,7 @@ export class UsersQueryRepository {
           },
         ],
       })
-      .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
+      .sort([[`accountData.${sortBy}`, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
