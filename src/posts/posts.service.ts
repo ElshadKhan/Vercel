@@ -28,8 +28,7 @@ export class PostsService {
       blogName: blog.name,
       createdAt: new Date().toISOString(),
     };
-    await this.postsRepository.create(newPost);
-    return newPost;
+    return await this.postsRepository.create(newPost);
   }
 
   update(id: string, updatePostDto: UpdatePostDto) {

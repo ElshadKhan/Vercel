@@ -78,6 +78,6 @@ export class PostsQueryRepository {
   }
 
   async findOne(id: string): Promise<CreatePostDbType> {
-    return await this.postModel.findOne({ id });
+    return await this.postModel.findOne({ id }, { _id: 0, __v: 0 });
   }
 }
