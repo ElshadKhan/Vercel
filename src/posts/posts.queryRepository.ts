@@ -65,7 +65,7 @@ export class PostsQueryRepository {
       .sort([[sortBy, sortDirection]])
       .count();
     if (blog) {
-      const promise = posts.map(async (post: PostDbType) => {
+      const promise = findPosts.map(async (post: PostDbType) => {
         return {
           id: post!.id,
           title: post!.title,
