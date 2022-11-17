@@ -8,6 +8,8 @@ import {
   HttpCode,
   Query,
   Put,
+  BadRequestException,
+  HttpException,
 } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
@@ -56,20 +58,35 @@ export class BlogsController {
   }
 
   @Get(':id/posts')
-  findOneByBlogId(@Param('id') blogId: string, @Query() query: any) {
-    return this.postsQueryRepository.findOneByBlogId(blogId, pagination(query));
+  async findOneByBlogId(@Param('id') blogId: string, @Query() query: any) {
+    const result = await this.postsQueryRepository.findOneByBlogId(
+      blogId,
+      pagination(query),
+    );
+    if (!result) {
+      throw new HttpException({}, 404);
+    }
+    return result;
   }
 
   @Put(':id')
   @HttpCode(204)
-  update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
-    return this.blogsService.update(id, updateBlogDto);
+  async update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
+    const result = await this.blogsService.update(id, updateBlogDto);
+    if (!result) {
+      throw new HttpException({}, 404);
+    }
+    return result;
   }
 
   @Delete(':id')
   @HttpCode(204)
-  delete(@Param('id') id: string) {
-    return this.blogsService.delete(id);
+  async delete(@Param('id') id: string) {
+    const result = await this.blogsService.delete(id);
+    if (!result) {
+      throw new HttpException({}, 404);
+    }
+    return result;
   }
 
   @Delete()

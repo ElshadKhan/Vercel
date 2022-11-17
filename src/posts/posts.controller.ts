@@ -8,6 +8,7 @@ import {
   HttpCode,
   Query,
   Put,
+  HttpException,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDtoBlogId } from './dto/create-post.dto';
@@ -82,20 +83,32 @@ export class PostsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postsQueryRepository.findOne(id);
+  async findOne(@Param('id') id: string) {
+    const result = await this.postsQueryRepository.findOne(id);
+    if (!result) {
+      throw new HttpException({}, 404);
+    }
+    return result;
   }
 
   @Put(':id')
   @HttpCode(204)
-  update(@Param('id') id: string, @Body() updateBlogDto: UpdatePostDto) {
-    return this.postsService.update(id, updateBlogDto);
+  async update(@Param('id') id: string, @Body() updateBlogDto: UpdatePostDto) {
+    const result = await this.postsService.update(id, updateBlogDto);
+    if (!result) {
+      throw new HttpException({}, 404);
+    }
+    return result;
   }
 
   @Delete(':id')
   @HttpCode(204)
-  delete(@Param('id') id: string) {
-    return this.postsService.delete(id);
+  async delete(@Param('id') id: string) {
+    const result = await this.postsService.delete(id);
+    if (!result) {
+      throw new HttpException({}, 404);
+    }
+    return result;
   }
 
   @Delete()
