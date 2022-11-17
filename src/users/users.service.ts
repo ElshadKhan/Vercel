@@ -16,12 +16,7 @@ export class UsersService {
   ) {}
 
   private jwtSecret = this.configService.get<string>('JWT_SECRET');
-  // getUsers(term: string) {
-  //     return this.usersRepository.getUsers(term);
-  // }
-  // getUser(userId: string) {
-  //     return this.usersRepository.getUser(userId);
-  // }
+
   async create(inputModel: CreateUserDto) {
     const { passwordSalt, passwordHash } =
       await this.passwordService.generateSaltAndHash(inputModel.password);
@@ -61,8 +56,4 @@ export class UsersService {
   deleteAll() {
     return this.usersRepository.deleteAll();
   }
-
-  // updateUser(userId: string, name: string, childrenCount: number) {
-  //     return this.usersRepository.updateUser(userId, name, childrenCount);
-  // }
 }

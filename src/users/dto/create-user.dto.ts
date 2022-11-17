@@ -1,7 +1,12 @@
+import { IsEmail, Length } from 'class-validator';
+
 export class CreateUserDto {
-  constructor(
-    public password: string,
-    public login: string,
-    public email: string,
-  ) {}
+  @Length(3, 10)
+  login: string;
+
+  @IsEmail()
+  email: string;
+
+  @Length(6, 20)
+  password: string;
 }
