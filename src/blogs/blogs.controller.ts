@@ -35,16 +35,20 @@ export class BlogsController {
   }
 
   @Post(':id/posts')
-  createPostByBlogId(
+  async createPostByBlogId(
     @Param('id') blogId: string,
     @Body() createPostDto: CreatePostDto,
   ) {
-    return this.postsService.create(
+    const result = await this.postsService.create(
       createPostDto.title,
       createPostDto.shortDescription,
       createPostDto.content,
       blogId,
     );
+    if (!result) {
+      throw new HttpException({}, 404);
+    }
+    return result;
   }
 
   @Get()
@@ -53,8 +57,12 @@ export class BlogsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.blogsQueryRepository.findOne(id);
+  async findOne(@Param('id') id: string) {
+    const result = await this.blogsQueryRepository.findOne(id);
+    if (!result) {
+      throw new HttpException({}, 404);
+    }
+    return result;
   }
 
   @Get(':id/posts')
@@ -63,6 +71,7 @@ export class BlogsController {
       blogId,
       pagination(query),
     );
+    console.log('result', result);
     if (!result) {
       throw new HttpException({}, 404);
     }
