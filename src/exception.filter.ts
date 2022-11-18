@@ -43,7 +43,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       response.sendStatus(404);
       return;
     }
-
+    console.log();
     if (status === 400) {
       const errorResponse = {
         errorsMessages: [],
