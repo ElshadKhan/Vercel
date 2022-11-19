@@ -13,7 +13,7 @@ export class ErrorExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
-
+    console.log();
     if (status === 400) {
       const errorResponse = {
         errorsMessages: [],
@@ -43,7 +43,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       response.sendStatus(404);
       return;
     }
-    console.log();
     if (status === 400) {
       const errorResponse = {
         errorsMessages: [],
