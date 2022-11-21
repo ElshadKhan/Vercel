@@ -18,7 +18,7 @@ export class ErrorExceptionFilter implements ExceptionFilter {
         errorsMessages: [],
       };
       const responseBody: any = exception.getResponse();
-
+      console.log();
       responseBody.message.forEach((m) => errorResponse.errorsMessages.push(m));
       response.status(status).json(errorResponse);
     } else {
