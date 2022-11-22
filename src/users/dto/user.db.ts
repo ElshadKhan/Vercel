@@ -12,7 +12,6 @@ export class UsersAccountDataType {
     public login: string,
     public email: string,
     public passwordHash: string,
-    public passwordSalt: string,
     public createdAt: string,
   ) {}
 }

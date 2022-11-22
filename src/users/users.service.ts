@@ -18,15 +18,15 @@ export class UsersService {
   private jwtSecret = this.configService.get<string>('JWT_SECRET');
 
   async create(inputModel: CreateUserDto) {
-    const { passwordSalt, passwordHash } =
-      await this.passwordService.generateSaltAndHash(inputModel.password);
+    const passwordHash = await this.passwordService.generateSaltAndHash(
+      inputModel.password,
+    );
     const newUser = new UserAccountDBType(
       String(+new Date()),
       {
         login: inputModel.login,
         email: inputModel.email,
         passwordHash,
-        passwordSalt,
         createdAt: new Date().toISOString(),
       },
       {

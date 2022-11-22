@@ -19,7 +19,7 @@ export class PasswordService {
   async generateSaltAndHash(password: string) {
     const salt = await this.generateSalt();
     const hash = await this.generateHash(password, salt);
-    return { passwordSalt: salt, passwordHash: hash };
+    return hash;
   }
 
   async comparePasswords(password: string, passwordFromDb: string) {

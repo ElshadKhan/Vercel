@@ -18,9 +18,6 @@ export class UsersAccountData {
   passwordHash: string;
 
   @Prop({ required: true })
-  passwordSalt: string;
-
-  @Prop({ required: true })
   createdAt: string;
 }
 

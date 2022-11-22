@@ -24,6 +24,9 @@ import { CommentsController } from './comments/comments.controller';
 import { CommentsService } from './comments/comments.service';
 import { CommentsQueryRepository } from './comments/comments.queryRepository';
 import { CommentsRepository } from './comments/comments.repository';
+import { AuthModule } from './auth/auth.module';
+import { LikesModule } from './likes/likes.module';
+import { SessionsModule } from './sessions/sessions.module';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -43,6 +46,9 @@ const schemas = [
       inject: [ConfigService],
     }),
     MongooseModule.forFeature(schemas),
+    AuthModule,
+    LikesModule,
+    SessionsModule,
   ],
   controllers: [
     AppController,
