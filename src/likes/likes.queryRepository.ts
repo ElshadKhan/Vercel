@@ -1,5 +1,8 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Comment, CommentDbType } from '../comments/entities/comment.entity';
+import {
+  Comment,
+  CommentDbTypeWithId,
+} from '../comments/entities/comment.entity';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { Like, LikeDbType, LikeDbTypeWithId } from './entities/like.entity';

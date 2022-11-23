@@ -56,7 +56,7 @@ export const UsersPasswordConfirmationDataSchema = SchemaFactory.createForClass(
   UsersPasswordConfirmationData,
 );
 
-export type UserDbType = HydratedDocument<User>;
+export type UserDbTypeWithId = HydratedDocument<User>;
 
 @Schema()
 export class User {

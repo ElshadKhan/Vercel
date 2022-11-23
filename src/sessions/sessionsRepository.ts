@@ -1,26 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { SessionDBType } from './dto/session.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Session, SessionDbTypeWithId } from './entities/session.entity';
 
 @Injectable()
 export class SessionsRepository {
-  async getSession(deviceId: string): Promise<SessionDBType | null> {
-    return await SessionModelClass.findOne({ deviceId: deviceId });
-  }
-
-  async getAllActiveSessions(userId: string): Promise<SessionType[]> {
-    const sessions = await SessionModelClass.find({ userId: userId })
-      .projection({
-        _id: 0,
-        ip: 1,
-        title: 1,
-        lastActiveDate: 1,
-        deviceId: 1,
-      })
-      .toArray();
-    return sessions as SessionType[];
-  }
+  @InjectModel(Session.name) private sessionModel: Model<SessionDbTypeWithId>;
 
   async createSession(session: SessionDBType): Promise<SessionDBType> {
-    await SessionModelClass.create(session);
+    await this.sessionModel.create(session);
     return session;
   }
 
@@ -29,7 +18,7 @@ export class SessionsRepository {
     deviceId: string,
     lastActiveDate: string,
   ) {
-    const sessions = await SessionModelClass.updateOne(
+    const sessions = await this.sessionModel.updateOne(
       {
         userId: userId,
         deviceId: deviceId,
@@ -40,12 +29,12 @@ export class SessionsRepository {
   }
 
   async deleteAllSessions() {
-    const result = await SessionModelClass.deleteMany({});
+    const result = await this.sessionModel.deleteMany({});
     return result.deletedCount === 1;
   }
 
   async deleteSessionsByDeviceId(userId: string, deviceId: string) {
-    const result = await SessionModelClass.deleteMany({
+    const result = await this.sessionModel.deleteMany({
       userId: userId,
       deviceId: deviceId,
     });
@@ -53,7 +42,7 @@ export class SessionsRepository {
   }
 
   async deleteAllSessionsExceptOne(userId: string, deviceId: string) {
-    const result = await SessionModelClass.deleteMany({
+    const result = await this.sessionModel.deleteMany({
       userId: userId,
       deviceId: { $ne: deviceId },
     });

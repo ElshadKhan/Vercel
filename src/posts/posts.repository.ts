@@ -1,12 +1,12 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { Post, PostDbType } from './entities/post.entity';
+import { Post, PostDbTypeWithId } from './entities/post.entity';
 import { CreatePostDbType } from './dto/create-post.dto';
 
 @Injectable()
 export class PostsRepository {
-  @InjectModel(Post.name) private postModel: Model<PostDbType>;
+  @InjectModel(Post.name) private postModel: Model<PostDbTypeWithId>;
 
   async create(post: CreatePostDbType) {
     await this.postModel.create(post);

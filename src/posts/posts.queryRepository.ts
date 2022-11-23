@@ -6,7 +6,7 @@ import {
   getSkipNumber,
   LikeStatusEnam,
 } from '../helpers/helpFunctions';
-import { Post, PostDbType } from './entities/post.entity';
+import { Post, PostDbTypeWithId } from './entities/post.entity';
 import { QueryValidationType } from '../middleware/queryValidation';
 import { PostDtoType, PostsBusinessType } from './dto/create-post.dto';
 import { BlogsQueryRepository } from '../blogs/blogs.queryRepository';
@@ -19,7 +19,7 @@ export class PostsQueryRepository {
     private blogsQueryRepository: BlogsQueryRepository,
     private likesQueryRepository: LikesQueryRepository,
   ) {}
-  @InjectModel(Post.name) private postModel: Model<PostDbType>;
+  @InjectModel(Post.name) private postModel: Model<PostDbTypeWithId>;
 
   async findAll(
     { pageNumber, pageSize, sortBy, sortDirection }: QueryValidationType,
@@ -33,7 +33,7 @@ export class PostsQueryRepository {
       .lean();
     const totalCountPosts = await this.postModel.find().count();
     if (posts) {
-      const promise = posts.map(async (post: PostDbType) => {
+      const promise = posts.map(async (post: PostDbTypeWithId) => {
         let myStatus = LikeStatusEnam.None;
 
         if (user) {
@@ -104,7 +104,7 @@ export class PostsQueryRepository {
       .sort([[sortBy, sortDirection]])
       .count();
     if (blog) {
-      const promise = findPosts.map(async (post: PostDbType) => {
+      const promise = findPosts.map(async (post: PostDbTypeWithId) => {
         let myStatus = LikeStatusEnam.None;
 
         if (user) {
@@ -159,7 +159,9 @@ export class PostsQueryRepository {
   }
 
   async findOne(id: string, user?: UserAccountDBType): Promise<PostDtoType> {
-    const post: PostDbType | null = await this.postModel.findOne({ id: id });
+    const post: PostDbTypeWithId | null = await this.postModel.findOne({
+      id: id,
+    });
     if (post) {
       let myStatus = LikeStatusEnam.None;
 

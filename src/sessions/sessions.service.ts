@@ -1,26 +1,70 @@
 import { Injectable } from '@nestjs/common';
-import { CreateSessionDto } from './dto/create-session.dto';
-import { UpdateSessionDto } from './dto/update-session.dto';
+import { SessionsRepository } from './sessionsRepository';
+import { ConfigService } from '@nestjs/config';
+import { UserAccountDBType } from '../users/dto/user.dto';
+import { SessionDBType } from './dto/session.dto';
+import { randomUUID } from 'crypto';
+import { SessionsQueryRepository } from './sessionsQueryRepository';
 
 @Injectable()
 export class SessionsService {
-  create(createSessionDto: CreateSessionDto) {
-    return 'This action adds a new session';
+  constructor(
+    private sessionsRepository: SessionsRepository,
+    private sessionsQueryRepository: SessionsQueryRepository,
+    private configService: ConfigService,
+  ) {}
+
+  private jwtSecret = this.configService.get<string>('JWT_SECRET');
+
+  async createSession(user: UserAccountDBType, ip: string, deviceName: string) {
+    const userId = user.id;
+    const deviceId = randomUUID();
+    const tokens = await this.jwtService.createJWTTokens(user, deviceId);
+    const payload = await this.jwtService.getUserIdByRefreshToken(
+      tokens.refreshToken.split(' ')[0],
+    );
+    const session: SessionDBType = {
+      ip: ip,
+      title: deviceName,
+      lastActiveDate: new Date(payload.iat * 1000).toISOString(),
+      expiredDate: new Date(payload.exp * 1000).toISOString(),
+      deviceId: deviceId,
+      userId: userId,
+    };
+    await this.sessionsRepository.createSession(session);
+    return {
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+    };
   }
 
-  findAll() {
-    return `This action returns all sessions`;
+  async updateSession(
+    userId: string,
+    deviceId: string,
+    lastActiveDate: string,
+  ) {
+    return await this.sessionsRepository.updateSessions(
+      userId,
+      deviceId,
+      lastActiveDate,
+    );
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} session`;
+  async deleteAllSessions() {
+    return await this.sessionsRepository.deleteAllSessions();
   }
 
-  update(id: number, updateSessionDto: UpdateSessionDto) {
-    return `This action updates a #${id} session`;
+  async deleteSessionsByDeviceId(userId: string, deviceId: string) {
+    return await this.sessionsRepository.deleteSessionsByDeviceId(
+      userId,
+      deviceId,
+    );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} session`;
+  async deleteAllSessionsExceptOne(userId: string, deviceId: string) {
+    return await this.sessionsRepository.deleteAllSessionsExceptOne(
+      userId,
+      deviceId,
+    );
   }
 }

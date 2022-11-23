@@ -1,34 +1,46 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { SessionsService } from './sessions.service';
-import { CreateSessionDto } from './dto/create-session.dto';
-import { UpdateSessionDto } from './dto/update-session.dto';
+import { SessionsQueryRepository } from './sessionsQueryRepository';
 
 @Controller('sessions')
 export class SessionsController {
-  constructor(private readonly sessionsService: SessionsService) {}
-
-  @Post()
-  create(@Body() createSessionDto: CreateSessionDto) {
-    return this.sessionsService.create(createSessionDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.sessionsService.findAll();
-  }
+  constructor(
+    private readonly sessionsService: SessionsService,
+    private sessionsQueryRepository: SessionsQueryRepository,
+  ) {}
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.sessionsService.findOne(+id);
+    return this.sessionsQueryRepository.getSession(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSessionDto: UpdateSessionDto) {
-    return this.sessionsService.update(+id, updateSessionDto);
+  @Delete()
+  async deleteAllSessionsExceptOne() {
+    const payload = await this.jwtService.getUserIdByRefreshToken(
+      req.cookies.refreshToken.split(' ')[0],
+    );
+    return await this.sessionsService.deleteAllSessionsExceptOne(
+      payload.userId,
+      payload.deviceId,
+    );
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.sessionsService.remove(+id);
+  async deleteSessionsByDeviceId(@Param('deviceId') deviceId: string) {
+    const payload = await this.jwtService.getUserIdByRefreshToken(
+      req.cookies.refreshToken.split(' ')[0],
+    );
+    return await this.sessionsService.deleteSessionsByDeviceId(
+      payload.userId,
+      deviceId,
+    );
   }
 }

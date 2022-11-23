@@ -1,12 +1,12 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { Blog, BlogDbType } from './entities/blog.entity';
+import { Blog, BlogDbTypeWithId } from './entities/blog.entity';
 import { CreateBlogDbType } from './dto/create-blog.dto';
 
 @Injectable()
 export class BlogsRepository {
-  @InjectModel(Blog.name) private blogModel: Model<BlogDbType>;
+  @InjectModel(Blog.name) private blogModel: Model<BlogDbTypeWithId>;
 
   async create(blog: CreateBlogDbType) {
     return await this.blogModel.create(blog);

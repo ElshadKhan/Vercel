@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Comment, CommentDbType } from '../comments/entities/comment.entity';
+import {
+  Comment,
+  CommentDbTypeWithId,
+} from '../comments/entities/comment.entity';
 import { Model } from 'mongoose';
 import { QueryValidationType } from '../middleware/queryValidation';
 import { UserAccountDBType } from '../users/dto/user.dto';
@@ -14,7 +17,7 @@ import { LikesQueryRepository } from '../likes/likes.queryRepository';
 
 @Injectable()
 export class CommentsQueryRepository {
-  @InjectModel(Comment.name) private commentModel: Model<CommentDbType>;
+  @InjectModel(Comment.name) private commentModel: Model<CommentDbTypeWithId>;
   constructor(private likesRepository: LikesQueryRepository) {}
   async findCommentByUserIdAndCommentId(
     id: string,

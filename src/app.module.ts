@@ -26,6 +26,11 @@ import { LikesService } from './likes/likes.service';
 import { LikesRepository } from './likes/likes.repository';
 import { LikesQueryRepository } from './likes/likes.queryRepository';
 import { Like, LikeSchema } from './likes/entities/like.entity';
+import { Session, SessionSchema } from './sessions/entities/session.entity';
+import { SessionsRepository } from './sessions/sessionsRepository';
+import { SessionsQueryRepository } from './sessions/sessionsQueryRepository';
+import { SessionsService } from './sessions/sessions.service';
+import { SessionsController } from './sessions/sessions.controller';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -53,6 +58,7 @@ const schemas = [
     BlogsController,
     PostsController,
     CommentsController,
+    SessionsController,
   ],
   providers: [
     UsersService,

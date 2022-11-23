@@ -1,12 +1,15 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Comment, CommentDbType } from '../comments/entities/comment.entity';
+import {
+  Comment,
+  CommentDbTypeWithId,
+} from '../comments/entities/comment.entity';
 import { Model } from 'mongoose';
 import { CreateCommentDbType } from './dto/create-comment.dto';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class CommentsRepository {
-  @InjectModel(Comment.name) private commentModel: Model<CommentDbType>;
+  @InjectModel(Comment.name) private commentModel: Model<CommentDbTypeWithId>;
 
   async create(newComment: CreateCommentDbType): Promise<CreateCommentDbType> {
     await this.commentModel.create(newComment);

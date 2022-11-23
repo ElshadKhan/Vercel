@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { add } from 'date-fns';
-import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersRepository } from './users.repository';
 import { PasswordService } from '../password/password.service';
@@ -11,11 +10,8 @@ import { UserAccountDBType } from './dto/user.dto';
 export class UsersService {
   constructor(
     private usersRepository: UsersRepository,
-    private configService: ConfigService,
     private passwordService: PasswordService,
   ) {}
-
-  private jwtSecret = this.configService.get<string>('JWT_SECRET');
 
   async create(inputModel: CreateUserDto) {
     const passwordHash = await this.passwordService.generateSaltAndHash(

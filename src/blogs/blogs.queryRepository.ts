@@ -2,13 +2,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { getPagesCounts, getSkipNumber } from '../helpers/helpFunctions';
-import { Blog, BlogDbType } from './entities/blog.entity';
+import { Blog, BlogDbTypeWithId } from './entities/blog.entity';
 import { QueryValidationType } from '../middleware/queryValidation';
 import { BlogsBusinessType, CreateBlogDbType } from './dto/create-blog.dto';
 
 @Injectable()
 export class BlogsQueryRepository {
-  @InjectModel(Blog.name) private blogModel: Model<BlogDbType>;
+  @InjectModel(Blog.name) private blogModel: Model<BlogDbTypeWithId>;
 
   async findAll({
     searchNameTerm,

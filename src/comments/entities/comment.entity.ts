@@ -21,7 +21,7 @@ export class LikesInfoType {
   ) {}
 }
 
-export type CommentDbType = HydratedDocument<Comment>;
+export type CommentDbTypeWithId = HydratedDocument<Comment>;
 
 @Schema()
 export class Comment {
