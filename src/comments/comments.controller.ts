@@ -13,7 +13,7 @@ import { CommentsService } from './comments.service';
 import { CommentsQueryRepository } from './comments.queryRepository';
 import { LikesService } from '../likes/likes.service';
 import { LikeStatusEnam } from '../likes/dto/like-enam.dto';
-import { UserAccountDBType } from '../users/dto/user.db';
+import { UserAccountDBType } from '../users/dto/user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { add } from 'date-fns';
 

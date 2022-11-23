@@ -39,7 +39,8 @@ export class BlogsQueryRepository {
       blogs.map((b) => ({
         id: b.id,
         name: b.name,
-        youtubeUrl: b.youtubeUrl,
+        description: b.description,
+        websiteUrl: b.websiteUrl,
         createdAt: b.createdAt,
       })),
     );
@@ -53,7 +54,8 @@ export class BlogsQueryRepository {
       const blog = new CreateBlogDbType(
         findBlog.id,
         findBlog.name,
-        findBlog.youtubeUrl,
+        findBlog.description,
+        findBlog.websiteUrl,
         findBlog.createdAt,
       );
       return blog;

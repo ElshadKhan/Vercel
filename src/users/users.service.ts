@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { UsersRepository } from './users.repository';
 import { v4 as uuidv4 } from 'uuid';
 import { add } from 'date-fns';
 import { ConfigService } from '@nestjs/config';
-import { PasswordService } from '../password/password.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UserAccountDBType } from './dto/user.db';
+import { UsersRepository } from './users.repository';
+import { PasswordService } from '../password/password.service';
+import { UserAccountDBType } from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
-    private readonly usersRepository: UsersRepository,
+    private usersRepository: UsersRepository,
     private configService: ConfigService,
     private passwordService: PasswordService,
   ) {}
@@ -40,13 +40,7 @@ export class UsersService {
         isConfirmed: false,
       },
     );
-    await this.usersRepository.create(newUser);
-    return {
-      id: newUser.id,
-      login: newUser.accountData.login,
-      email: newUser.accountData.email,
-      createdAt: newUser.accountData.createdAt,
-    };
+    return await this.usersRepository.create(newUser);
   }
 
   delete(userId: string) {

@@ -15,7 +15,7 @@ import { CreatePostDtoBlogId } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostsQueryRepository } from './posts.queryRepository';
 import { pagination } from '../middleware/queryValidation';
-import { UserAccountDBType } from '../users/dto/user.db';
+import { UserAccountDBType } from '../users/dto/user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { add } from 'date-fns';
 import { CommentsService } from '../comments/comments.service';
@@ -35,17 +35,21 @@ export class PostsController {
   ) {}
 
   @Post()
-  create(@Body() createPostDto: CreatePostDtoBlogId) {
-    return this.postsService.create(
+  async create(@Body() createPostDto: CreatePostDtoBlogId) {
+    const result = await this.postsService.create(
       createPostDto.title,
       createPostDto.shortDescription,
       createPostDto.content,
       createPostDto.blogId,
     );
+    if (!result) {
+      throw new HttpException({}, 404);
+    }
+    return result;
   }
 
   @Post(':postId/comments')
-  createComment(
+  async createComment(
     @Body() content: CreateCommentDbType,
     @Param('postId') postId: string,
   ) {
@@ -68,7 +72,15 @@ export class PostsController {
         isConfirmed: false,
       },
     );
-    return this.commentsService.create(content.content, postId, newUser);
+    const result = await this.commentsService.create(
+      content.content,
+      postId,
+      newUser,
+    );
+    if (!result) {
+      throw new HttpException({}, 404);
+    }
+    return result;
   }
 
   @Get(':postId/comments')

@@ -11,8 +11,11 @@ export class Blog {
   @Prop({ required: true, min: 1, max: 15 })
   name: string;
 
+  @Prop({ required: true, min: 1, max: 500 })
+  description: string;
+
   @Prop({ required: true, min: 1, max: 100 })
-  youtubeUrl: string;
+  websiteUrl: string;
 
   @Prop({ required: true })
   createdAt: string;

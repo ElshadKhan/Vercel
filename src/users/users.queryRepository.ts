@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { getPagesCounts, getSkipNumber } from '../helpers/helpFunctions';
 import { UsersBusinessType } from './dto/user-business.dto';
-import { UserAccountDBType } from './dto/user.db';
+import { UserAccountDBType } from './dto/user.dto';
 import { QueryValidationType } from '../middleware/queryValidation';
 
 @Injectable()

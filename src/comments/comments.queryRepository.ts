@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Comment, CommentDbType } from '../comments/entities/comment.entity';
 import { Model } from 'mongoose';
 import { QueryValidationType } from '../middleware/queryValidation';
-import { UserAccountDBType } from '../users/dto/user.db';
+import { UserAccountDBType } from '../users/dto/user.dto';
 import { CommentDtoType, CommentsBusinessType } from './dto/create-comment.dto';
 import {
   getPagesCounts,

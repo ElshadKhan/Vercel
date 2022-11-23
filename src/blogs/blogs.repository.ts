@@ -13,22 +13,31 @@ export class BlogsRepository {
     // const blogInstance = new this.blogModel()
     // blogInstance.id = blog.id
     // blogInstance.name = blog.name
-    // blogInstance.youtubeUrl = blog.youtubeUrl
+    // blogInstance.description = blog.description
+    // blogInstance.websiteUrl = blog.websiteUrl
     // blogInstance.createdAt = blog.createdAt
     // await blogInstance.save()
     // return blog
   }
 
-  async update(id: string, name: string, youtubeUrl: string) {
+  async update(
+    id: string,
+    name: string,
+    description: string,
+    websiteUrl: string,
+  ) {
     const result = await this.blogModel.updateOne(
       { id },
-      { $set: { name: name, youtubeUrl: youtubeUrl } },
+      {
+        $set: { name, description, websiteUrl },
+      },
     );
     return result.matchedCount === 1;
     // const blogInstance = await this.blogModel.findOne({id})
     // if(!blogInstance) return false
     // blogInstance.name = name
-    // blogInstance.youtubeUrl = youtubeUrl
+    // blogInstance.description = description
+    // blogInstance.websiteUrl = websiteUrl
     // await blogInstance.save()
     // return true
   }

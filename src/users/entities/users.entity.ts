@@ -4,7 +4,7 @@ import {
   EmailConfirmationType,
   PasswordConfirmationType,
   UsersAccountDataType,
-} from '../dto/user.db';
+} from '../dto/user.dto';
 
 @Schema({ id: false })
 export class UsersAccountData {
@@ -21,7 +21,8 @@ export class UsersAccountData {
   createdAt: string;
 }
 
-const UsersAccountDataSchema = SchemaFactory.createForClass(UsersAccountData);
+export const UsersAccountDataSchema =
+  SchemaFactory.createForClass(UsersAccountData);
 
 @Schema({ id: false })
 export class UsersEmailConfirmationData {
@@ -35,12 +36,12 @@ export class UsersEmailConfirmationData {
   isConfirmed: boolean;
 }
 
-const UsersEmailConfirmationDataSchema = SchemaFactory.createForClass(
+export const UsersEmailConfirmationDataSchema = SchemaFactory.createForClass(
   UsersEmailConfirmationData,
 );
 
 @Schema({ id: false })
-class UsersPasswordConfirmationData {
+export class UsersPasswordConfirmationData {
   @Prop({ required: true })
   confirmationCode: string;
 
@@ -51,7 +52,7 @@ class UsersPasswordConfirmationData {
   isConfirmed: boolean;
 }
 
-const UsersPasswordConfirmationDataSchema = SchemaFactory.createForClass(
+export const UsersPasswordConfirmationDataSchema = SchemaFactory.createForClass(
   UsersPasswordConfirmationData,
 );
 

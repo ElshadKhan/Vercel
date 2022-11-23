@@ -11,7 +11,7 @@ import { QueryValidationType } from '../middleware/queryValidation';
 import { PostDtoType, PostsBusinessType } from './dto/create-post.dto';
 import { BlogsQueryRepository } from '../blogs/blogs.queryRepository';
 import { LikesQueryRepository } from '../likes/likes.queryRepository';
-import { UserAccountDBType } from '../users/dto/user.db';
+import { UserAccountDBType } from '../users/dto/user.dto';
 
 @Injectable()
 export class PostsQueryRepository {

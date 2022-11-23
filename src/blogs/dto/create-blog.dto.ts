@@ -1,12 +1,17 @@
 export class CreateBlogDto {
-  constructor(public name: string, public youtubeUrl: string) {}
+  constructor(
+    public name: string,
+    public description: string,
+    public websiteUrl: string,
+  ) {}
 }
 
 export class CreateBlogDbType {
   constructor(
     public id: string,
     public name: string,
-    public youtubeUrl: string,
+    public description: string,
+    public websiteUrl: string,
     public createdAt: string,
   ) {}
 }

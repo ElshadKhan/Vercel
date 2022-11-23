@@ -71,7 +71,6 @@ export class BlogsController {
       blogId,
       pagination(query),
     );
-    console.log('result', result);
     if (!result) {
       throw new HttpException({}, 404);
     }

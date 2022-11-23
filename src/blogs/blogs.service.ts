@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { CreateBlogDbType, CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { BlogsRepository } from './blogs.repository';
+import { CreateBlogDbType, CreateBlogDto } from './dto/create-blog.dto';
 
 @Injectable()
 export class BlogsService {
@@ -11,7 +11,8 @@ export class BlogsService {
     const newBlog: CreateBlogDbType = {
       id: String(+new Date()),
       name: createBlogDto.name,
-      youtubeUrl: createBlogDto.youtubeUrl,
+      description: createBlogDto.description,
+      websiteUrl: createBlogDto.websiteUrl,
       createdAt: new Date().toISOString(),
     };
     this.blogsRepository.create(newBlog);
@@ -22,7 +23,8 @@ export class BlogsService {
     return this.blogsRepository.update(
       id,
       updateBlogDto.name,
-      updateBlogDto.youtubeUrl,
+      updateBlogDto.description,
+      updateBlogDto.websiteUrl,
     );
   }
 

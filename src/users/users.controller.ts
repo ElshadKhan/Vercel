@@ -27,8 +27,14 @@ export class UsersController {
   }
 
   @Post()
-  createUser(@Body() inputModel: CreateUserDto) {
-    return this.usersService.create(inputModel);
+  async createUser(@Body() inputModel: CreateUserDto) {
+    const newUser = await this.usersService.create(inputModel);
+    return {
+      id: newUser.id,
+      login: newUser.accountData.login,
+      email: newUser.accountData.email,
+      createdAt: newUser.accountData.createdAt,
+    };
   }
 
   @Delete(':id')

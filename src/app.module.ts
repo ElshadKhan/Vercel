@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UsersController } from './users/users.controller';
 import { UsersService } from './users/users.service';
 import { UsersRepository } from './users/users.repository';
@@ -24,13 +22,10 @@ import { CommentsController } from './comments/comments.controller';
 import { CommentsService } from './comments/comments.service';
 import { CommentsQueryRepository } from './comments/comments.queryRepository';
 import { CommentsRepository } from './comments/comments.repository';
-import { AuthModule } from './auth/auth.module';
-import { LikesModule } from './likes/likes.module';
-import { SessionsModule } from './sessions/sessions.module';
-import { Like, LikeSchema } from './likes/entities/like.entity';
 import { LikesService } from './likes/likes.service';
 import { LikesRepository } from './likes/likes.repository';
 import { LikesQueryRepository } from './likes/likes.queryRepository';
+import { Like, LikeSchema } from './likes/entities/like.entity';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -38,6 +33,7 @@ const schemas = [
   { name: Post.name, schema: PostSchema },
   { name: Comment.name, schema: CommentSchema },
   { name: Like.name, schema: LikeSchema },
+  { name: Session.name, schema: SessionSchema },
 ];
 
 @Module({
@@ -51,19 +47,14 @@ const schemas = [
       inject: [ConfigService],
     }),
     MongooseModule.forFeature(schemas),
-    AuthModule,
-    LikesModule,
-    SessionsModule,
   ],
   controllers: [
-    AppController,
     UsersController,
     BlogsController,
     PostsController,
     CommentsController,
   ],
   providers: [
-    AppService,
     UsersService,
     UsersRepository,
     UsersQueryRepository,
@@ -79,6 +70,9 @@ const schemas = [
     LikesService,
     LikesRepository,
     LikesQueryRepository,
+    SessionsService,
+    SessionsRepository,
+    SessionsQueryRepository,
     PasswordService,
   ],
 })
