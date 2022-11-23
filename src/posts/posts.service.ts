@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostsRepository } from './posts.repository';
-import { CreatePostDbType } from './dto/create-post.dto';
+import { CreatePostDbType, PostDtoType } from './dto/create-post.dto';
 import { BlogsQueryRepository } from '../blogs/blogs.queryRepository';
+import { LikesQueryRepository } from '../likes/likes.queryRepository';
+import { LikeStatusEnam } from '../helpers/helpFunctions';
 
 @Injectable()
 export class PostsService {
   constructor(
     private postsRepository: PostsRepository,
     private blogQueryRepository: BlogsQueryRepository,
+    private likesQueryRepository: LikesQueryRepository,
   ) {}
 
   async create(
@@ -16,7 +19,7 @@ export class PostsService {
     shortDescription: string,
     content: string,
     blogId: string,
-  ): Promise<CreatePostDbType | null> {
+  ): Promise<PostDtoType | null> {
     const blog = await this.blogQueryRepository.findOne(blogId);
     if (!blog) return null;
     const newPost: CreatePostDbType = {
@@ -24,11 +27,34 @@ export class PostsService {
       title: title,
       shortDescription: shortDescription,
       content: content,
-      blogId: blog.id,
+      blogId: blogId,
       blogName: blog.name,
       createdAt: new Date().toISOString(),
     };
-    return await this.postsRepository.create(newPost);
+    const newPostDto = await this.postsRepository.create(newPost);
+    const lastLikes = await this.likesQueryRepository.getLastLikes(
+      newPostDto.id,
+      LikeStatusEnam.Like,
+    );
+    return {
+      id: newPostDto.id,
+      title: newPostDto.title,
+      shortDescription: newPostDto.shortDescription,
+      content: newPostDto.content,
+      blogId: newPostDto.blogId,
+      blogName: blog!.name,
+      createdAt: newPostDto.createdAt,
+      extendedLikesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: LikeStatusEnam.None,
+        newestLikes: lastLikes.slice(0, 3).map((p) => ({
+          addedAt: p.createdAt,
+          userId: p.userId,
+          login: p.login,
+        })),
+      },
+    };
   }
 
   update(id: string, updatePostDto: UpdatePostDto) {

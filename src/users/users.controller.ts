@@ -26,11 +26,6 @@ export class UsersController {
     return this.usersQueryRepository.getUsers(pagination(query));
   }
 
-  @Get(':id')
-  getUser(@Param('id') userId: string) {
-    return this.usersQueryRepository.getUser(userId);
-  }
-
   @Post()
   createUser(@Body() inputModel: CreateUserDto) {
     return this.usersService.create(inputModel);
@@ -51,9 +46,4 @@ export class UsersController {
   deleteAllUsers() {
     return this.usersService.deleteAll();
   }
-
-  // @Put(":id")
-  // updateUser(@Param("id") userId: string, @Body() inputModel: CreateUserInputModelType): object {
-  //   return this.usersService.updateUser(userId, inputModel.name, inputModel.childrenCount);
-  // }
 }

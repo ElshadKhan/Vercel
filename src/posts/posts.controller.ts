@@ -21,6 +21,8 @@ import { add } from 'date-fns';
 import { CommentsService } from '../comments/comments.service';
 import { CreateCommentDbType } from '../comments/dto/create-comment.dto';
 import { CommentsQueryRepository } from '../comments/comments.queryRepository';
+import { LikesService } from '../likes/likes.service';
+import { LikeStatusEnam } from '../likes/dto/like-enam.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -29,6 +31,7 @@ export class PostsController {
     private postsQueryRepository: PostsQueryRepository,
     private commentsService: CommentsService,
     private commentsQueryRepository: CommentsQueryRepository,
+    private readonly likesService: LikesService,
   ) {}
 
   @Post()
@@ -52,7 +55,6 @@ export class PostsController {
         login: 'login',
         email: 'inputModel.email@mail.ru',
         passwordHash: '',
-        passwordSalt: '',
         createdAt: new Date().toISOString(),
       },
       {
@@ -99,6 +101,42 @@ export class PostsController {
       throw new HttpException({}, 404);
     }
     return result;
+  }
+
+  @Put(':id/like-status')
+  @HttpCode(204)
+  async updateLikeStatus(
+    @Param('id') id: string,
+    @Body() likesStatus: LikeStatusEnam,
+  ) {
+    const user = new UserAccountDBType(
+      String(+new Date()),
+      {
+        login: 'login',
+        email: 'inputModel.email@mail.ru',
+        passwordHash: '',
+        createdAt: new Date().toISOString(),
+      },
+      {
+        confirmationCode: uuidv4(),
+        expirationDate: add(new Date(), { hours: 1, minutes: 1 }),
+        isConfirmed: false,
+      },
+      {
+        confirmationCode: uuidv4(),
+        expirationDate: add(new Date(), { hours: 2, minutes: 2 }),
+        isConfirmed: false,
+      },
+    );
+    if (!user) {
+      throw new HttpException({}, 401);
+    }
+    const post = await this.postsQueryRepository.findOne(id, user);
+    if (post) {
+      return this.likesService.updateLikeStatus(likesStatus, id, user.id);
+    } else {
+      throw new HttpException({}, 404);
+    }
   }
 
   @Delete(':id')

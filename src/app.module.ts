@@ -27,12 +27,17 @@ import { CommentsRepository } from './comments/comments.repository';
 import { AuthModule } from './auth/auth.module';
 import { LikesModule } from './likes/likes.module';
 import { SessionsModule } from './sessions/sessions.module';
+import { Like, LikeSchema } from './likes/entities/like.entity';
+import { LikesService } from './likes/likes.service';
+import { LikesRepository } from './likes/likes.repository';
+import { LikesQueryRepository } from './likes/likes.queryRepository';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
   { name: Blog.name, schema: BlogSchema },
   { name: Post.name, schema: PostSchema },
   { name: Comment.name, schema: CommentSchema },
+  { name: Like.name, schema: LikeSchema },
 ];
 
 @Module({
@@ -71,6 +76,9 @@ const schemas = [
     CommentsService,
     CommentsRepository,
     CommentsQueryRepository,
+    LikesService,
+    LikesRepository,
+    LikesQueryRepository,
     PasswordService,
   ],
 })

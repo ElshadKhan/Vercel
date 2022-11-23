@@ -11,6 +11,35 @@ import { QueryValidationType } from '../middleware/queryValidation';
 export class UsersQueryRepository {
   @InjectModel(User.name) private userModel: Model<UserDbType>;
 
+  async findUserByLoginOrEmail(
+    loginOrEmail: string,
+  ): Promise<UserAccountDBType | null> {
+    return this.userModel
+      .findOne({
+        $or: [
+          { 'accountData.login': loginOrEmail },
+          { 'accountData.email': loginOrEmail },
+        ],
+      })
+      .lean();
+  }
+
+  async findUserByEmailConfirmationCode(
+    code: string,
+  ): Promise<UserAccountDBType | null> {
+    return this.userModel
+      .findOne({ 'emailConfirmation.confirmationCode': code })
+      .lean();
+  }
+
+  async findUserByPasswordConfirmationCode(
+    code: string,
+  ): Promise<UserAccountDBType | null> {
+    return this.userModel
+      .findOne({ 'passwordConfirmation.confirmationCode': code })
+      .lean();
+  }
+
   async getUsers({
     searchLoginTerm,
     searchEmailTerm,

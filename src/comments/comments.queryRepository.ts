@@ -10,46 +10,48 @@ import {
   getSkipNumber,
   LikeStatusEnam,
 } from '../helpers/helpFunctions';
+import { LikesQueryRepository } from '../likes/likes.queryRepository';
 
 @Injectable()
 export class CommentsQueryRepository {
   @InjectModel(Comment.name) private commentModel: Model<CommentDbType>;
-  // async findCommentByUserIdAndCommentId(
-  //   id: string,
-  //   user?: UserAccountDBType,
-  // ): Promise<CommentDtoType | null> {
-  //   const comment = await CommentModelClass.findOne({ id: id });
-  //   if (!comment) return null;
-  //
-  //   let myStatus = LikeStatusEnam.None;
-  //
-  //   if (user) {
-  //     const result = await this.likeStatusRepository.getLikeStatus(id, user.id);
-  //     myStatus = result?.type || LikeStatusEnam.None;
-  //   }
-  //
-  //   const likesCount = await this.likeStatusRepository.getLikesCount(
-  //     id,
-  //     LikeStatusEnam.Like,
-  //   );
-  //   const dislikesCount = await this.likeStatusRepository.getDislikesCount(
-  //     id,
-  //     LikeStatusEnam.Dislike,
-  //   );
-  //
-  //   return {
-  //     id: comment.id,
-  //     content: comment.content,
-  //     userId: comment.userId,
-  //     userLogin: comment.userLogin,
-  //     createdAt: comment.createdAt,
-  //     likesInfo: {
-  //       likesCount: likesCount,
-  //       dislikesCount: dislikesCount,
-  //       myStatus: myStatus,
-  //     },
-  //   };
-  // }
+  constructor(private likesRepository: LikesQueryRepository) {}
+  async findCommentByUserIdAndCommentId(
+    id: string,
+    user?: UserAccountDBType,
+  ): Promise<CommentDtoType | null> {
+    const comment = await this.commentModel.findOne({ id: id });
+    if (!comment) return null;
+
+    let myStatus = LikeStatusEnam.None;
+
+    if (user) {
+      const result = await this.likesRepository.getLikeStatus(id, user.id);
+      myStatus = result?.type || LikeStatusEnam.None;
+    }
+
+    const likesCount = await this.likesRepository.getLikesCount(
+      id,
+      LikeStatusEnam.Like,
+    );
+    const dislikesCount = await this.likesRepository.getDislikesCount(
+      id,
+      LikeStatusEnam.Dislike,
+    );
+
+    return {
+      id: comment.id,
+      content: comment.content,
+      userId: comment.userId,
+      userLogin: comment.userLogin,
+      createdAt: comment.createdAt,
+      likesInfo: {
+        likesCount: likesCount,
+        dislikesCount: dislikesCount,
+        myStatus: myStatus,
+      },
+    };
+  }
 
   async findCommentById(id: string): Promise<CommentDtoType | null> {
     const comment = await this.commentModel.findOne({ id });
@@ -86,23 +88,23 @@ export class CommentsQueryRepository {
       .count();
     if (comment) {
       const promis = findComments.map(async (c) => {
-        const myStatus = LikeStatusEnam.None;
+        let myStatus = LikeStatusEnam.None;
 
-        // if (user) {
-        //   const result = await this.likeStatusRepository.getLikeStatus(
-        //     c.id,
-        //     user.id,
-        //   );
-        //   myStatus = result?.type || LikeStatusEnam.None;
-        // }
-        // const likesCount = await this.likeStatusRepository.getLikesCount(
-        //   c.id,
-        //   LikeStatusEnam.Like,
-        // );
-        // const dislikesCount = await this.likeStatusRepository.getDislikesCount(
-        //   c.id,
-        //   LikeStatusEnam.Dislike,
-        // );
+        if (user) {
+          const result = await this.likesRepository.getLikeStatus(
+            c.id,
+            user.id,
+          );
+          myStatus = result?.type || LikeStatusEnam.None;
+        }
+        const likesCount = await this.likesRepository.getLikesCount(
+          c.id,
+          LikeStatusEnam.Like,
+        );
+        const dislikesCount = await this.likesRepository.getDislikesCount(
+          c.id,
+          LikeStatusEnam.Dislike,
+        );
         return {
           id: c.id,
           content: c.content,
