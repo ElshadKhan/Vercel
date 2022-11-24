@@ -1,20 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { SessionsRepository } from './sessionsRepository';
-import { ConfigService } from '@nestjs/config';
 import { UserAccountDBType } from '../users/dto/user.dto';
 import { SessionDBType } from './dto/session.dto';
 import { randomUUID } from 'crypto';
 import { SessionsQueryRepository } from './sessionsQueryRepository';
+import { JwtService } from '../auth/application/jwt-service';
 
 @Injectable()
 export class SessionsService {
   constructor(
     private sessionsRepository: SessionsRepository,
     private sessionsQueryRepository: SessionsQueryRepository,
-    private configService: ConfigService,
+    private jwtService: JwtService,
   ) {}
-
-  private jwtSecret = this.configService.get<string>('JWT_SECRET');
 
   async createSession(user: UserAccountDBType, ip: string, deviceName: string) {
     const userId = user.id;

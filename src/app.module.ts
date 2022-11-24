@@ -31,6 +31,7 @@ import { SessionsRepository } from './sessions/sessionsRepository';
 import { SessionsQueryRepository } from './sessions/sessionsQueryRepository';
 import { SessionsService } from './sessions/sessions.service';
 import { SessionsController } from './sessions/sessions.controller';
+import { JwtService } from './auth/application/jwt-service';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -61,6 +62,7 @@ const schemas = [
     SessionsController,
   ],
   providers: [
+    JwtService,
     UsersService,
     UsersRepository,
     UsersQueryRepository,

@@ -1,12 +1,14 @@
-import { Controller, Get, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Delete, Req } from '@nestjs/common';
 import { SessionsService } from './sessions.service';
 import { SessionsQueryRepository } from './sessionsQueryRepository';
+import { JwtService } from '../auth/application/jwt-service';
 
 @Controller('sessions')
 export class SessionsController {
   constructor(
     private readonly sessionsService: SessionsService,
     private sessionsQueryRepository: SessionsQueryRepository,
+    private jwtService: JwtService,
   ) {}
 
   @Get(':id')
@@ -15,7 +17,7 @@ export class SessionsController {
   }
 
   @Delete()
-  async deleteAllSessionsExceptOne() {
+  async deleteAllSessionsExceptOne(@Req() req) {
     const payload = await this.jwtService.getUserIdByRefreshToken(
       req.cookies.refreshToken.split(' ')[0],
     );
@@ -26,7 +28,10 @@ export class SessionsController {
   }
 
   @Delete(':id')
-  async deleteSessionsByDeviceId(@Param('deviceId') deviceId: string) {
+  async deleteSessionsByDeviceId(
+    @Param('deviceId') deviceId: string,
+    @Req() req,
+  ) {
     const payload = await this.jwtService.getUserIdByRefreshToken(
       req.cookies.refreshToken.split(' ')[0],
     );

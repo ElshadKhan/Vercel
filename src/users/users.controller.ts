@@ -8,11 +8,13 @@ import {
   Param,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersQueryRepository } from './users.queryRepository';
 import { pagination } from '../middleware/queryValidation';
 import { CreateUserDto } from './dto/create-user.dto';
+import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -27,6 +29,7 @@ export class UsersController {
   }
 
   @Post()
+  @UseGuards(BasicAuthGuard)
   async createUser(@Body() inputModel: CreateUserDto) {
     const newUser = await this.usersService.create(inputModel);
     return {
