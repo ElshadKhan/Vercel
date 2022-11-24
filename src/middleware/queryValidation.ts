@@ -3,15 +3,17 @@ export enum SortDirection {
   desc = 'desc',
 }
 
-export type QueryValidationType = {
-  pageNumber: number;
-  pageSize: number;
-  sortBy: string;
-  sortDirection: SortDirection;
-  searchNameTerm: string;
-  searchLoginTerm: string;
-  searchEmailTerm: string;
-};
+export class QueryValidationType {
+  constructor(
+    public pageNumber: number,
+    public pageSize: number,
+    public sortBy: string,
+    public sortDirection: SortDirection,
+    public searchNameTerm: string,
+    public searchLoginTerm: string,
+    public searchEmailTerm: string,
+  ) {}
+}
 
 const defaultPageSize = 10;
 const defaultPageNumber = 1;

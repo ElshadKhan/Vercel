@@ -14,7 +14,7 @@ import { PostsService } from './posts.service';
 import { CreatePostDtoBlogId } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostsQueryRepository } from './posts.queryRepository';
-import { pagination } from '../middleware/queryValidation';
+import { pagination, QueryValidationType } from '../middleware/queryValidation';
 import { UserAccountDBType } from '../users/dto/user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { add } from 'date-fns';
@@ -84,7 +84,10 @@ export class PostsController {
   }
 
   @Get(':postId/comments')
-  findCommentsByPostId(@Query() query: any, @Param('postId') postId: string) {
+  findCommentsByPostId(
+    @Query() query: QueryValidationType,
+    @Param('postId') postId: string,
+  ) {
     return this.commentsQueryRepository.findCommentsByPostIdAndUserId(
       postId,
       pagination(query),
@@ -92,7 +95,7 @@ export class PostsController {
   }
 
   @Get()
-  findAll(@Query() query: any) {
+  findAll(@Query() query: QueryValidationType) {
     return this.postsQueryRepository.findAll(pagination(query));
   }
 
