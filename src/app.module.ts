@@ -32,6 +32,7 @@ import { SessionsQueryRepository } from './sessions/sessionsQueryRepository';
 import { SessionsService } from './sessions/sessions.service';
 import { SessionsController } from './sessions/sessions.controller';
 import { JwtService } from './auth/application/jwt-service';
+import { Ip, IpSchema } from './auth/guards/IpValidation/ip.entity';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -40,6 +41,7 @@ const schemas = [
   { name: Comment.name, schema: CommentSchema },
   { name: Like.name, schema: LikeSchema },
   { name: Session.name, schema: SessionSchema },
+  { name: Ip.name, schema: IpSchema },
 ];
 
 @Module({
