@@ -12,9 +12,9 @@ export class BasicAuthGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const request: Request = context.switchToHttp().getRequest();
+    const req: Request = context.switchToHttp().getRequest();
     const template = 'admin:qwerty';
-    const authHeader = request.headers.authorization;
+    const authHeader = req.headers.authorization;
     const base64Data = Buffer.from(template);
     const base64String = base64Data.toString('base64');
     const validAuthHeader = `Basic ${base64String}`;

@@ -24,6 +24,7 @@ export class UsersController {
   ) {}
 
   @Get()
+  @UseGuards(BasicAuthGuard)
   getUsers(@Query() query: any) {
     return this.usersQueryRepository.getUsers(pagination(query));
   }
@@ -42,6 +43,7 @@ export class UsersController {
 
   @Delete(':id')
   @HttpCode(204)
+  @UseGuards(BasicAuthGuard)
   async deleteUser(@Param('id') userId: string) {
     const result = await this.usersService.delete(userId);
     if (!result) {

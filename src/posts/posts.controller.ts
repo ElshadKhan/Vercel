@@ -9,6 +9,7 @@ import {
   Query,
   Put,
   HttpException,
+  UseGuards,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDtoBlogId } from './dto/create-post.dto';
@@ -23,6 +24,7 @@ import { CreateCommentDbType } from '../comments/dto/create-comment.dto';
 import { CommentsQueryRepository } from '../comments/comments.queryRepository';
 import { LikesService } from '../likes/likes.service';
 import { LikeStatusEnam } from '../likes/dto/like-enam.dto';
+import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
 
 @Controller('posts')
 export class PostsController {
@@ -35,6 +37,7 @@ export class PostsController {
   ) {}
 
   @Post()
+  @UseGuards(BasicAuthGuard)
   async create(@Body() createPostDto: CreatePostDtoBlogId) {
     const result = await this.postsService.create(
       createPostDto.title,
@@ -110,6 +113,7 @@ export class PostsController {
 
   @Put(':id')
   @HttpCode(204)
+  @UseGuards(BasicAuthGuard)
   async update(@Param('id') id: string, @Body() updateBlogDto: UpdatePostDto) {
     const result = await this.postsService.update(id, updateBlogDto);
     if (!result) {
@@ -156,6 +160,7 @@ export class PostsController {
 
   @Delete(':id')
   @HttpCode(204)
+  @UseGuards(BasicAuthGuard)
   async delete(@Param('id') id: string) {
     const result = await this.postsService.delete(id);
     if (!result) {

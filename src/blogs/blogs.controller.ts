@@ -8,8 +8,8 @@ import {
   HttpCode,
   Query,
   Put,
-  BadRequestException,
   HttpException,
+  UseGuards,
 } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
@@ -19,6 +19,7 @@ import { pagination } from '../middleware/queryValidation';
 import { CreatePostDto } from '../posts/dto/create-post.dto';
 import { PostsService } from '../posts/posts.service';
 import { PostsQueryRepository } from '../posts/posts.queryRepository';
+import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
 
 @Controller('blogs')
 export class BlogsController {
@@ -30,11 +31,13 @@ export class BlogsController {
   ) {}
 
   @Post()
+  @UseGuards(BasicAuthGuard)
   create(@Body() createBlogDto: CreateBlogDto) {
     return this.blogsService.create(createBlogDto);
   }
 
   @Post(':id/posts')
+  @UseGuards(BasicAuthGuard)
   async createPostByBlogId(
     @Param('id') blogId: string,
     @Body() createPostDto: CreatePostDto,
@@ -79,6 +82,7 @@ export class BlogsController {
 
   @Put(':id')
   @HttpCode(204)
+  @UseGuards(BasicAuthGuard)
   async update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
     const result = await this.blogsService.update(id, updateBlogDto);
     if (!result) {
@@ -89,6 +93,7 @@ export class BlogsController {
 
   @Delete(':id')
   @HttpCode(204)
+  @UseGuards(BasicAuthGuard)
   async delete(@Param('id') id: string) {
     const result = await this.blogsService.delete(id);
     if (!result) {
