@@ -33,6 +33,12 @@ import { SessionsService } from './sessions/sessions.service';
 import { SessionsController } from './sessions/sessions.controller';
 import { JwtService } from './auth/application/jwt-service';
 import { Ip, IpSchema } from './auth/guards/IpValidation/ip.entity';
+import { EmailManagers } from './auth/managers/emailManagers';
+import { EmailAdapter } from './auth/adapters/emailAdapter';
+import { PasswordManagers } from './auth/managers/passwordManagers';
+import { PasswordAdapter } from './auth/adapters/passwordAdapter';
+import { AuthController } from './auth/auth.controller';
+import { AuthService } from './auth/auth.service';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -62,8 +68,10 @@ const schemas = [
     PostsController,
     CommentsController,
     SessionsController,
+    AuthController,
   ],
   providers: [
+    AuthService,
     JwtService,
     UsersService,
     UsersRepository,
@@ -83,6 +91,10 @@ const schemas = [
     SessionsService,
     SessionsRepository,
     SessionsQueryRepository,
+    EmailManagers,
+    EmailAdapter,
+    PasswordManagers,
+    PasswordAdapter,
     PasswordService,
   ],
 })

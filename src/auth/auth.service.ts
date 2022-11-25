@@ -3,7 +3,7 @@ import { UsersService } from '../users/users.service';
 import { UsersRepository } from '../users/users.repository';
 import { UsersQueryRepository } from '../users/users.queryRepository';
 import { PasswordService } from '../password/password.service';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { EmailManagers } from './managers/emailManagers';
@@ -89,7 +89,7 @@ export class AuthService {
 
   async checkCredentials(inputModel: LoginUserDto) {
     const user = await this.userQueryRepository.findUserByLoginOrEmail(
-      inputModel.login,
+      inputModel.loginOrEmail,
     );
     if (!user) return false;
     const isValid = await bcrypt.compare(

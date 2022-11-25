@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Req, Ip, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Req,
+  Ip,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login.dto';
 import { CreateUserDto } from '../users/dto/create-user.dto';
@@ -8,6 +17,7 @@ import { SessionsRepository } from '../sessions/sessionsRepository';
 import { ResendingDto } from './dto/resending.dto';
 import { ConfirmationCodeDto } from './dto/confirmation.code.dto';
 import { PasswordConfirmationCodeDto } from './dto/password.confirmation.code.dto';
+import { BearerAuthGuard } from './guards/bearer.auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -19,6 +29,7 @@ export class AuthController {
   ) {}
 
   @Get('/me')
+  @UseGuards(BearerAuthGuard)
   findAuthUser(@Req() req) {
     return {
       email: req.user.accountData.email,
@@ -32,7 +43,7 @@ export class AuthController {
     return await this.authService.create(inputModel);
   }
 
-  @Post()
+  @Post('/login')
   async login(@Body() inputModel: LoginUserDto, @Req() req, @Res() res) {
     const user = await this.authService.checkCredentials(inputModel);
     if (!user) return user;
