@@ -1,26 +1,104 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { UsersService } from '../users/users.service';
+import { UsersRepository } from '../users/users.repository';
+import { UsersQueryRepository } from '../users/users.queryRepository';
+import { PasswordService } from '../password/password.service';
+import bcrypt from 'bcrypt';
+import { randomUUID } from 'crypto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { EmailManagers } from './managers/emailManagers';
+import { PasswordManagers } from './managers/passwordManagers';
+import { LoginUserDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+    private userService: UsersService,
+    private userRepository: UsersRepository,
+    private userQueryRepository: UsersQueryRepository,
+    private passwordService: PasswordService,
+    private emailManager: EmailManagers,
+    private passwordManager: PasswordManagers,
+  ) {}
+
+  async create(inputModel: CreateUserDto) {
+    const newUser = await this.userService.create(inputModel);
+    const result = await this.emailManager.sendEmailConfirmationMessage(
+      newUser,
+    );
+    return result;
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async emailResending(email: string) {
+    const user = await this.userQueryRepository.findUserByLoginOrEmail(email);
+    if (!user) return null;
+    const code = randomUUID();
+    await this.userRepository.updateEmailResendingCode(user.id, code);
+    await this.emailManager.emailResendingConfirmationMessage(email, code);
+    return user;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  async passwordResending(email: string) {
+    const user = await this.userQueryRepository.findUserByLoginOrEmail(email);
+    if (!user) return null;
+    const code = randomUUID();
+    await this.userRepository.updatePasswordResendingCode(user.id, code);
+    await this.passwordManager.passwordResendingConfirmationMessage(
+      email,
+      code,
+    );
+    return user;
   }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
+  async confirmationEmail(code: string): Promise<boolean> {
+    const user = await this.userQueryRepository.findUserByEmailConfirmationCode(
+      code,
+    );
+    if (!user) return false;
+    if (user.emailConfirmation.isConfirmed) return false;
+    if (user.emailConfirmation.confirmationCode !== code) return false;
+    if (user.emailConfirmation.expirationDate < new Date()) return false;
+
+    const result = await this.userRepository.updateEmailConfirmation(user.id);
+    return result;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  async confirmationPassword(
+    newPassword: string,
+    recoveryCode: string,
+  ): Promise<boolean> {
+    const user =
+      await this.userQueryRepository.findUserByPasswordConfirmationCode(
+        recoveryCode,
+      );
+    if (!user) return false;
+    if (user.passwordConfirmation.isConfirmed) return false;
+    if (user.passwordConfirmation.confirmationCode !== recoveryCode)
+      return false;
+    if (user.passwordConfirmation.expirationDate < new Date()) return false;
+
+    const passwordHash = await this.passwordService.generateSaltAndHash(
+      newPassword,
+    );
+
+    await this.userRepository.updatePasswordConfirmation(user.id);
+    await this.userRepository.updatePassword(user.id, passwordHash);
+
+    return true;
+  }
+
+  async checkCredentials(inputModel: LoginUserDto) {
+    const user = await this.userQueryRepository.findUserByLoginOrEmail(
+      inputModel.login,
+    );
+    if (!user) return false;
+    const isValid = await bcrypt.compare(
+      inputModel.password,
+      user.accountData.passwordHash,
+    );
+    if (!isValid) {
+      return false;
+    }
+    return user;
   }
 }
