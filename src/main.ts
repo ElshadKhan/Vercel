@@ -3,12 +3,14 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './exception.filter';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
   const configService = app.get(ConfigService);
   const port = configService.get('PORT');
+  app.use(cookieParser());
   app.useGlobalPipes(
     new ValidationPipe({
       stopAtFirstError: true,
@@ -23,7 +25,7 @@ async function bootstrap() {
             });
           });
         });
-        throw new BadRequestException();
+        throw new BadRequestException(errorsForResponse);
       },
     }),
   );

@@ -32,13 +32,13 @@ import { SessionsQueryRepository } from './sessions/sessionsQueryRepository';
 import { SessionsService } from './sessions/sessions.service';
 import { SessionsController } from './sessions/sessions.controller';
 import { JwtService } from './auth/application/jwt-service';
-import { Ip, IpSchema } from './auth/guards/IpValidation/ip.entity';
 import { EmailManagers } from './auth/managers/emailManagers';
 import { EmailAdapter } from './auth/adapters/emailAdapter';
 import { PasswordManagers } from './auth/managers/passwordManagers';
 import { PasswordAdapter } from './auth/adapters/passwordAdapter';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -47,7 +47,6 @@ const schemas = [
   { name: Comment.name, schema: CommentSchema },
   { name: Like.name, schema: LikeSchema },
   { name: Session.name, schema: SessionSchema },
-  { name: Ip.name, schema: IpSchema },
 ];
 
 @Module({
@@ -61,6 +60,10 @@ const schemas = [
       inject: [ConfigService],
     }),
     MongooseModule.forFeature(schemas),
+    ThrottlerModule.forRoot({
+      ttl: 10,
+      limit: 5,
+    }),
   ],
   controllers: [
     UsersController,

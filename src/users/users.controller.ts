@@ -15,6 +15,7 @@ import { UsersQueryRepository } from './users.queryRepository';
 import { pagination } from '../middleware/queryValidation';
 import { CreateUserDto } from './dto/create-user.dto';
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
+import { CustomThrottlerGuard } from '../auth/guards/custom.throttler.guard';
 
 @Controller('users')
 export class UsersController {

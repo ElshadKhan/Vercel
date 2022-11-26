@@ -38,6 +38,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
     console.log('Response', exception.getResponse());
+    if (status === 429) {
+      response.sendStatus(429);
+      return;
+    }
     if (status === 404) {
       response.sendStatus(404);
       return;
@@ -51,7 +55,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
         errorsMessages: [],
       };
       const responseBody: any = exception.getResponse();
-      console.log('1', responseBody);
       responseBody.message.forEach((m) => errorResponse.errorsMessages.push(m));
       response.status(status).json(errorResponse);
     } else {

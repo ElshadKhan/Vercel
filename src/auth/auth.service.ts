@@ -21,7 +21,7 @@ export class AuthService {
     private passwordManager: PasswordManagers,
   ) {}
 
-  async create(inputModel: CreateUserDto) {
+  async registration(inputModel: CreateUserDto) {
     const newUser = await this.userService.create(inputModel);
     const result = await this.emailManager.sendEmailConfirmationMessage(
       newUser,
@@ -31,7 +31,12 @@ export class AuthService {
 
   async emailResending(email: string) {
     const user = await this.userQueryRepository.findUserByLoginOrEmail(email);
-    if (!user) return null;
+    if (
+      !user ||
+      user.emailConfirmation.isConfirmed ||
+      user.emailConfirmation.expirationDate < new Date()
+    )
+      return null;
     const code = randomUUID();
     await this.userRepository.updateEmailResendingCode(user.id, code);
     await this.emailManager.emailResendingConfirmationMessage(email, code);
@@ -40,7 +45,12 @@ export class AuthService {
 
   async passwordResending(email: string) {
     const user = await this.userQueryRepository.findUserByLoginOrEmail(email);
-    if (!user) return null;
+    if (
+      !user ||
+      user.passwordConfirmation.isConfirmed ||
+      user.passwordConfirmation.expirationDate < new Date()
+    )
+      return null;
     const code = randomUUID();
     await this.userRepository.updatePasswordResendingCode(user.id, code);
     await this.passwordManager.passwordResendingConfirmationMessage(
