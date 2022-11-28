@@ -7,10 +7,10 @@ import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(cookieParser());
   app.enableCors();
   const configService = app.get(ConfigService);
   const port = configService.get('PORT');
-  app.use(cookieParser());
   app.useGlobalPipes(
     new ValidationPipe({
       stopAtFirstError: true,
