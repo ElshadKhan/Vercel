@@ -28,7 +28,7 @@ export class SessionsRepository {
     return sessions.modifiedCount === 1;
   }
 
-  async deleteAllSessions() {
+  async deleteAll() {
     const result = await this.sessionModel.deleteMany({});
     return result.deletedCount === 1;
   }

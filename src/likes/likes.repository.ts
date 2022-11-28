@@ -22,4 +22,7 @@ export class LikesRepository {
     );
     return result.matchedCount === 1;
   }
+  async deleteAll() {
+    return await this.likeModel.deleteMany({});
+  }
 }

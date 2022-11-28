@@ -40,4 +40,8 @@ export class LikesService {
       likesStatus,
     );
   }
+
+  deleteAll() {
+    return this.likesRepository.deleteAll();
+  }
 }

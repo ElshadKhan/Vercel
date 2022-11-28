@@ -39,6 +39,7 @@ import { PasswordAdapter } from './auth/adapters/passwordAdapter';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { RemoveAllDataController } from './remove.all.data.controller';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -72,6 +73,7 @@ const schemas = [
     CommentsController,
     SessionsController,
     AuthController,
+    RemoveAllDataController,
   ],
   providers: [
     AuthService,

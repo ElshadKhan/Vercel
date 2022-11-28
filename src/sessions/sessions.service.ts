@@ -48,8 +48,8 @@ export class SessionsService {
     );
   }
 
-  async deleteAllSessions() {
-    return await this.sessionsRepository.deleteAllSessions();
+  async deleteAll() {
+    return await this.sessionsRepository.deleteAll();
   }
 
   async deleteSessionsByDeviceId(userId: string, deviceId: string) {
