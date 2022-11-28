@@ -46,6 +46,11 @@ export class UsersController {
       login: newUser.accountData.login,
       email: newUser.accountData.email,
       createdAt: newUser.accountData.createdAt,
+      banInfo: {
+        banDate: null,
+        banReason: null,
+        isBanned: false,
+      },
     };
   }
 

@@ -92,6 +92,11 @@ export class UsersQueryRepository {
       login: u.accountData.login,
       email: u.accountData.email,
       createdAt: u.accountData.createdAt,
+      banInfo: {
+        banDate: null,
+        banReason: null,
+        isBanned: false,
+      },
     }));
     const userDto = new UsersBusinessType(
       getPagesCounts(totalCountUsers, pageSize),
