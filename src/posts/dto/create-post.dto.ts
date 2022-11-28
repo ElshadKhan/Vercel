@@ -1,11 +1,12 @@
-import { SortDirection } from '../../middleware/queryValidation';
+import { isString, Length } from 'class-validator';
 
 export class CreatePostDto {
-  constructor(
-    public title: string,
-    public shortDescription: string,
-    public content: string,
-  ) {}
+  @Length(1, 30)
+  title: string;
+  @Length(1, 100)
+  shortDescription: string;
+  @Length(1, 1000)
+  content: string;
 }
 
 export class CreatePostDtoBlogId {

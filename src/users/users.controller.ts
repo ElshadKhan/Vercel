@@ -33,6 +33,13 @@ export class UsersController {
   @Post()
   @UseGuards(BasicAuthGuard)
   async createUser(@Body() inputModel: CreateUserDto) {
+    const findUserByEmail =
+      await this.usersQueryRepository.findUserByLoginOrEmail(inputModel.email);
+    const findUserByLogin =
+      await this.usersQueryRepository.findUserByLoginOrEmail(inputModel.login);
+    if (findUserByEmail || findUserByLogin) {
+      throw new HttpException({}, 400);
+    }
     const newUser = await this.usersService.create(inputModel);
     return {
       id: newUser.id,

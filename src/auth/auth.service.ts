@@ -13,16 +13,16 @@ import { LoginUserDto } from './dto/login.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    private userService: UsersService,
-    private userRepository: UsersRepository,
-    private userQueryRepository: UsersQueryRepository,
+    private usersService: UsersService,
+    private usersRepository: UsersRepository,
+    private usersQueryRepository: UsersQueryRepository,
     private passwordService: PasswordService,
     private emailManager: EmailManagers,
     private passwordManager: PasswordManagers,
   ) {}
 
   async registration(inputModel: CreateUserDto) {
-    const newUser = await this.userService.create(inputModel);
+    const newUser = await this.usersService.create(inputModel);
     const result = await this.emailManager.sendEmailConfirmationMessage(
       newUser,
     );
@@ -30,21 +30,21 @@ export class AuthService {
   }
 
   async emailResending(email: string) {
-    const user = await this.userQueryRepository.findUserByLoginOrEmail(email);
+    const user = await this.usersQueryRepository.findUserByLoginOrEmail(email);
     if (
       !user ||
       user.emailConfirmation.isConfirmed ||
       user.emailConfirmation.expirationDate < new Date()
     )
-      return null;
+      return false;
     const code = randomUUID();
-    await this.userRepository.updateEmailResendingCode(user.id, code);
+    await this.usersRepository.updateEmailResendingCode(user.id, code);
     await this.emailManager.emailResendingConfirmationMessage(email, code);
     return user;
   }
 
   async passwordResending(email: string) {
-    const user = await this.userQueryRepository.findUserByLoginOrEmail(email);
+    const user = await this.usersQueryRepository.findUserByLoginOrEmail(email);
     if (
       !user ||
       user.passwordConfirmation.isConfirmed ||
@@ -52,7 +52,7 @@ export class AuthService {
     )
       return null;
     const code = randomUUID();
-    await this.userRepository.updatePasswordResendingCode(user.id, code);
+    await this.usersRepository.updatePasswordResendingCode(user.id, code);
     await this.passwordManager.passwordResendingConfirmationMessage(
       email,
       code,
@@ -61,15 +61,13 @@ export class AuthService {
   }
 
   async confirmationEmail(code: string): Promise<boolean> {
-    const user = await this.userQueryRepository.findUserByEmailConfirmationCode(
-      code,
-    );
+    const user =
+      await this.usersQueryRepository.findUserByEmailConfirmationCode(code);
     if (!user) return false;
     if (user.emailConfirmation.isConfirmed) return false;
-    if (user.emailConfirmation.confirmationCode !== code) return false;
     if (user.emailConfirmation.expirationDate < new Date()) return false;
 
-    const result = await this.userRepository.updateEmailConfirmation(user.id);
+    const result = await this.usersRepository.updateEmailConfirmation(user.id);
     return result;
   }
 
@@ -78,27 +76,25 @@ export class AuthService {
     recoveryCode: string,
   ): Promise<boolean> {
     const user =
-      await this.userQueryRepository.findUserByPasswordConfirmationCode(
+      await this.usersQueryRepository.findUserByPasswordConfirmationCode(
         recoveryCode,
       );
     if (!user) return false;
     if (user.passwordConfirmation.isConfirmed) return false;
-    if (user.passwordConfirmation.confirmationCode !== recoveryCode)
-      return false;
     if (user.passwordConfirmation.expirationDate < new Date()) return false;
 
     const passwordHash = await this.passwordService.generateSaltAndHash(
       newPassword,
     );
 
-    await this.userRepository.updatePasswordConfirmation(user.id);
-    await this.userRepository.updatePassword(user.id, passwordHash);
+    await this.usersRepository.updatePasswordConfirmation(user.id);
+    await this.usersRepository.updatePassword(user.id, passwordHash);
 
     return true;
   }
 
   async checkCredentials(inputModel: LoginUserDto) {
-    const user = await this.userQueryRepository.findUserByLoginOrEmail(
+    const user = await this.usersQueryRepository.findUserByLoginOrEmail(
       inputModel.loginOrEmail,
     );
     if (!user) return false;
