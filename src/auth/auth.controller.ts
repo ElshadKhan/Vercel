@@ -78,8 +78,8 @@ export class AuthController {
     debugger;
     const tokens = await this.sessionsService.createSession(
       user,
-      req.ip,
-      req.headers['user-agent'],
+      'req.ip',
+      'req.headersuser-agent',
     );
 
     res

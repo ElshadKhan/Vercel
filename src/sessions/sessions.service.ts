@@ -16,7 +16,7 @@ export class SessionsService {
 
   async createSession(user: UserAccountDBType, ip: string, deviceName: string) {
     const userId = user.id;
-    const deviceId = String(randomUUID());
+    const deviceId = randomUUID();
     const tokens = await this.jwtService.createJWTTokens(user, deviceId);
     const payload = await this.jwtService.getUserIdByRefreshToken(
       tokens.refreshToken.split(' ')[0],
@@ -30,10 +30,7 @@ export class SessionsService {
       userId: userId,
     };
     await this.sessionsRepository.createSession(session);
-    return {
-      accessToken: tokens.accessToken,
-      refreshToken: tokens.refreshToken,
-    };
+    return tokens;
   }
 
   async updateSession(
