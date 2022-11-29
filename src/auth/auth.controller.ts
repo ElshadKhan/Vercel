@@ -43,7 +43,7 @@ export class AuthController {
       userId: req.user.id,
     };
   }
-  @UseGuards(CustomThrottlerGuard)
+  // @UseGuards(CustomThrottlerGuard)
   @Post('/registration')
   @HttpCode(204)
   async registration(@Body() inputModel: CreateUserDto) {
@@ -69,7 +69,7 @@ export class AuthController {
     }
     return await this.authService.registration(inputModel);
   }
-  @UseGuards(CustomThrottlerGuard)
+  // @UseGuards(CustomThrottlerGuard)
   @Post('/login')
   async login(@Body() inputModel: LoginUserDto, @Req() req, @Res() res) {
     const user = await this.authService.checkCredentials(inputModel);
@@ -135,7 +135,7 @@ export class AuthController {
       payload.deviceId,
     );
   }
-  @UseGuards(CustomThrottlerGuard)
+  // @UseGuards(CustomThrottlerGuard)
   @Post('/registration-confirmation')
   @HttpCode(204)
   async confirmationEmail(@Body() inputModel: ConfirmationCodeDto) {
@@ -150,7 +150,7 @@ export class AuthController {
     }
     return result;
   }
-  @UseGuards(CustomThrottlerGuard)
+  // @UseGuards(CustomThrottlerGuard)
   @Post('/new-password')
   @HttpCode(204)
   async confirmationPassword(@Body() inputModel: PasswordConfirmationCodeDto) {
@@ -168,7 +168,7 @@ export class AuthController {
     }
     return result;
   }
-  @UseGuards(CustomThrottlerGuard)
+  // @UseGuards(CustomThrottlerGuard)
   @Post('/registration-email-resending')
   @HttpCode(204)
   async emailResending(@Body() inputModel: ResendingDto) {
@@ -183,7 +183,7 @@ export class AuthController {
     }
     return result;
   }
-  @UseGuards(CustomThrottlerGuard)
+  // @UseGuards(CustomThrottlerGuard)
   @Post('/password-recovery')
   @HttpCode(204)
   async passwordResending(@Body() inputModel: ResendingDto) {
