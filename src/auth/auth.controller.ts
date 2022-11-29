@@ -47,50 +47,72 @@ export class AuthController {
   @Post('/registration')
   @HttpCode(204)
   async registration(@Body() inputModel: CreateUserDto) {
-    const findUserByEmail =
-      await this.usersQueryRepository.findUserByLoginOrEmail(inputModel.email);
-    if (findUserByEmail) {
+    try {
+      const findUserByEmail =
+        await this.usersQueryRepository.findUserByLoginOrEmail(
+          inputModel.email,
+        );
+      if (findUserByEmail) {
+        throw new BadRequestException([
+          {
+            message: 'Email already exists',
+            field: 'email',
+          },
+        ]);
+      }
+      const findUserByLogin =
+        await this.usersQueryRepository.findUserByLoginOrEmail(
+          inputModel.login,
+        );
+      if (findUserByLogin) {
+        throw new BadRequestException([
+          {
+            message: 'Login already exists',
+            field: 'login',
+          },
+        ]);
+      }
+      return await this.authService.registration(inputModel);
+    } catch {
       throw new BadRequestException([
         {
-          message: 'Email already exists',
-          field: 'email',
+          message: '1',
+          field: '1',
         },
       ]);
     }
-    const findUserByLogin =
-      await this.usersQueryRepository.findUserByLoginOrEmail(inputModel.login);
-    if (findUserByLogin) {
-      throw new BadRequestException([
-        {
-          message: 'Login already exists',
-          field: 'login',
-        },
-      ]);
-    }
-    return await this.authService.registration(inputModel);
   }
   // @UseGuards(CustomThrottlerGuard)
   @Post('/login')
   async login(@Body() inputModel: LoginUserDto, @Req() req, @Res() res) {
-    const user = await this.authService.checkCredentials(inputModel);
-    if (!user) throw new HttpException({}, 401);
+    try {
+      const user = await this.authService.checkCredentials(inputModel);
+      if (!user) throw new HttpException({}, 401);
 
-    const tokens = await this.sessionsService.createSession(
-      user,
-      req.ip,
-      req.headers['user-agent'],
-    );
+      const tokens = await this.sessionsService.createSession(
+        user,
+        req.ip,
+        req.headers['user-agent'],
+      );
 
-    res
-      .cookie('refreshToken', tokens.refreshToken, {
-        maxAge: 200000000,
-        httpOnly: true,
-        secure: true,
-      })
-      .status(200)
-      .send({
-        accessToken: tokens.accessToken,
-      });
+      res
+        .cookie('refreshToken', tokens.refreshToken, {
+          maxAge: 200000000,
+          httpOnly: true,
+          secure: true,
+        })
+        .status(200)
+        .send({
+          accessToken: tokens.accessToken,
+        });
+    } catch {
+      throw new BadRequestException([
+        {
+          message: '2',
+          field: '2',
+        },
+      ]);
+    }
   }
   @UseGuards(RefreshTokenGuard)
   @Post('/refresh-token')
