@@ -68,45 +68,29 @@ export class AuthController {
         },
       ]);
     }
-    try {
-      return await this.authService.registration(inputModel);
-    } catch {
-      throw new BadRequestException([
-        {
-          message: '1',
-          field: 'registr',
-        },
-      ]);
-    }
+    return await this.authService.registration(inputModel);
   }
   // @UseGuards(CustomThrottlerGuard)
   @Post('/login')
   async login(@Body() inputModel: LoginUserDto, @Req() req, @Res() res) {
     const user = await this.authService.checkCredentials(inputModel);
     if (!user) throw new HttpException({}, 401);
-    try {
-      const tokens = await this.sessionsService.createSession(
-        user,
-        req.ip,
-        req.headers['user-agent'],
-      );
-    } catch {
-      throw new BadRequestException([
-        {
-          message: '2',
-          field: 'tokens',
-        },
-      ]);
-    }
+    debugger;
+    const tokens = await this.sessionsService.createSession(
+      user,
+      req.ip,
+      req.headers['user-agent'],
+    );
+
     res
-      .cookie('refreshToken', 'tokens.refreshToken', {
+      .cookie('refreshToken', tokens.refreshToken, {
         maxAge: 200000000,
         httpOnly: true,
-        secure: true,
+        secure: false,
       })
       .status(200)
       .send({
-        accessToken: 'tokens.accessToken',
+        accessToken: tokens.accessToken,
       });
   }
   @UseGuards(RefreshTokenGuard)
@@ -133,7 +117,7 @@ export class AuthController {
       .cookie('refreshToken', tokens.refreshToken, {
         maxAge: 2000000,
         httpOnly: true,
-        secure: true,
+        secure: false,
       })
       .status(200)
       .send({
