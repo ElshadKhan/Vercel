@@ -53,7 +53,7 @@ export class AuthController {
       throw new BadRequestException([
         {
           message: 'Email already exists',
-          field: 'Email',
+          field: 'email',
         },
       ]);
     }
@@ -63,7 +63,7 @@ export class AuthController {
       throw new BadRequestException([
         {
           message: 'Login already exists',
-          field: 'Login',
+          field: 'login',
         },
       ]);
     }
@@ -144,7 +144,7 @@ export class AuthController {
       throw new BadRequestException([
         {
           message: 'Code already incorrect',
-          field: 'Code',
+          field: 'code',
         },
       ]);
     }
@@ -177,7 +177,7 @@ export class AuthController {
       throw new BadRequestException([
         {
           message: 'Email already incorrect',
-          field: 'Email',
+          field: 'email',
         },
       ]);
     }
@@ -192,7 +192,7 @@ export class AuthController {
       throw new BadRequestException([
         {
           message: 'Email already incorrect',
-          field: 'Email',
+          field: 'email',
         },
       ]);
     }
