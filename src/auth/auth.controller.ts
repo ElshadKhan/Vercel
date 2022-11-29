@@ -86,7 +86,7 @@ export class AuthController {
       .cookie('refreshToken', tokens.refreshToken, {
         maxAge: 200000000,
         httpOnly: true,
-        secure: false,
+        secure: true,
       })
       .status(200)
       .send({
@@ -117,7 +117,7 @@ export class AuthController {
       .cookie('refreshToken', tokens.refreshToken, {
         maxAge: 2000000,
         httpOnly: true,
-        secure: false,
+        secure: true,
       })
       .status(200)
       .send({
