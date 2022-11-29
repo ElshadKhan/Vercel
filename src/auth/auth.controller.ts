@@ -60,6 +60,15 @@ export class AuthController {
           },
         ]);
       }
+    } catch {
+      throw new BadRequestException([
+        {
+          message: '1',
+          field: 'email',
+        },
+      ]);
+    }
+    try {
       const findUserByLogin =
         await this.usersQueryRepository.findUserByLoginOrEmail(
           inputModel.login,
@@ -72,29 +81,29 @@ export class AuthController {
           },
         ]);
       }
-      return await this.authService.registration(inputModel);
     } catch {
       throw new BadRequestException([
         {
           message: '1',
-          field: '1',
+          field: 'login',
         },
       ]);
     }
+    return await this.authService.registration(inputModel);
   }
   // @UseGuards(CustomThrottlerGuard)
   @Post('/login')
   async login(@Body() inputModel: LoginUserDto, @Req() req, @Res() res) {
+    const user = await this.authService.checkCredentials(inputModel);
+    if (!user) throw new HttpException({}, 401);
+
+    const tokens = await this.sessionsService.createSession(
+      user,
+      req.ip,
+      req.headers['user-agent'],
+    );
+
     try {
-      const user = await this.authService.checkCredentials(inputModel);
-      if (!user) throw new HttpException({}, 401);
-
-      const tokens = await this.sessionsService.createSession(
-        user,
-        req.ip,
-        req.headers['user-agent'],
-      );
-
       res
         .cookie('refreshToken', tokens.refreshToken, {
           maxAge: 200000000,
@@ -109,7 +118,7 @@ export class AuthController {
       throw new BadRequestException([
         {
           message: '2',
-          field: '2',
+          field: 'res',
         },
       ]);
     }
