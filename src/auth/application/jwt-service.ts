@@ -16,7 +16,7 @@ export class JwtService {
     const accessToken = jwt.sign(
       { userId: user.id },
       this.accessTokenJwtSecret,
-      { expiresIn: '500sec' },
+      { expiresIn: '10sec' },
     );
     const refreshToken = jwt.sign(
       {
@@ -24,7 +24,7 @@ export class JwtService {
         deviceId: deviceId,
       },
       this.refreshTokenJwtSecret,
-      { expiresIn: '500sec' },
+      { expiresIn: '20sec' },
     );
     return {
       accessToken: accessToken,
