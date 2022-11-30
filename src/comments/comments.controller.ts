@@ -7,15 +7,14 @@ import {
   HttpCode,
   Put,
   HttpException,
-  Injectable,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CommentsQueryRepository } from './comments.queryRepository';
 import { LikesService } from '../likes/likes.service';
 import { LikeStatusEnam } from '../likes/dto/like-enam.dto';
-import { UserAccountDBType } from '../users/dto/user.dto';
-import { v4 as uuidv4 } from 'uuid';
-import { add } from 'date-fns';
+import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
 
 @Controller('comments')
 export class CommentsController {
@@ -30,55 +29,41 @@ export class CommentsController {
     return this.commentsQueryRepository.findCommentById(id);
   }
 
-  @Put(':id')
-  update(@Body() content, @Param('id') id: string) {
-    return this.commentsService.update(content, id);
+  @Put(':commentId')
+  @UseGuards(BearerAuthGuard)
+  update(@Body() content, @Param('commentId') commentId: string) {
+    return this.commentsService.update(content, commentId);
   }
 
-  @Put(':id/like-status')
+  @Put(':commentId/like-status')
   @HttpCode(204)
+  @UseGuards(BearerAuthGuard)
   async updateLikeStatus(
-    @Param('id') id: string,
+    @Param('commentId') commentId: string,
     @Body() likesStatus: LikeStatusEnam,
+    @Req() req,
   ) {
-    const user = new UserAccountDBType(
-      String(+new Date()),
-      {
-        login: 'login',
-        email: 'inputModel.email@mail.ru',
-        passwordHash: '',
-        createdAt: new Date().toISOString(),
-      },
-      {
-        confirmationCode: uuidv4(),
-        expirationDate: add(new Date(), { hours: 1, minutes: 1 }),
-        isConfirmed: false,
-      },
-      {
-        confirmationCode: uuidv4(),
-        expirationDate: add(new Date(), { hours: 2, minutes: 2 }),
-        isConfirmed: false,
-      },
-    );
-    if (!user) {
-      throw new HttpException({}, 401);
-    }
     const comment =
       await this.commentsQueryRepository.findCommentByUserIdAndCommentId(
-        id,
-        user,
+        commentId,
+        req.user,
       );
     if (comment) {
-      return this.likesService.updateLikeStatus(likesStatus, id, user.id);
+      return this.likesService.updateLikeStatus(
+        likesStatus,
+        commentId,
+        req.user.id,
+      );
     } else {
       throw new HttpException({}, 404);
     }
   }
 
-  @Delete(':id')
+  @Delete(':commentId')
   @HttpCode(204)
-  delete(@Param('id') id: string) {
-    return this.commentsService.delete(id);
+  @UseGuards(BearerAuthGuard)
+  delete(@Param('commentId') commentId: string) {
+    return this.commentsService.delete(commentId);
   }
 
   @Delete()

@@ -10,6 +10,7 @@ import {
   Put,
   HttpException,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDtoBlogId } from './dto/create-post.dto';
@@ -25,6 +26,7 @@ import { CommentsQueryRepository } from '../comments/comments.queryRepository';
 import { LikesService } from '../likes/likes.service';
 import { LikeStatusEnam } from '../likes/dto/like-enam.dto';
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
+import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
 
 @Controller('posts')
 export class PostsController {
@@ -52,33 +54,16 @@ export class PostsController {
   }
 
   @Post(':postId/comments')
+  @UseGuards(BearerAuthGuard)
   async createComment(
     @Body() content: CreateCommentDbType,
     @Param('postId') postId: string,
+    @Req() req,
   ) {
-    const newUser = new UserAccountDBType(
-      String(+new Date()),
-      {
-        login: 'login',
-        email: 'inputModel.email@mail.ru',
-        passwordHash: '',
-        createdAt: new Date().toISOString(),
-      },
-      {
-        confirmationCode: uuidv4(),
-        expirationDate: add(new Date(), { hours: 1, minutes: 1 }),
-        isConfirmed: false,
-      },
-      {
-        confirmationCode: uuidv4(),
-        expirationDate: add(new Date(), { hours: 2, minutes: 2 }),
-        isConfirmed: false,
-      },
-    );
     const result = await this.commentsService.create(
       content.content,
       postId,
-      newUser,
+      req.user,
     );
     if (!result) {
       throw new HttpException({}, 404);
@@ -121,38 +106,17 @@ export class PostsController {
     }
     return result;
   }
-
   @Put(':id/like-status')
   @HttpCode(204)
+  @UseGuards(BearerAuthGuard)
   async updateLikeStatus(
     @Param('id') id: string,
     @Body() likesStatus: LikeStatusEnam,
+    @Req() req,
   ) {
-    const user = new UserAccountDBType(
-      String(+new Date()),
-      {
-        login: 'login',
-        email: 'inputModel.email@mail.ru',
-        passwordHash: '',
-        createdAt: new Date().toISOString(),
-      },
-      {
-        confirmationCode: uuidv4(),
-        expirationDate: add(new Date(), { hours: 1, minutes: 1 }),
-        isConfirmed: false,
-      },
-      {
-        confirmationCode: uuidv4(),
-        expirationDate: add(new Date(), { hours: 2, minutes: 2 }),
-        isConfirmed: false,
-      },
-    );
-    if (!user) {
-      throw new HttpException({}, 401);
-    }
-    const post = await this.postsQueryRepository.findOne(id, user);
+    const post = await this.postsQueryRepository.findOne(id, req.user);
     if (post) {
-      return this.likesService.updateLikeStatus(likesStatus, id, user.id);
+      return this.likesService.updateLikeStatus(likesStatus, id, req.user.id);
     } else {
       throw new HttpException({}, 404);
     }
