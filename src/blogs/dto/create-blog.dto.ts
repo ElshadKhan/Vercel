@@ -1,9 +1,13 @@
+import { IsUrl, Length } from 'class-validator';
+
 export class CreateBlogDto {
-  constructor(
-    public name: string,
-    public description: string,
-    public websiteUrl: string,
-  ) {}
+  @Length(1, 15)
+  name: string;
+  @Length(1, 500)
+  description: string;
+  @Length(1, 100)
+  @IsUrl()
+  websiteUrl: string;
 }
 
 export class CreateBlogDbType {
