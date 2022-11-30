@@ -17,7 +17,6 @@ export class JwtService {
       this.accessTokenJwtSecret,
       { expiresIn: '500sec' },
     );
-    console.log(this.accessTokenJwtSecret);
     const refreshToken = jwt.sign(
       {
         userId: user.id,

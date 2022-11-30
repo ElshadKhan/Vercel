@@ -83,14 +83,14 @@ export class AuthController {
     );
 
     res
-      .cookie('refreshToken', 'tokens.refreshToken', {
+      .cookie('refreshToken', tokens.refreshToken, {
         maxAge: 200000000,
         httpOnly: true,
         secure: true,
       })
       .status(200)
       .send({
-        accessToken: 'tokens.accessToken',
+        accessToken: tokens.accessToken,
       });
   }
   @UseGuards(RefreshTokenGuard)
