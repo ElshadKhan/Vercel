@@ -1,5 +1,5 @@
-import * as jwt from 'jsonwebtoken';
 import { Injectable } from '@nestjs/common';
+import * as jwt from 'jsonwebtoken';
 import { UserAccountDBType } from '../../users/dto/user.dto';
 import { ConfigService } from '@nestjs/config';
 
@@ -8,6 +8,7 @@ export class JwtService {
   constructor(private configService: ConfigService) {}
   private accessTokenJwtSecret =
     this.configService.get<string>('ACCESS_JWT_SECRET');
+
   private refreshTokenJwtSecret =
     this.configService.get<string>('REFRESH_JWT_SECRET');
   async createJWTTokens(user: UserAccountDBType, deviceId: string) {
@@ -16,6 +17,7 @@ export class JwtService {
       this.accessTokenJwtSecret,
       { expiresIn: '500sec' },
     );
+    console.log(this.accessTokenJwtSecret);
     const refreshToken = jwt.sign(
       {
         userId: user.id,

@@ -22,13 +22,11 @@ export class SessionsService {
     } catch (error) {
       console.log('tokens error', error);
     }
-    // try {
-    //   const payload = await this.jwtService.getUserIdByRefreshToken(
-    //     tokens.refreshToken,
-    //   );
-    // } catch (error) {
-    //   console.log('payload error', error);
-    // }
+
+    // const payload = await this.jwtService.getUserIdByRefreshToken(
+    //   tokens.refreshToken,
+    // );
+
     const session: SessionDBType = {
       ip: ip,
       title: deviceName,
