@@ -11,6 +11,7 @@ export class JwtService {
 
   private refreshTokenJwtSecret =
     this.configService.get<string>('REFRESH_JWT_SECRET');
+
   async createJWTTokens(user: UserAccountDBType, deviceId: string) {
     const accessToken = jwt.sign(
       { userId: user.id },

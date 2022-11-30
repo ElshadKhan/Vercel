@@ -17,13 +17,7 @@ export class SessionsService {
   async createSession(user: UserAccountDBType, ip: string, deviceName: string) {
     const userId = user.id;
     const deviceId = randomUUID();
-    // try {
     const tokens = await this.jwtService.createJWTTokens(user, deviceId);
-    // } catch (error) {
-    //   console.log('tokens error', error);
-    //   return console.log('tokens error', error);
-    // }
-
     const payload = await this.jwtService.getUserIdByRefreshToken(
       tokens.refreshToken,
     );
