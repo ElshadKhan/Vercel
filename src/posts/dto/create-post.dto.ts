@@ -39,6 +39,11 @@ export class CreatePostDtoBlogId {
   blogId: string;
 }
 
+export class CreatePostBlogIdDto {
+  @Validate(BlogExistsRule)
+  blogId: string;
+}
+
 export class CreatePostDbType {
   constructor(
     public id: string,

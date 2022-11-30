@@ -16,7 +16,10 @@ import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { BlogsQueryRepository } from './blogs.queryRepository';
 import { pagination } from '../middleware/queryValidation';
-import { CreatePostDto } from '../posts/dto/create-post.dto';
+import {
+  CreatePostBlogIdDto,
+  CreatePostDto,
+} from '../posts/dto/create-post.dto';
 import { PostsService } from '../posts/posts.service';
 import { PostsQueryRepository } from '../posts/posts.queryRepository';
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
@@ -40,14 +43,14 @@ export class BlogsController {
   @Post(':blogId/posts')
   @UseGuards(BasicAuthGuard)
   async createPostByBlogId(
-    @Param('blogId') blogId: string,
+    @Param('blogId') blogId: CreatePostBlogIdDto,
     @Body() createPostDto: CreatePostDto,
   ) {
     const result = await this.postsService.create(
       createPostDto.title,
       createPostDto.shortDescription,
       createPostDto.content,
-      blogId,
+      blogId.blogId,
     );
     if (!result) {
       throw new HttpException({}, 404);

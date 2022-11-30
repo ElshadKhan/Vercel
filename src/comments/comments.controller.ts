@@ -37,6 +37,7 @@ export class CommentsController {
   }
 
   @Put(':commentId')
+  @HttpCode(204)
   @UseGuards(BearerAuthGuard)
   async update(
     @Body() inputModel: CreateCommentType,
