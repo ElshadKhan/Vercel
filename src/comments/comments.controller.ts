@@ -90,7 +90,10 @@ export class CommentsController {
     const comment = await this.commentsQueryRepository.findCommentById(
       commentId,
     );
-    if (!comment && comment.userId !== req.user.id) {
+    if (!comment) {
+      throw new HttpException({}, 404);
+    }
+    if (comment.userId !== req.user.id) {
       throw new HttpException({}, 403);
     }
     return this.commentsService.delete(commentId);
