@@ -50,7 +50,7 @@ export class CommentsController {
       );
     if (comment) {
       return this.likesService.updateLikeStatus(
-        likesStatus.likesStatus,
+        likesStatus.likeStatus,
         commentId,
         req.user.id,
       );

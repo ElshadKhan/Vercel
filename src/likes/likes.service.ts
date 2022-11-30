@@ -13,7 +13,7 @@ export class LikesService {
     private usersQueryRepository: UsersQueryRepository,
   ) {}
   async updateLikeStatus(
-    likesStatus: LikeStatusEnam,
+    likeStatus: LikeStatusEnam,
     parentId: string,
     userId: string,
   ): Promise<boolean> {
@@ -28,7 +28,7 @@ export class LikesService {
         parentId: parentId,
         userId: userId,
         login: user!.accountData.login,
-        type: likesStatus,
+        type: likeStatus,
         createdAt: new Date().toISOString(),
       };
       await this.likesRepository.createLikeStatus(newLikeStatus);
@@ -37,7 +37,7 @@ export class LikesService {
     return await this.likesRepository.updateLikeStatusComment(
       parentId,
       userId,
-      likesStatus,
+      likeStatus,
     );
   }
 

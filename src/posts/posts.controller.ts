@@ -110,7 +110,7 @@ export class PostsController {
     const post = await this.postsQueryRepository.findOne(id, req.user);
     if (post) {
       return this.likesService.updateLikeStatus(
-        likesStatus.likesStatus,
+        likesStatus.likeStatus,
         id,
         req.user.id,
       );
