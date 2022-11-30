@@ -30,7 +30,10 @@ export class SessionsService {
       userId: userId,
     };
     await this.sessionsRepository.createSession(session);
-    return tokens;
+    return {
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+    };
   }
 
   async updateSession(

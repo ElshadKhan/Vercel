@@ -75,11 +75,10 @@ export class AuthController {
   async login(@Body() inputModel: LoginUserDto, @Req() req, @Res() res) {
     const user = await this.authService.checkCredentials(inputModel);
     if (!user) throw new HttpException({}, 401);
-    debugger;
     const tokens = await this.sessionsService.createSession(
       user,
-      'req.ip',
-      'req.headersuser-agent',
+      req.ip,
+      req.headers['user-agent'],
     );
 
     res
