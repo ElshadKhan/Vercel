@@ -7,5 +7,5 @@ export enum LikeStatusEnam {
 
 export class LikesDto {
   @IsEnum(LikeStatusEnam)
-  likesStatus: LikeStatusEnam;
+  likeStatus: LikeStatusEnam;
 }
