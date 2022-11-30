@@ -21,6 +21,7 @@ export class SessionsService {
       const tokens = await this.jwtService.createJWTTokens(user, deviceId);
     } catch (error) {
       console.log('tokens error', error);
+      return console.log('tokens error', error);
     }
 
     // const payload = await this.jwtService.getUserIdByRefreshToken(
