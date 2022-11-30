@@ -21,8 +21,6 @@ export class SessionsService {
     const payload = await this.jwtService.getUserIdByRefreshToken(
       tokens.refreshToken,
     );
-    console.log(tokens.refreshToken);
-    console.log('payload', payload);
     const session: SessionDBType = {
       ip: ip,
       title: deviceName,
