@@ -84,6 +84,7 @@ export class AuthController {
     } catch (error) {
       console.log(error);
     }
+    console.log();
     res
       .cookie('refreshToken', 'tokens.refreshToken', {
         maxAge: 200000000,
