@@ -13,10 +13,13 @@ import {
 import { CommentsService } from './comments.service';
 import { CommentsQueryRepository } from './comments.queryRepository';
 import { LikesService } from '../likes/likes.service';
-import { LikesDto, LikeStatusEnam } from '../likes/dto/like-enam.dto';
+import { LikesDto } from '../likes/dto/like-enam.dto';
 import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
 import { SpecialBearerAuthGuard } from '../auth/guards/special.bearer.auth.guard';
 import { CreateCommentType } from './dto/create-comment.dto';
+import { RefreshTokenGuard } from '../auth/guards/refresh.token.guard';
+import { SessionsQueryRepository } from '../sessions/sessionsQueryRepository';
+import { JwtService } from '../auth/application/jwt-service';
 
 @Controller('comments')
 export class CommentsController {
@@ -24,6 +27,8 @@ export class CommentsController {
     private readonly commentsService: CommentsService,
     private commentsQueryRepository: CommentsQueryRepository,
     private readonly likesService: LikesService,
+    private sessionsQueryRepository: SessionsQueryRepository,
+    private jwtService: JwtService,
   ) {}
   @UseGuards(SpecialBearerAuthGuard)
   @Get(':id')
@@ -33,10 +38,18 @@ export class CommentsController {
 
   @Put(':commentId')
   @UseGuards(BearerAuthGuard)
-  update(
+  async update(
     @Body() inputModel: CreateCommentType,
     @Param('commentId') commentId: string,
+    @Req() req,
   ) {
+    const comment = await this.sessionsQueryRepository.getSession(commentId);
+    if (!comment) {
+      throw new HttpException({}, 404);
+    }
+    if (comment.userId !== req.user.id) {
+      throw new HttpException({}, 403);
+    }
     return this.commentsService.update(commentId, inputModel.content);
   }
 
@@ -63,11 +76,17 @@ export class CommentsController {
       throw new HttpException({}, 404);
     }
   }
-
   @Delete(':commentId')
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
-  delete(@Param('commentId') commentId: string) {
+  async delete(@Param('commentId') commentId: string, @Req() req) {
+    const comment = await this.sessionsQueryRepository.getSession(commentId);
+    if (!comment) {
+      throw new HttpException({}, 404);
+    }
+    if (comment.userId !== req.user.id) {
+      throw new HttpException({}, 403);
+    }
     return this.commentsService.delete(commentId);
   }
 
