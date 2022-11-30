@@ -70,23 +70,26 @@ export class PostsController {
   findCommentsByPostId(
     @Query() query: QueryValidationType,
     @Param('postId') postId: string,
+    @Req() req,
   ) {
     return this.commentsQueryRepository.findCommentsByPostIdAndUserId(
       postId,
       pagination(query),
+      req.user,
     );
   }
 
   @UseGuards(SpecialBearerAuthGuard)
   @Get()
-  findAll(@Query() query: QueryValidationType) {
-    return this.postsQueryRepository.findAll(pagination(query));
+  findAll(@Query() query: QueryValidationType, @Req() req) {
+    return this.postsQueryRepository.findAll(pagination(query), req.user);
   }
 
   @UseGuards(SpecialBearerAuthGuard)
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const result = await this.postsQueryRepository.findOne(id);
+  async findOne(@Param('id') id: string, @Req() req) {
+    const result = await this.postsQueryRepository.findOne(id, req.user);
+
     if (!result) {
       throw new HttpException({}, 404);
     }

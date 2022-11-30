@@ -56,9 +56,24 @@ export class CommentsQueryRepository {
     };
   }
 
-  async findCommentById(id: string): Promise<CommentDtoType | null> {
+  async findCommentById(
+    id: string,
+    user?: UserAccountDBType,
+  ): Promise<CommentDtoType | null> {
     const comment = await this.commentModel.findOne({ id });
-    const myStatus = LikeStatusEnam.None;
+    let myStatus = LikeStatusEnam.None;
+    if (user) {
+      const result = await this.likesRepository.getLikeStatus(id, user.id);
+      myStatus = result?.type || LikeStatusEnam.None;
+    }
+    const likesCount = await this.likesRepository.getLikesCount(
+      id,
+      LikeStatusEnam.Like,
+    );
+    const dislikesCount = await this.likesRepository.getDislikesCount(
+      id,
+      LikeStatusEnam.Dislike,
+    );
     return {
       id: comment.id,
       content: comment.content,
@@ -66,8 +81,8 @@ export class CommentsQueryRepository {
       userLogin: comment.userLogin,
       createdAt: comment.createdAt,
       likesInfo: {
-        likesCount: 0,
-        dislikesCount: 0,
+        likesCount: likesCount,
+        dislikesCount: dislikesCount,
         myStatus: myStatus,
       },
     };
@@ -115,8 +130,8 @@ export class CommentsQueryRepository {
           userLogin: c.userLogin,
           createdAt: c.createdAt,
           likesInfo: {
-            likesCount: 0,
-            dislikesCount: 0,
+            likesCount: likesCount,
+            dislikesCount: dislikesCount,
             myStatus: myStatus,
           },
         };

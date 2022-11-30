@@ -162,7 +162,7 @@ export class PostsQueryRepository {
     const post: PostDbTypeWithId | null = await this.postModel.findOne({
       id,
     });
-    console.log(post, id);
+    console.log(post.id, user);
     if (post) {
       let myStatus = LikeStatusEnam.None;
 

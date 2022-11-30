@@ -16,7 +16,7 @@ export class CommentsService {
     postId: string,
     user: UserAccountDBType,
   ): Promise<CommentDtoType | null> {
-    const post = await this.postsQueryRepository.findOne(postId);
+    const post = await this.postsQueryRepository.findOne(postId, user);
     if (!post) return null;
     const comment: CreateCommentDbType = {
       id: String(+new Date()),

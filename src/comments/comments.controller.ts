@@ -26,8 +26,8 @@ export class CommentsController {
   ) {}
   @UseGuards(SpecialBearerAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.commentsQueryRepository.findCommentById(id);
+  findOne(@Param('id') id: string, @Req() req) {
+    return this.commentsQueryRepository.findCommentById(id, req.user);
   }
 
   @Put(':commentId')
