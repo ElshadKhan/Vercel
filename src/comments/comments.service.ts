@@ -50,8 +50,8 @@ export class CommentsService {
     return this.commentsRepository.update(commentId, content);
   }
 
-  delete(commentId: string) {
-    return this.commentsRepository.delete(commentId);
+  delete(id: string) {
+    return this.commentsRepository.delete(id);
   }
 
   deleteAll() {

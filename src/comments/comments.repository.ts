@@ -16,16 +16,16 @@ export class CommentsRepository {
     return newComment;
   }
 
-  async update(content: string, id: string): Promise<boolean> {
+  async update(commentId: string, content: string): Promise<boolean> {
     const result = await this.commentModel.updateOne(
-      { id: id },
+      { id: commentId },
       { $set: { content: content } },
     );
     return result.matchedCount === 1;
   }
 
   async delete(id: string) {
-    const result = await this.commentModel.deleteOne({ id: id });
+    const result = await this.commentModel.deleteOne({ id });
     return result.deletedCount === 1;
   }
 

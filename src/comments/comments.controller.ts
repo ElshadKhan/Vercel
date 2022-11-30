@@ -17,8 +17,6 @@ import { LikesDto } from '../likes/dto/like-enam.dto';
 import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
 import { SpecialBearerAuthGuard } from '../auth/guards/special.bearer.auth.guard';
 import { CreateCommentType } from './dto/create-comment.dto';
-import { SessionsQueryRepository } from '../sessions/sessionsQueryRepository';
-import { JwtService } from '../auth/application/jwt-service';
 
 @Controller('comments')
 export class CommentsController {
@@ -26,13 +24,20 @@ export class CommentsController {
     private readonly commentsService: CommentsService,
     private commentsQueryRepository: CommentsQueryRepository,
     private readonly likesService: LikesService,
-    private sessionsQueryRepository: SessionsQueryRepository,
-    private jwtService: JwtService,
   ) {}
   @UseGuards(SpecialBearerAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string, @Req() req) {
-    return this.commentsQueryRepository.findCommentById(id, req.user);
+  async findOne(@Param('id') id: string, @Req() req) {
+    console.log('1', id);
+    console.log('2', req.user);
+    const result = await this.commentsQueryRepository.findCommentById(
+      id,
+      req.user,
+    );
+    if (!result) {
+      throw new HttpException({}, 404);
+    }
+    return result;
   }
 
   @Put(':commentId')
@@ -43,8 +48,9 @@ export class CommentsController {
     @Param('commentId') commentId: string,
     @Req() req,
   ) {
-    console.log();
-    const comment = await this.sessionsQueryRepository.getSession(commentId);
+    const comment = await this.commentsQueryRepository.findCommentById(
+      commentId,
+    );
     if (!comment) {
       throw new HttpException({}, 404);
     }
@@ -81,11 +87,10 @@ export class CommentsController {
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
   async delete(@Param('commentId') commentId: string, @Req() req) {
-    const comment = await this.sessionsQueryRepository.getSession(commentId);
-    if (!comment) {
-      throw new HttpException({}, 404);
-    }
-    if (comment.userId !== req.user.id) {
+    const comment = await this.commentsQueryRepository.findCommentById(
+      commentId,
+    );
+    if (!comment && comment.userId !== req.user.id) {
       throw new HttpException({}, 403);
     }
     return this.commentsService.delete(commentId);
