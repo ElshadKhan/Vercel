@@ -1,4 +1,4 @@
-import { IsString, Length, NotContains, Validate } from 'class-validator';
+import { IsString, Length, Validate } from 'class-validator';
 import { BlogExistsRule } from '../validators/blogIdValidator';
 import { Transform, TransformFnParams } from 'class-transformer';
 

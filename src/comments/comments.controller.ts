@@ -13,7 +13,7 @@ import {
 import { CommentsService } from './comments.service';
 import { CommentsQueryRepository } from './comments.queryRepository';
 import { LikesService } from '../likes/likes.service';
-import { LikeStatusEnam } from '../likes/dto/like-enam.dto';
+import { LikesDto, LikeStatusEnam } from '../likes/dto/like-enam.dto';
 import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
 
 @Controller('comments')
@@ -40,7 +40,7 @@ export class CommentsController {
   @UseGuards(BearerAuthGuard)
   async updateLikeStatus(
     @Param('commentId') commentId: string,
-    @Body() likesStatus: LikeStatusEnam,
+    @Body() likesStatus: LikesDto,
     @Req() req,
   ) {
     const comment =
@@ -50,7 +50,7 @@ export class CommentsController {
       );
     if (comment) {
       return this.likesService.updateLikeStatus(
-        likesStatus,
+        likesStatus.likesStatus,
         commentId,
         req.user.id,
       );

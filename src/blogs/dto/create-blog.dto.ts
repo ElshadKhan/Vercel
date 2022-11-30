@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsUrl, Length } from 'class-validator';
+import { IsString, IsUrl, Length } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 
 export class CreateBlogDto {

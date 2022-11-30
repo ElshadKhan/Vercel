@@ -2,6 +2,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { Like, LikeDbType, LikeDbTypeWithId } from './entities/like.entity';
+import { LikeStatusEnam } from './dto/like-enam.dto';
 
 @Injectable()
 export class LikesRepository {
@@ -14,7 +15,7 @@ export class LikesRepository {
   async updateLikeStatusComment(
     parentId: string,
     userId: string,
-    likeStatus: string,
+    likeStatus: LikeStatusEnam,
   ): Promise<boolean> {
     const result = await this.likeModel.updateOne(
       { userId: userId, parentId: parentId },

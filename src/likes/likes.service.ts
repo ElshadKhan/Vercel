@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UsersQueryRepository } from '../users/users.queryRepository';
-import { LikeStatusEnam } from './dto/like-enam.dto';
+import { LikesDto, LikeStatusEnam } from './dto/like-enam.dto';
 import { LikesRepository } from './likes.repository';
 import { LikesQueryRepository } from './likes.queryRepository';
 import { LikeDbType } from './entities/like.entity';

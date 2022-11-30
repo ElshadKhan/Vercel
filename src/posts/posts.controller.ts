@@ -21,10 +21,9 @@ import { CommentsService } from '../comments/comments.service';
 import { CreateCommentDbType } from '../comments/dto/create-comment.dto';
 import { CommentsQueryRepository } from '../comments/comments.queryRepository';
 import { LikesService } from '../likes/likes.service';
-import { LikeStatusEnam } from '../likes/dto/like-enam.dto';
+import { LikesDto, LikeStatusEnam } from '../likes/dto/like-enam.dto';
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
 import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
-import { BlogExistsRule } from './validators/blogIdValidator';
 
 @Controller('posts')
 export class PostsController {
@@ -105,12 +104,16 @@ export class PostsController {
   @UseGuards(BearerAuthGuard)
   async updateLikeStatus(
     @Param('id') id: string,
-    @Body() likesStatus: LikeStatusEnam,
+    @Body() likesStatus: LikesDto,
     @Req() req,
   ) {
     const post = await this.postsQueryRepository.findOne(id, req.user);
     if (post) {
-      return this.likesService.updateLikeStatus(likesStatus, id, req.user.id);
+      return this.likesService.updateLikeStatus(
+        likesStatus.likesStatus,
+        id,
+        req.user.id,
+      );
     } else {
       throw new HttpException({}, 404);
     }
