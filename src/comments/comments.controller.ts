@@ -17,7 +17,6 @@ import { LikesDto } from '../likes/dto/like-enam.dto';
 import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
 import { SpecialBearerAuthGuard } from '../auth/guards/special.bearer.auth.guard';
 import { CreateCommentType } from './dto/create-comment.dto';
-import { RefreshTokenGuard } from '../auth/guards/refresh.token.guard';
 import { SessionsQueryRepository } from '../sessions/sessionsQueryRepository';
 import { JwtService } from '../auth/application/jwt-service';
 
@@ -44,6 +43,7 @@ export class CommentsController {
     @Param('commentId') commentId: string,
     @Req() req,
   ) {
+    console.log();
     const comment = await this.sessionsQueryRepository.getSession(commentId);
     if (!comment) {
       throw new HttpException({}, 404);

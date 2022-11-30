@@ -43,14 +43,14 @@ export class BlogsController {
   @Post(':blogId/posts')
   @UseGuards(BasicAuthGuard)
   async createPostByBlogId(
-    @Param('blogId') blogId: CreatePostBlogIdDto,
+    @Param('blogId') blogId: string,
     @Body() createPostDto: CreatePostDto,
   ) {
     const result = await this.postsService.create(
       createPostDto.title,
       createPostDto.shortDescription,
       createPostDto.content,
-      blogId.blogId,
+      blogId,
     );
     if (!result) {
       throw new HttpException({}, 404);

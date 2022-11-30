@@ -21,6 +21,7 @@ export class PostsService {
     blogId: string,
   ): Promise<PostDtoType | null> {
     const blog = await this.blogQueryRepository.findOne(blogId);
+    if (!blog) return null;
     const newPost: CreatePostDbType = {
       id: String(+new Date()),
       title: title,
