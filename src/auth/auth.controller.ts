@@ -75,16 +75,13 @@ export class AuthController {
   async login(@Body() inputModel: LoginUserDto, @Req() req, @Res() res) {
     const user = await this.authService.checkCredentials(inputModel);
     if (!user) throw new HttpException({}, 401);
-    try {
-      const tokens = await this.sessionsService.createSession(
-        user,
-        req.ip,
-        req.headers['user-agent'],
-      );
-    } catch (error) {
-      console.log(error);
-    }
-    console.log();
+
+    const tokens = await this.sessionsService.createSession(
+      user,
+      req.ip,
+      req.headers['user-agent'],
+    );
+
     res
       .cookie('refreshToken', 'tokens.refreshToken', {
         maxAge: 200000000,

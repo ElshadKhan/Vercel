@@ -17,22 +17,30 @@ export class SessionsService {
   async createSession(user: UserAccountDBType, ip: string, deviceName: string) {
     const userId = user.id;
     const deviceId = randomUUID();
-    const tokens = await this.jwtService.createJWTTokens(user, deviceId);
-    const payload = await this.jwtService.getUserIdByRefreshToken(
-      tokens.refreshToken,
-    );
+    try {
+      const tokens = await this.jwtService.createJWTTokens(user, deviceId);
+    } catch (error) {
+      console.log('tokens error', error);
+    }
+    // try {
+    //   const payload = await this.jwtService.getUserIdByRefreshToken(
+    //     tokens.refreshToken,
+    //   );
+    // } catch (error) {
+    //   console.log('payload error', error);
+    // }
     const session: SessionDBType = {
       ip: ip,
       title: deviceName,
-      lastActiveDate: new Date(payload.iat * 1000).toISOString(),
-      expiredDate: new Date(payload.exp * 1000).toISOString(),
+      lastActiveDate: new Date().toISOString(),
+      expiredDate: new Date().toISOString(),
       deviceId: deviceId,
       userId: userId,
     };
     await this.sessionsRepository.createSession(session);
     return {
-      accessToken: tokens.accessToken,
-      refreshToken: tokens.refreshToken,
+      accessToken: 'tokens.accessToken',
+      refreshToken: 'tokens.refreshToken',
     };
   }
 
