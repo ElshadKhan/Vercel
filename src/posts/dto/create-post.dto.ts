@@ -1,27 +1,42 @@
-import { Length } from 'class-validator';
+import { IsString, Length, NotContains, Validate } from 'class-validator';
+import { BlogExistsRule } from '../validators/blogIdValidator';
 import { Transform, TransformFnParams } from 'class-transformer';
 
 export class CreatePostDto {
+  @IsString()
   @Length(1, 30)
   @Transform(({ value }: TransformFnParams) => value?.trim())
   title: string;
 
+  @IsString()
   @Length(1, 100)
   @Transform(({ value }: TransformFnParams) => value?.trim())
   shortDescription: string;
 
+  @IsString()
   @Length(1, 1000)
   @Transform(({ value }: TransformFnParams) => value?.trim())
   content: string;
 }
 
 export class CreatePostDtoBlogId {
-  constructor(
-    public title: string,
-    public shortDescription: string,
-    public content: string,
-    public blogId: string,
-  ) {}
+  @IsString()
+  @Length(1, 30)
+  @Transform(({ value }: TransformFnParams) => value?.trim())
+  title: string;
+
+  @IsString()
+  @Length(1, 100)
+  @Transform(({ value }: TransformFnParams) => value?.trim())
+  shortDescription: string;
+
+  @IsString()
+  @Length(1, 1000)
+  @Transform(({ value }: TransformFnParams) => value?.trim())
+  content: string;
+
+  @Validate(BlogExistsRule)
+  blogId: string;
 }
 
 export class CreatePostDbType {

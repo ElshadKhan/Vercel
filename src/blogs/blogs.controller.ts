@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
-import { UpdateBlogDto } from './dto/update-blog.dto';
 import { BlogsQueryRepository } from './blogs.queryRepository';
 import { pagination } from '../middleware/queryValidation';
 import { CreatePostDto } from '../posts/dto/create-post.dto';
@@ -83,7 +82,7 @@ export class BlogsController {
   @Put(':id')
   @HttpCode(204)
   @UseGuards(BasicAuthGuard)
-  async update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
+  async update(@Param('id') id: string, @Body() updateBlogDto: CreateBlogDto) {
     const result = await this.blogsService.update(id, updateBlogDto);
     if (!result) {
       throw new HttpException({}, 404);

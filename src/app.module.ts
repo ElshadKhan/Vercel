@@ -40,6 +40,7 @@ import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { RemoveAllDataController } from './remove.all.data.controller';
+import { BlogExistsRule } from './posts/validators/blogIdValidator';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -76,6 +77,7 @@ const schemas = [
     RemoveAllDataController,
   ],
   providers: [
+    BlogExistsRule,
     AuthService,
     JwtService,
     UsersService,

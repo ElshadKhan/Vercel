@@ -17,9 +17,6 @@ import { CreatePostDtoBlogId } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostsQueryRepository } from './posts.queryRepository';
 import { pagination, QueryValidationType } from '../middleware/queryValidation';
-import { UserAccountDBType } from '../users/dto/user.dto';
-import { v4 as uuidv4 } from 'uuid';
-import { add } from 'date-fns';
 import { CommentsService } from '../comments/comments.service';
 import { CreateCommentDbType } from '../comments/dto/create-comment.dto';
 import { CommentsQueryRepository } from '../comments/comments.queryRepository';
@@ -27,6 +24,7 @@ import { LikesService } from '../likes/likes.service';
 import { LikeStatusEnam } from '../likes/dto/like-enam.dto';
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
 import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
+import { BlogExistsRule } from './validators/blogIdValidator';
 
 @Controller('posts')
 export class PostsController {
@@ -41,16 +39,12 @@ export class PostsController {
   @Post()
   @UseGuards(BasicAuthGuard)
   async create(@Body() createPostDto: CreatePostDtoBlogId) {
-    const result = await this.postsService.create(
+    return await this.postsService.create(
       createPostDto.title,
       createPostDto.shortDescription,
       createPostDto.content,
       createPostDto.blogId,
     );
-    if (!result) {
-      throw new HttpException({}, 404);
-    }
-    return result;
   }
 
   @Post(':postId/comments')
