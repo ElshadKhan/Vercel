@@ -15,6 +15,7 @@ import { CommentsQueryRepository } from './comments.queryRepository';
 import { LikesService } from '../likes/likes.service';
 import { LikesDto, LikeStatusEnam } from '../likes/dto/like-enam.dto';
 import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
+import { SpecialBearerAuthGuard } from '../auth/guards/special.bearer.auth.guard';
 
 @Controller('comments')
 export class CommentsController {
@@ -23,7 +24,7 @@ export class CommentsController {
     private commentsQueryRepository: CommentsQueryRepository,
     private readonly likesService: LikesService,
   ) {}
-
+  @UseGuards(SpecialBearerAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.commentsQueryRepository.findCommentById(id);

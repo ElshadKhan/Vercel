@@ -27,7 +27,7 @@ export class LikesService {
       const newLikeStatus: LikeDbType = {
         parentId: parentId,
         userId: userId,
-        login: user!.accountData.login,
+        login: user.accountData.login,
         type: likeStatus,
         createdAt: new Date().toISOString(),
       };

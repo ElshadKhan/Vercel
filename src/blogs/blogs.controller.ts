@@ -19,6 +19,7 @@ import { CreatePostDto } from '../posts/dto/create-post.dto';
 import { PostsService } from '../posts/posts.service';
 import { PostsQueryRepository } from '../posts/posts.queryRepository';
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
+import { SpecialBearerAuthGuard } from '../auth/guards/special.bearer.auth.guard';
 
 @Controller('blogs')
 export class BlogsController {
@@ -66,7 +67,7 @@ export class BlogsController {
     }
     return result;
   }
-
+  @UseGuards(SpecialBearerAuthGuard)
   @Get(':id/posts')
   async findOneByBlogId(@Param('id') blogId: string, @Query() query: any) {
     const result = await this.postsQueryRepository.findOneByBlogId(

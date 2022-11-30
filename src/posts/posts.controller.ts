@@ -24,6 +24,7 @@ import { LikesService } from '../likes/likes.service';
 import { LikesDto, LikeStatusEnam } from '../likes/dto/like-enam.dto';
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
 import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
+import { SpecialBearerAuthGuard } from '../auth/guards/special.bearer.auth.guard';
 
 @Controller('posts')
 export class PostsController {
@@ -34,7 +35,7 @@ export class PostsController {
     private commentsQueryRepository: CommentsQueryRepository,
     private readonly likesService: LikesService,
   ) {}
-
+  @UseGuards(SpecialBearerAuthGuard)
   @Post()
   @UseGuards(BasicAuthGuard)
   async create(@Body() createPostDto: CreatePostDtoBlogId) {
@@ -64,6 +65,7 @@ export class PostsController {
     return result;
   }
 
+  @UseGuards(SpecialBearerAuthGuard)
   @Get(':postId/comments')
   findCommentsByPostId(
     @Query() query: QueryValidationType,
@@ -75,11 +77,13 @@ export class PostsController {
     );
   }
 
+  @UseGuards(SpecialBearerAuthGuard)
   @Get()
   findAll(@Query() query: QueryValidationType) {
     return this.postsQueryRepository.findAll(pagination(query));
   }
 
+  @UseGuards(SpecialBearerAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const result = await this.postsQueryRepository.findOne(id);
@@ -99,19 +103,19 @@ export class PostsController {
     }
     return result;
   }
-  @Put(':id/like-status')
+  @Put(':postId/like-status')
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
   async updateLikeStatus(
-    @Param('id') id: string,
+    @Param('postId') postId: string,
     @Body() likesStatus: LikesDto,
     @Req() req,
   ) {
-    const post = await this.postsQueryRepository.findOne(id, req.user);
+    const post = await this.postsQueryRepository.findOne(postId, req.user);
     if (post) {
       return this.likesService.updateLikeStatus(
         likesStatus.likeStatus,
-        id,
+        postId,
         req.user.id,
       );
     } else {

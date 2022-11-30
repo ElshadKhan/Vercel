@@ -160,8 +160,9 @@ export class PostsQueryRepository {
 
   async findOne(id: string, user?: UserAccountDBType): Promise<PostDtoType> {
     const post: PostDbTypeWithId | null = await this.postModel.findOne({
-      id: id,
+      id,
     });
+    console.log(post, id);
     if (post) {
       let myStatus = LikeStatusEnam.None;
 
