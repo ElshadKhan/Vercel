@@ -67,16 +67,21 @@ export class PostsController {
 
   @UseGuards(SpecialBearerAuthGuard)
   @Get(':postId/comments')
-  findCommentsByPostId(
+  async findCommentsByPostId(
     @Query() query: QueryValidationType,
     @Param('postId') postId: string,
     @Req() req,
   ) {
-    return this.commentsQueryRepository.findCommentsByPostIdAndUserId(
-      postId,
-      pagination(query),
-      req.user,
-    );
+    const result =
+      await this.commentsQueryRepository.findCommentsByPostIdAndUserId(
+        postId,
+        pagination(query),
+        req.user,
+      );
+    if (!result) {
+      throw new HttpException({}, 404);
+    }
+    return result;
   }
 
   @UseGuards(SpecialBearerAuthGuard)
