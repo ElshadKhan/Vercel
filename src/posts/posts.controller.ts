@@ -14,14 +14,14 @@ import {
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDtoBlogId } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
+import { UpdatePostDtoBlogId } from './dto/update-post.dto';
 import { PostsQueryRepository } from './posts.queryRepository';
 import { pagination, QueryValidationType } from '../middleware/queryValidation';
 import { CommentsService } from '../comments/comments.service';
-import { CreateCommentDbType } from '../comments/dto/create-comment.dto';
+import { CreateCommentType } from '../comments/dto/create-comment.dto';
 import { CommentsQueryRepository } from '../comments/comments.queryRepository';
 import { LikesService } from '../likes/likes.service';
-import { LikesDto, LikeStatusEnam } from '../likes/dto/like-enam.dto';
+import { LikesDto } from '../likes/dto/like-enam.dto';
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
 import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
 import { SpecialBearerAuthGuard } from '../auth/guards/special.bearer.auth.guard';
@@ -50,12 +50,12 @@ export class PostsController {
   @Post(':postId/comments')
   @UseGuards(BearerAuthGuard)
   async createComment(
-    @Body() content: CreateCommentDbType,
+    @Body() inputModel: CreateCommentType,
     @Param('postId') postId: string,
     @Req() req,
   ) {
     const result = await this.commentsService.create(
-      content.content,
+      inputModel.content,
       postId,
       req.user,
     );
@@ -99,7 +99,10 @@ export class PostsController {
   @Put(':id')
   @HttpCode(204)
   @UseGuards(BasicAuthGuard)
-  async update(@Param('id') id: string, @Body() updateBlogDto: UpdatePostDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateBlogDto: UpdatePostDtoBlogId,
+  ) {
     const result = await this.postsService.update(id, updateBlogDto);
     if (!result) {
       throw new HttpException({}, 404);

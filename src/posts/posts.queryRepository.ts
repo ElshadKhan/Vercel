@@ -56,13 +56,13 @@ export class PostsQueryRepository {
           LikeStatusEnam.Like,
         );
         return {
-          id: post!.id,
-          title: post!.title,
-          shortDescription: post!.shortDescription,
-          content: post!.content,
-          blogId: post!.blogId,
-          blogName: post!.blogName,
-          createdAt: post!.createdAt,
+          id: post.id,
+          title: post.title,
+          shortDescription: post.shortDescription,
+          content: post.content,
+          blogId: post.blogId,
+          blogName: post.blogName,
+          createdAt: post.createdAt,
           extendedLikesInfo: {
             likesCount: likesCount,
             dislikesCount: dislikesCount,
@@ -127,13 +127,13 @@ export class PostsQueryRepository {
           LikeStatusEnam.Like,
         );
         return {
-          id: post!.id,
-          title: post!.title,
-          shortDescription: post!.shortDescription,
-          content: post!.content,
-          blogId: post!.blogId,
-          blogName: post!.blogName,
-          createdAt: post!.createdAt,
+          id: post.id,
+          title: post.title,
+          shortDescription: post.shortDescription,
+          content: post.content,
+          blogId: post.blogId,
+          blogName: post.blogName,
+          createdAt: post.createdAt,
           extendedLikesInfo: {
             likesCount: likesCount,
             dislikesCount: dislikesCount,
@@ -162,7 +162,6 @@ export class PostsQueryRepository {
     const post: PostDbTypeWithId | null = await this.postModel.findOne({
       id,
     });
-    console.log(post.id, user);
     if (post) {
       let myStatus = LikeStatusEnam.None;
 
@@ -186,13 +185,13 @@ export class PostsQueryRepository {
         LikeStatusEnam.Like,
       );
       return {
-        id: post!.id,
-        title: post!.title,
-        shortDescription: post!.shortDescription,
-        content: post!.content,
-        blogId: post!.blogId,
-        blogName: post!.blogName,
-        createdAt: post!.createdAt,
+        id: post.id,
+        title: post.title,
+        shortDescription: post.shortDescription,
+        content: post.content,
+        blogId: post.blogId,
+        blogName: post.blogName,
+        createdAt: post.createdAt,
         extendedLikesInfo: {
           likesCount: likesCount,
           dislikesCount: dislikesCount,

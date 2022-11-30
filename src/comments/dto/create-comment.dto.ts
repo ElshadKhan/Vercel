@@ -1,4 +1,5 @@
 import { SortDirection } from '../../middleware/queryValidation';
+import { Length } from 'class-validator';
 
 export class CreateCommentDbType {
   constructor(
@@ -13,9 +14,9 @@ export class CreateCommentDbType {
 }
 
 export class CreateCommentType {
-  constructor(public content: string) {}
+  @Length(20, 300)
+  content: string;
 }
-
 export class CommentDtoType {
   constructor(
     public id: string,

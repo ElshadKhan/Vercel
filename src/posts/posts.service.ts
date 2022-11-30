@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UpdatePostDto } from './dto/update-post.dto';
+import { UpdatePostDtoBlogId } from './dto/update-post.dto';
 import { PostsRepository } from './posts.repository';
 import { CreatePostDbType, PostDtoType } from './dto/create-post.dto';
 import { BlogsQueryRepository } from '../blogs/blogs.queryRepository';
@@ -56,7 +56,7 @@ export class PostsService {
     };
   }
 
-  update(id: string, updatePostDto: UpdatePostDto) {
+  update(id: string, updatePostDto: UpdatePostDtoBlogId) {
     return this.postsRepository.update(
       id,
       updatePostDto.title,

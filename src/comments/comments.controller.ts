@@ -16,6 +16,7 @@ import { LikesService } from '../likes/likes.service';
 import { LikesDto, LikeStatusEnam } from '../likes/dto/like-enam.dto';
 import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
 import { SpecialBearerAuthGuard } from '../auth/guards/special.bearer.auth.guard';
+import { CreateCommentType } from './dto/create-comment.dto';
 
 @Controller('comments')
 export class CommentsController {
@@ -32,8 +33,11 @@ export class CommentsController {
 
   @Put(':commentId')
   @UseGuards(BearerAuthGuard)
-  update(@Body() content, @Param('commentId') commentId: string) {
-    return this.commentsService.update(content, commentId);
+  update(
+    @Body() inputModel: CreateCommentType,
+    @Param('commentId') commentId: string,
+  ) {
+    return this.commentsService.update(commentId, inputModel.content);
   }
 
   @Put(':commentId/like-status')
