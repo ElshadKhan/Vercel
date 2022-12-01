@@ -5,9 +5,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { UsersQueryRepository } from '../../users/users.queryRepository';
+import { UsersQueryRepository } from '../../users/infrastructure/users.queryRepository';
 import { JwtService } from '../application/jwt-service';
-import { SessionsQueryRepository } from '../../sessions/sessionsQueryRepository';
+import { SessionsQueryRepository } from '../../sessions/infrastructure/sessionsQueryRepository';
 
 @Injectable()
 export class RefreshTokenGuard implements CanActivate {

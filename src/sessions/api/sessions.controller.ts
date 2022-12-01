@@ -8,11 +8,11 @@ import {
   HttpException,
   HttpCode,
 } from '@nestjs/common';
-import { SessionsService } from './sessions.service';
-import { SessionsQueryRepository } from './sessionsQueryRepository';
-import { JwtService } from '../auth/application/jwt-service';
-import { RefreshTokenGuard } from '../auth/guards/refresh.token.guard';
-import { SessionDBType } from './dto/session.dto';
+import { SessionsService } from '../application/sessions.service';
+import { SessionsQueryRepository } from '../infrastructure/sessionsQueryRepository';
+import { JwtService } from '../../auth/application/jwt-service';
+import { RefreshTokenGuard } from '../../auth/guards/refresh.token.guard';
+import { SessionDBType } from '../domain/dto/sessionDbTypeDto';
 
 @Controller('/security/devices')
 export class SessionsController {

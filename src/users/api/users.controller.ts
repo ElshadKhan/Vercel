@@ -10,11 +10,11 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { UsersQueryRepository } from './users.queryRepository';
-import { pagination } from '../middleware/queryValidation';
+import { UsersService } from '../application/users.service';
+import { UsersQueryRepository } from '../infrastructure/users.queryRepository';
+import { pagination } from '../../middleware/queryValidation';
 import { CreateUserDto } from './dto/create-user.dto';
-import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
+import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
 
 @Controller('users')
 export class UsersController {

@@ -1,8 +1,8 @@
-import { User, UserDbTypeWithId } from './entities/users.entity';
+import { User, UserDbTypeWithId } from '../domain/entities/users.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { UserAccountDBType } from './dto/user.dto';
+import { UserAccountDBType } from '../domain/dto/user.account.dto';
 
 @Injectable()
 export class UsersRepository {

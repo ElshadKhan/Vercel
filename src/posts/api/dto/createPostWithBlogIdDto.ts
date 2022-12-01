@@ -1,8 +1,8 @@
 import { IsString, Length, Validate } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
-import { BlogExistsRule } from '../validators/blogIdValidator';
+import { BlogExistsRule } from '../../validators/blogIdValidator';
 
-export class UpdatePostDtoBlogId {
+export class CreatePostDtoWithBlogId {
   @IsString()
   @Length(1, 30)
   @Transform(({ value }: TransformFnParams) => value?.trim())

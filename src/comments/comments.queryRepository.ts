@@ -6,7 +6,7 @@ import {
 } from '../comments/entities/comment.entity';
 import { Model } from 'mongoose';
 import { QueryValidationType } from '../middleware/queryValidation';
-import { UserAccountDBType } from '../users/dto/user.dto';
+import { UserAccountDBType } from '../users/domain/dto/user.account.dto';
 import { CommentDtoType, CommentsBusinessType } from './dto/create-comment.dto';
 import {
   getPagesCounts,

@@ -1,6 +1,6 @@
 import { EmailAdapter } from '../adapters/emailAdapter';
 import { Injectable } from '@nestjs/common';
-import { UserAccountDBType } from '../../users/dto/user.dto';
+import { UserAccountDBType } from '../../users/domain/dto/user.account.dto';
 
 @Injectable()
 export class EmailManagers {

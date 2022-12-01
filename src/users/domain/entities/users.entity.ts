@@ -4,7 +4,7 @@ import {
   EmailConfirmationType,
   PasswordConfirmationType,
   UsersAccountDataType,
-} from '../dto/user.dto';
+} from '../dto/user.account.dto';
 
 @Schema({ id: false })
 export class UsersAccountData {

@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { SessionDBType } from './dto/session.dto';
+import { SessionDBType } from '../domain/dto/sessionDbTypeDto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Session, SessionDbTypeWithId } from './entities/session.entity';
+import {
+  Session,
+  SessionDbTypeWithId,
+} from '../domain/entities/session.entity';
 
 @Injectable()
 export class SessionsRepository {

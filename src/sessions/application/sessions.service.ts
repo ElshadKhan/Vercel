@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { SessionsRepository } from './sessionsRepository';
-import { UserAccountDBType } from '../users/dto/user.dto';
-import { SessionDBType } from './dto/session.dto';
+import { SessionsRepository } from '../infrastructure/sessionsRepository';
+import { UserAccountDBType } from '../../users/domain/dto/user.account.dto';
+import { SessionDBType } from '../domain/dto/sessionDbTypeDto';
 import { randomUUID } from 'crypto';
-import { SessionsQueryRepository } from './sessionsQueryRepository';
-import { JwtService } from '../auth/application/jwt-service';
+import { SessionsQueryRepository } from '../infrastructure/sessionsQueryRepository';
+import { JwtService } from '../../auth/application/jwt-service';
 
 @Injectable()
 export class SessionsService {

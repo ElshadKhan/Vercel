@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CommentsRepository } from './comments.repository';
 import { PostsQueryRepository } from '../posts/posts.queryRepository';
 import { CommentDtoType, CreateCommentDbType } from './dto/create-comment.dto';
-import { UserAccountDBType } from '../users/dto/user.dto';
+import { UserAccountDBType } from '../users/domain/dto/user.account.dto';
 import { LikeStatusEnam } from '../helpers/helpFunctions';
 
 @Injectable()

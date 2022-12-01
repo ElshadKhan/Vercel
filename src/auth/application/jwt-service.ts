@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import { UserAccountDBType } from '../../users/dto/user.dto';
+import { UserAccountDBType } from '../../users/domain/dto/user.account.dto';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()

@@ -12,17 +12,17 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login.dto';
-import { CreateUserDto } from '../users/dto/create-user.dto';
-import { SessionsService } from '../sessions/sessions.service';
+import { CreateUserDto } from '../users/api/dto/create-user.dto';
+import { SessionsService } from '../sessions/application/sessions.service';
 import { JwtService } from './application/jwt-service';
-import { SessionsRepository } from '../sessions/sessionsRepository';
+import { SessionsRepository } from '../sessions/infrastructure/sessionsRepository';
 import { ResendingDto } from './dto/resending.dto';
 import { ConfirmationCodeDto } from './dto/confirmation.code.dto';
 import { PasswordConfirmationCodeDto } from './dto/password.confirmation.code.dto';
 import { BearerAuthGuard } from './guards/bearer.auth.guard';
 import { CustomThrottlerGuard } from './guards/custom.throttler.guard';
 import { RefreshTokenGuard } from './guards/refresh.token.guard';
-import { UsersQueryRepository } from '../users/users.queryRepository';
+import { UsersQueryRepository } from '../users/infrastructure/users.queryRepository';
 
 @Controller('auth')
 export class AuthController {

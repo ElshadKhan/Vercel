@@ -8,12 +8,3 @@ export class SessionDBType {
     public userId: string,
   ) {}
 }
-
-export class SessionType {
-  constructor(
-    public ip: string,
-    public title: string,
-    public lastActiveDate: Date,
-    public deviceId: string,
-  ) {}
-}

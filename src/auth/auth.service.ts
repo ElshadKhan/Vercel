@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
-import { UsersRepository } from '../users/users.repository';
-import { UsersQueryRepository } from '../users/users.queryRepository';
+import { UsersService } from '../users/application/users.service';
+import { UsersRepository } from '../users/infrastructure/users.repository';
+import { UsersQueryRepository } from '../users/infrastructure/users.queryRepository';
 import { PasswordService } from '../password/password.service';
 import * as bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
-import { CreateUserDto } from '../users/dto/create-user.dto';
+import { CreateUserDto } from '../users/api/dto/create-user.dto';
 import { EmailManagers } from './managers/emailManagers';
 import { PasswordManagers } from './managers/passwordManagers';
 import { LoginUserDto } from './dto/login.dto';

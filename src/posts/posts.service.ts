@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UpdatePostDtoBlogId } from './dto/update-post.dto';
+import { UpdatePostDtoBlogId } from './api/dto/update-post.dto';
 import { PostsRepository } from './posts.repository';
 import { CreatePostDbType, PostDtoType } from './dto/create-post.dto';
 import { BlogsQueryRepository } from '../blogs/blogs.queryRepository';

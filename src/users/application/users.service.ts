@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { add } from 'date-fns';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UsersRepository } from './users.repository';
-import { PasswordService } from '../password/password.service';
-import { UserAccountDBType } from './dto/user.dto';
+import { CreateUserDto } from '../api/dto/create-user.dto';
+import { UsersRepository } from '../infrastructure/users.repository';
+import { PasswordService } from '../../password/password.service';
+import { UserAccountDBType } from '../domain/dto/user.account.dto';
 
 @Injectable()
 export class UsersService {

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UsersQueryRepository } from '../users/users.queryRepository';
+import { UsersQueryRepository } from '../users/infrastructure/users.queryRepository';
 import { LikesDto, LikeStatusEnam } from './dto/like-enam.dto';
 import { LikesRepository } from './likes.repository';
 import { LikesQueryRepository } from './likes.queryRepository';

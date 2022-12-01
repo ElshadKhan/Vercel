@@ -12,19 +12,22 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
-import { PostsService } from './posts.service';
-import { CreatePostDtoBlogId } from './dto/create-post.dto';
+import { PostsService } from '../posts.service';
+import { PostsQueryRepository } from '../posts.queryRepository';
+import {
+  pagination,
+  QueryValidationType,
+} from '../../middleware/queryValidation';
+import { CommentsService } from '../../comments/comments.service';
+import { CreateCommentType } from '../../comments/dto/create-comment.dto';
+import { CommentsQueryRepository } from '../../comments/comments.queryRepository';
+import { LikesService } from '../../likes/likes.service';
+import { LikesDto } from '../../likes/dto/like-enam.dto';
+import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
+import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
+import { SpecialBearerAuthGuard } from '../../auth/guards/special.bearer.auth.guard';
 import { UpdatePostDtoBlogId } from './dto/update-post.dto';
-import { PostsQueryRepository } from './posts.queryRepository';
-import { pagination, QueryValidationType } from '../middleware/queryValidation';
-import { CommentsService } from '../comments/comments.service';
-import { CreateCommentType } from '../comments/dto/create-comment.dto';
-import { CommentsQueryRepository } from '../comments/comments.queryRepository';
-import { LikesService } from '../likes/likes.service';
-import { LikesDto } from '../likes/dto/like-enam.dto';
-import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
-import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
-import { SpecialBearerAuthGuard } from '../auth/guards/special.bearer.auth.guard';
+import { CreatePostDtoWithBlogId } from './dto/createPostWithBlogIdDto';
 
 @Controller('posts')
 export class PostsController {
@@ -38,7 +41,7 @@ export class PostsController {
   @UseGuards(SpecialBearerAuthGuard)
   @Post()
   @UseGuards(BasicAuthGuard)
-  async create(@Body() createPostDto: CreatePostDtoBlogId) {
+  async create(@Body() createPostDto: CreatePostDtoWithBlogId) {
     return await this.postsService.create(
       createPostDto.title,
       createPostDto.shortDescription,
