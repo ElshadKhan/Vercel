@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { add } from 'date-fns';
 import { CreateUserDto } from '../api/dto/create-user.dto';
 import { UsersRepository } from '../infrastructure/users.repository';
-import { PasswordService } from '../../password/password.service';
+import { PasswordService } from '../../helpers/password/password.service';
 import { UserAccountDBType } from '../domain/dto/user.account.dto';
 
 @Injectable()

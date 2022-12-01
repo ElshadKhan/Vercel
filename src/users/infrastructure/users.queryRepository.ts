@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { getPagesCounts, getSkipNumber } from '../../helpers/helpFunctions';
 import { UsersBusinessType } from './dto/userBusinessDto';
 import { UserAccountDBType } from '../domain/dto/user.account.dto';
-import { QueryValidationType } from '../../middleware/queryValidation';
+import { QueryValidationType } from '../../helpers/middleware/queryValidation';
 
 @Injectable()
 export class UsersQueryRepository {

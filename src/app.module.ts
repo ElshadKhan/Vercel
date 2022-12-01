@@ -6,26 +6,29 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User, UserSchema } from './users/domain/entities/users.entity';
 import { UsersQueryRepository } from './users/infrastructure/users.queryRepository';
-import { PasswordService } from './password/password.service';
-import { Blog, BlogSchema } from './blogs/entities/blog.entity';
-import { BlogsService } from './blogs/blogs.service';
-import { BlogsRepository } from './blogs/blogs.repository';
-import { BlogsQueryRepository } from './blogs/blogs.queryRepository';
-import { BlogsController } from './blogs/blogs.controller';
-import { Post, PostSchema } from './posts/entities/post.entity';
-import { PostsService } from './posts/posts.service';
+import { PasswordService } from './helpers/password/password.service';
+import { Blog, BlogSchema } from './blogs/domain/entities/blog.entity';
+import { BlogsService } from './blogs/application/blogs.service';
+import { BlogsRepository } from './blogs/infrastructure/blogs.repository';
+import { BlogsQueryRepository } from './blogs/infrastructure/blogs.queryRepository';
+import { BlogsController } from './blogs/api/blogs.controller';
+import { Post, PostSchema } from './posts/domain/entities/post.entity';
+import { PostsService } from './posts/application/posts.service';
 import { PostsController } from './posts/api/posts.controller';
-import { PostsRepository } from './posts/posts.repository';
-import { PostsQueryRepository } from './posts/posts.queryRepository';
-import { Comment, CommentSchema } from './comments/entities/comment.entity';
-import { CommentsController } from './comments/comments.controller';
-import { CommentsService } from './comments/comments.service';
-import { CommentsQueryRepository } from './comments/comments.queryRepository';
-import { CommentsRepository } from './comments/comments.repository';
-import { LikesService } from './likes/likes.service';
-import { LikesRepository } from './likes/likes.repository';
-import { LikesQueryRepository } from './likes/likes.queryRepository';
-import { Like, LikeSchema } from './likes/entities/like.entity';
+import { PostsRepository } from './posts/infrastructure/posts.repository';
+import { PostsQueryRepository } from './posts/infrastructure/posts.queryRepository';
+import {
+  Comment,
+  CommentSchema,
+} from './comments/domain/entities/comment.entity';
+import { CommentsController } from './comments/api/comments.controller';
+import { CommentsService } from './comments/application/comments.service';
+import { CommentsQueryRepository } from './comments/infrastructure/comments.queryRepository';
+import { CommentsRepository } from './comments/infrastructure/comments.repository';
+import { LikesService } from './likes/application/likes.service';
+import { LikesRepository } from './likes/infrastructure/likes.repository';
+import { LikesQueryRepository } from './likes/infrastructure/likes.queryRepository';
+import { Like, LikeSchema } from './likes/domain/entities/like.entity';
 import {
   Session,
   SessionSchema,
@@ -42,8 +45,8 @@ import { PasswordAdapter } from './auth/adapters/passwordAdapter';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { RemoveAllDataController } from './remove.all.data.controller';
-import { BlogExistsRule } from './posts/validators/blogIdValidator';
+import { RemoveAllDataController } from './helpers/remove.all.data.controller';
+import { BlogExistsRule } from './helpers/middleware/blogIdValidator';
 
 const schemas = [
   { name: User.name, schema: UserSchema },

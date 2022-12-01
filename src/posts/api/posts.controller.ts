@@ -12,22 +12,22 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
-import { PostsService } from '../posts.service';
-import { PostsQueryRepository } from '../posts.queryRepository';
+import { PostsService } from '../application/posts.service';
+import { PostsQueryRepository } from '../infrastructure/posts.queryRepository';
 import {
   pagination,
   QueryValidationType,
-} from '../../middleware/queryValidation';
-import { CommentsService } from '../../comments/comments.service';
-import { CreateCommentType } from '../../comments/dto/create-comment.dto';
-import { CommentsQueryRepository } from '../../comments/comments.queryRepository';
-import { LikesService } from '../../likes/likes.service';
-import { LikesDto } from '../../likes/dto/like-enam.dto';
+} from '../../helpers/middleware/queryValidation';
+import { CommentsService } from '../../comments/application/comments.service';
+import { CommentsQueryRepository } from '../../comments/infrastructure/comments.queryRepository';
+import { LikesService } from '../../likes/application/likes.service';
+import { LikesDto } from '../../likes/domain/dto/like-enam.dto';
 import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
 import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
 import { SpecialBearerAuthGuard } from '../../auth/guards/special.bearer.auth.guard';
 import { UpdatePostDtoBlogId } from './dto/update-post.dto';
 import { CreatePostDtoWithBlogId } from './dto/createPostWithBlogIdDto';
+import { CreateCommentType } from '../../comments/api/dto/createCommentDto';
 
 @Controller('posts')
 export class PostsController {

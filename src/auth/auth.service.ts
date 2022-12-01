@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/application/users.service';
 import { UsersRepository } from '../users/infrastructure/users.repository';
 import { UsersQueryRepository } from '../users/infrastructure/users.queryRepository';
-import { PasswordService } from '../password/password.service';
+import { PasswordService } from '../helpers/password/password.service';
 import * as bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
 import { CreateUserDto } from '../users/api/dto/create-user.dto';

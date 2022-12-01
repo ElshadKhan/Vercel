@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { LikesService } from './likes.service';
+import { LikesService } from './application/likes.service';
 
 @Module({
   providers: [LikesService],

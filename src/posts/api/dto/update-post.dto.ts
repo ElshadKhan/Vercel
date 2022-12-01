@@ -1,6 +1,6 @@
 import { IsString, Length, Validate } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
-import { BlogExistsRule } from '../../validators/blogIdValidator';
+import { BlogExistsRule } from '../../../helpers/middleware/blogIdValidator';
 
 export class UpdatePostDtoBlogId {
   @IsString()
