@@ -13,7 +13,6 @@ import {
   Req,
 } from '@nestjs/common';
 import { BlogsService } from '../application/blogs.service';
-import { CreateBlogDto } from '../domain/dto/create-blog.dto';
 import { BlogsQueryRepository } from '../infrastructure/blogs.queryRepository';
 import { pagination } from '../../helpers/middleware/queryValidation';
 import { PostsService } from '../../posts/application/posts.service';
@@ -21,6 +20,7 @@ import { PostsQueryRepository } from '../../posts/infrastructure/posts.queryRepo
 import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
 import { SpecialBearerAuthGuard } from '../../auth/guards/special.bearer.auth.guard';
 import { CreatePostDto } from '../../posts/api/dto/createPostDto';
+import { CreateBlogDto } from '../domain/dto/createBlogDto';
 
 @Controller('blogs')
 export class BlogsController {

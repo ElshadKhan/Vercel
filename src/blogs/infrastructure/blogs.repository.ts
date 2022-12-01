@@ -2,7 +2,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { Blog, BlogDbTypeWithId } from '../domain/entities/blog.entity';
-import { CreateBlogDbType } from '../domain/dto/create-blog.dto';
+import { CreateBlogDbType } from '../domain/dto/createBlogDbType';
 
 @Injectable()
 export class BlogsRepository {

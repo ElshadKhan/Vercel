@@ -1,19 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { BlogsRepository } from '../infrastructure/blogs.repository';
-import { CreateBlogDbType, CreateBlogDto } from '../domain/dto/create-blog.dto';
+import { CreateBlogDbType } from '../domain/dto/createBlogDbType';
+import { CreateBlogDto } from '../domain/dto/createBlogDto';
 
 @Injectable()
 export class BlogsService {
   constructor(private readonly blogsRepository: BlogsRepository) {}
 
   create(createBlogDto: CreateBlogDto) {
-    const newBlog: CreateBlogDbType = {
-      id: String(+new Date()),
-      name: createBlogDto.name,
-      description: createBlogDto.description,
-      websiteUrl: createBlogDto.websiteUrl,
-      createdAt: new Date().toISOString(),
-    };
+    const newBlog = new CreateBlogDbType(
+      String(+new Date()),
+      createBlogDto.name,
+      createBlogDto.description,
+      createBlogDto.websiteUrl,
+      new Date().toISOString(),
+    );
     this.blogsRepository.create(newBlog);
     return newBlog;
   }

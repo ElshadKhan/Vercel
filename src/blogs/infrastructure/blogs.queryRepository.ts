@@ -4,10 +4,8 @@ import { Injectable } from '@nestjs/common';
 import { getPagesCounts, getSkipNumber } from '../../helpers/helpFunctions';
 import { Blog, BlogDbTypeWithId } from '../domain/entities/blog.entity';
 import { QueryValidationType } from '../../helpers/middleware/queryValidation';
-import {
-  BlogsBusinessType,
-  CreateBlogDbType,
-} from '../domain/dto/create-blog.dto';
+import { BlogsBusinessType } from '../domain/dto/blogBusinessType';
+import { CreateBlogDbType } from '../domain/dto/createBlogDbType';
 
 @Injectable()
 export class BlogsQueryRepository {

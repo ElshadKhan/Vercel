@@ -18,23 +18,3 @@ export class CreateBlogDto {
   @Transform(({ value }: TransformFnParams) => value?.trim())
   websiteUrl: string;
 }
-
-export class CreateBlogDbType {
-  constructor(
-    public id: string,
-    public name: string,
-    public description: string,
-    public websiteUrl: string,
-    public createdAt: string,
-  ) {}
-}
-
-export class BlogsBusinessType {
-  constructor(
-    public pagesCount: number,
-    public page: number,
-    public pageSize: number,
-    public totalCount: number,
-    public items: Array<CreateBlogDbType>,
-  ) {}
-}

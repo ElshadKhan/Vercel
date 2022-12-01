@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/application/users.service';
-import { UsersRepository } from '../users/infrastructure/users.repository';
-import { UsersQueryRepository } from '../users/infrastructure/users.queryRepository';
-import { PasswordService } from '../helpers/password/password.service';
+import { UsersService } from '../../users/application/users.service';
+import { UsersRepository } from '../../users/infrastructure/users.repository';
+import { UsersQueryRepository } from '../../users/infrastructure/users.queryRepository';
+import { PasswordService } from '../../helpers/password/password.service';
 import * as bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
-import { CreateUserDto } from '../users/api/dto/create-user.dto';
-import { EmailManagers } from './managers/emailManagers';
-import { PasswordManagers } from './managers/passwordManagers';
-import { LoginUserDto } from './dto/login.dto';
+import { CreateUserDto } from '../../users/api/dto/create-user.dto';
+import { EmailManagers } from '../../helpers/managers/emailManagers';
+import { PasswordManagers } from '../../helpers/managers/passwordManagers';
+import { LoginUserDto } from '../domain/dto/login.dto';
 
 @Injectable()
 export class AuthService {
