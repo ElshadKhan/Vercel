@@ -57,6 +57,7 @@ export class AuthController {
         },
       ]);
     }
+    console.log();
 
     const findUserByLogin =
       await this.usersQueryRepository.findUserByLoginOrEmail(inputModel.login);
