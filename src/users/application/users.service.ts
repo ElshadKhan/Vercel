@@ -17,6 +17,7 @@ export class UsersService {
     const passwordHash = await this.passwordService.generateSaltAndHash(
       inputModel.password,
     );
+    console.log();
     const newUser = new UserAccountDBType(
       String(+new Date()),
       {
