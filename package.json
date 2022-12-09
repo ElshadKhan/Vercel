@@ -33,6 +33,7 @@
     "@types/cookie-parser": "^1.4.3",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/nodemailer": "^6.4.6",
+    "@types/passport-http": "^0.3.9",
     "@types/passport-jwt": "^3.0.7",
     "bcrypt": "^5.1.0",
     "class-transformer": "^0.5.1",

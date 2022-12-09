@@ -15,6 +15,7 @@ import { UsersQueryRepository } from '../infrastructure/users.queryRepository';
 import { pagination } from '../../helpers/middleware/queryValidation';
 import { CreateUserDto } from './dto/create-user.dto';
 import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
+import { PasswordBasicAuthGuard } from '../../auth/guards/password.basic.auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -24,13 +25,13 @@ export class UsersController {
   ) {}
 
   @Get()
-  @UseGuards(BasicAuthGuard)
+  @UseGuards(PasswordBasicAuthGuard)
   getUsers(@Query() query: any) {
     return this.usersQueryRepository.getUsers(pagination(query));
   }
 
   @Post()
-  @UseGuards(BasicAuthGuard)
+  @UseGuards(PasswordBasicAuthGuard)
   async createUser(@Body() inputModel: CreateUserDto) {
     const findUserByEmail =
       await this.usersQueryRepository.findUserByLoginOrEmail(inputModel.email);
@@ -50,7 +51,7 @@ export class UsersController {
 
   @Delete(':id')
   @HttpCode(204)
-  @UseGuards(BasicAuthGuard)
+  @UseGuards(PasswordBasicAuthGuard)
   async deleteUser(@Param('id') userId: string) {
     const result = await this.usersService.delete(userId);
     if (!result) {

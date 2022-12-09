@@ -10,7 +10,6 @@ import {
   Put,
   HttpException,
   UseGuards,
-  Req,
 } from '@nestjs/common';
 import { PostsService } from '../application/posts.service';
 import { PostsQueryRepository } from '../infrastructure/posts.queryRepository';
@@ -28,6 +27,7 @@ import { SpecialBearerAuthGuard } from '../../auth/guards/special.bearer.auth.gu
 import { UpdatePostDtoBlogId } from './dto/update-post.dto';
 import { CreatePostDtoWithBlogId } from './dto/createPostWithBlogIdDto';
 import { CreateCommentType } from '../../comments/api/dto/createCommentDto';
+import { CurrentUserId } from '../../auth/current-user-id.param.decorator';
 
 @Controller('posts')
 export class PostsController {
@@ -55,12 +55,12 @@ export class PostsController {
   async createComment(
     @Body() inputModel: CreateCommentType,
     @Param('postId') postId: string,
-    @Req() req,
+    @CurrentUserId() currentUserId: string,
   ) {
     const result = await this.commentsService.create(
       inputModel.content,
       postId,
-      req.user,
+      currentUserId,
     );
     if (!result) {
       throw new HttpException({}, 404);
@@ -73,13 +73,13 @@ export class PostsController {
   async findCommentsByPostId(
     @Query() query: QueryValidationType,
     @Param('postId') postId: string,
-    @Req() req,
+    @CurrentUserId() currentUserId: string,
   ) {
     const result =
       await this.commentsQueryRepository.findCommentsByPostIdAndUserId(
         postId,
         pagination(query),
-        req.user,
+        currentUserId,
       );
     if (!result) {
       throw new HttpException({}, 404);
@@ -89,14 +89,20 @@ export class PostsController {
 
   @UseGuards(SpecialBearerAuthGuard)
   @Get()
-  findAll(@Query() query: QueryValidationType, @Req() req) {
-    return this.postsQueryRepository.findAll(pagination(query), req.user);
+  findAll(
+    @Query() query: QueryValidationType,
+    @CurrentUserId() currentUserId: string,
+  ) {
+    return this.postsQueryRepository.findAll(pagination(query), currentUserId);
   }
 
   @UseGuards(SpecialBearerAuthGuard)
   @Get(':id')
-  async findOne(@Param('id') id: string, @Req() req) {
-    const result = await this.postsQueryRepository.findOne(id, req.user);
+  async findOne(
+    @Param('id') id: string,
+    @CurrentUserId() currentUserId: string,
+  ) {
+    const result = await this.postsQueryRepository.findOne(id, currentUserId);
 
     if (!result) {
       throw new HttpException({}, 404);
@@ -123,14 +129,14 @@ export class PostsController {
   async updateLikeStatus(
     @Param('postId') postId: string,
     @Body() likesStatus: LikesDto,
-    @Req() req,
+    @CurrentUserId() currentUserId: string,
   ) {
-    const post = await this.postsQueryRepository.findOne(postId, req.user);
+    const post = await this.postsQueryRepository.findOne(postId, currentUserId);
     if (post) {
       return this.likesService.updateLikeStatus(
         likesStatus.likeStatus,
         postId,
-        req.user.id,
+        currentUserId,
       );
     } else {
       throw new HttpException({}, 404);

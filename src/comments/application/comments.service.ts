@@ -5,24 +5,27 @@ import { UserAccountDBType } from '../../users/domain/dto/user.account.dto';
 import { LikeStatusEnam } from '../../helpers/helpFunctions';
 import { CreateCommentDbType } from './dto/createCommentDbType';
 import { CommentDtoType } from './dto/commentDtoType';
+import { UsersQueryRepository } from '../../users/infrastructure/users.queryRepository';
 
 @Injectable()
 export class CommentsService {
   constructor(
     public commentsRepository: CommentsRepository,
     public postsQueryRepository: PostsQueryRepository,
+    public usersQueryRepository: UsersQueryRepository,
   ) {}
   async create(
     content: string,
     postId: string,
-    user: UserAccountDBType,
+    userId: string,
   ): Promise<CommentDtoType | null> {
-    const post = await this.postsQueryRepository.findOne(postId, user);
+    const user = await this.usersQueryRepository.getUser(userId);
+    const post = await this.postsQueryRepository.findOne(postId, userId);
     if (!post) return null;
     const comment: CreateCommentDbType = {
       id: String(+new Date()),
       content: content,
-      userId: user.id,
+      userId: userId,
       userLogin: user.accountData.login,
       postId: postId,
       createdAt: new Date().toISOString(),

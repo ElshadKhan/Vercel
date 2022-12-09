@@ -1,10 +1,26 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import {
+  BanInfoType,
   EmailConfirmationType,
   PasswordConfirmationType,
   UsersAccountDataType,
 } from '../dto/user.account.dto';
+
+@Schema({ id: false })
+export class UsersBanInfoTypeData {
+  @Prop()
+  isBanned: boolean;
+
+  @Prop()
+  banDate: string;
+
+  @Prop()
+  banReason: string;
+}
+
+export const UsersBanInfoTypeDataSchema =
+  SchemaFactory.createForClass(UsersBanInfoTypeData);
 
 @Schema({ id: false })
 export class UsersAccountData {
@@ -71,6 +87,9 @@ export class User {
 
   @Prop({ type: UsersPasswordConfirmationDataSchema })
   passwordConfirmation: PasswordConfirmationType;
+
+  @Prop({ type: UsersBanInfoTypeDataSchema })
+  banInfo: BanInfoType;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

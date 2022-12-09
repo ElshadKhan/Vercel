@@ -1,29 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import { UserAccountDBType } from '../../users/domain/dto/user.account.dto';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class JwtService {
   constructor(private configService: ConfigService) {}
-  private accessTokenJwtSecret =
-    this.configService.get<string>('ACCESS_JWT_SECRET');
+  private JwtSecret = this.configService.get<string>('JWT_SECRET');
 
-  private refreshTokenJwtSecret =
-    this.configService.get<string>('REFRESH_JWT_SECRET');
-
-  async createJWTTokens(user: UserAccountDBType, deviceId: string) {
-    const accessToken = jwt.sign(
-      { userId: user.id },
-      this.accessTokenJwtSecret,
-      { expiresIn: '10sec' },
-    );
+  async createJWTTokens(userId: string, deviceId: string) {
+    const accessToken = jwt.sign({ userId: userId }, this.JwtSecret, {
+      expiresIn: '10sec',
+    });
     const refreshToken = jwt.sign(
       {
-        userId: user.id,
+        userId: userId,
         deviceId: deviceId,
       },
-      this.refreshTokenJwtSecret,
+      this.JwtSecret,
       { expiresIn: '20sec' },
     );
     return {
@@ -32,18 +25,9 @@ export class JwtService {
     };
   }
 
-  async getUserIdByAccessToken(token: string) {
+  async getUserIdByToken(token: string) {
     try {
-      const result: any = jwt.verify(token, this.accessTokenJwtSecret);
-      return result.userId;
-    } catch (error) {
-      return null;
-    }
-  }
-
-  async getUserIdByRefreshToken(token: string) {
-    try {
-      const result: any = jwt.verify(token, this.refreshTokenJwtSecret);
+      const result: any = jwt.verify(token, this.JwtSecret);
       return result;
     } catch (error) {
       return null;

@@ -10,7 +10,6 @@ import {
   Put,
   HttpException,
   UseGuards,
-  Req,
 } from '@nestjs/common';
 import { BlogsService } from '../application/blogs.service';
 import { BlogsQueryRepository } from '../infrastructure/blogs.queryRepository';
@@ -21,6 +20,7 @@ import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
 import { SpecialBearerAuthGuard } from '../../auth/guards/special.bearer.auth.guard';
 import { CreatePostDto } from '../../posts/api/dto/createPostDto';
 import { CreateBlogDto } from '../domain/dto/createBlogDto';
+import { CurrentUserId } from '../../auth/current-user-id.param.decorator';
 
 @Controller('blogs')
 export class BlogsController {
@@ -73,12 +73,12 @@ export class BlogsController {
   async findOneByBlogId(
     @Param('blogId') blogId: string,
     @Query() query: any,
-    @Req() req,
+    @CurrentUserId() currentUserId: string,
   ) {
     const result = await this.postsQueryRepository.findOneByBlogId(
       blogId,
       pagination(query),
-      req.user,
+      currentUserId,
     );
     if (!result) {
       throw new HttpException({}, 404);

@@ -23,6 +23,7 @@ import { BearerAuthGuard } from '../guards/bearer.auth.guard';
 import { CustomThrottlerGuard } from '../guards/custom.throttler.guard';
 import { RefreshTokenGuard } from '../guards/refresh.token.guard';
 import { UsersQueryRepository } from '../../users/infrastructure/users.queryRepository';
+import { CurrentUserId } from '../current-user-id.param.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -36,11 +37,12 @@ export class AuthController {
 
   @Get('/me')
   @UseGuards(BearerAuthGuard)
-  findAuthUser(@Req() req) {
+  async findAuthUser(@CurrentUserId() currentUserId: string) {
+    const user = await this.usersQueryRepository.getUser(currentUserId);
     return {
-      email: req.user.accountData.email,
-      login: req.user.accountData.login,
-      userId: req.user.id,
+      email: user.accountData.email,
+      login: user.accountData.login,
+      userId: user.id,
     };
   }
   @UseGuards(CustomThrottlerGuard)
@@ -57,7 +59,6 @@ export class AuthController {
         },
       ]);
     }
-    console.log();
 
     const findUserByLogin =
       await this.usersQueryRepository.findUserByLoginOrEmail(inputModel.login);
@@ -78,7 +79,7 @@ export class AuthController {
     if (!user) throw new HttpException({}, 401);
 
     const tokens = await this.sessionsService.createSession(
-      user,
+      user.id,
       req.ip,
       req.headers['user-agent'],
     );
@@ -96,15 +97,19 @@ export class AuthController {
   }
   @UseGuards(RefreshTokenGuard)
   @Post('/refresh-token')
-  async resendingRefreshTokens(@Req() req, @Res() res) {
-    const payload = await this.jwtService.getUserIdByRefreshToken(
+  async resendingRefreshTokens(
+    @CurrentUserId() currentUserId: string,
+    @Req() req,
+    @Res() res,
+  ) {
+    const payload = await this.jwtService.getUserIdByToken(
       req.cookies.refreshToken.split(' ')[0],
     );
     const tokens = await this.jwtService.createJWTTokens(
-      req.user,
+      currentUserId,
       payload.deviceId,
     );
-    const newLastActiveDate = await this.jwtService.getUserIdByRefreshToken(
+    const newLastActiveDate = await this.jwtService.getUserIdByToken(
       tokens.refreshToken.split(' ')[0],
     );
     const lastActiveDate = new Date(newLastActiveDate.iat * 1000).toISOString();
@@ -129,7 +134,7 @@ export class AuthController {
   @Post('/logout')
   @HttpCode(204)
   async logoutUser(@Req() req) {
-    const payload = await this.jwtService.getUserIdByRefreshToken(
+    const payload = await this.jwtService.getUserIdByToken(
       req.cookies.refreshToken.split(' ')[0],
     );
     return await this.sessionsRepository.deleteSessionsByDeviceId(

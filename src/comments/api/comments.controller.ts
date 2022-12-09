@@ -17,6 +17,7 @@ import { LikesDto } from '../../likes/domain/dto/like-enam.dto';
 import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
 import { SpecialBearerAuthGuard } from '../../auth/guards/special.bearer.auth.guard';
 import { CreateCommentType } from './dto/createCommentDto';
+import { CurrentUserId } from '../../auth/current-user-id.param.decorator';
 
 @Controller('comments')
 export class CommentsController {
@@ -27,12 +28,13 @@ export class CommentsController {
   ) {}
   @UseGuards(SpecialBearerAuthGuard)
   @Get(':id')
-  async findOne(@Param('id') id: string, @Req() req) {
-    console.log('1', id);
-    console.log('2', req.user);
+  async findOne(
+    @Param('id') id: string,
+    @CurrentUserId() currentUserId: string,
+  ) {
     const result = await this.commentsQueryRepository.findCommentById(
       id,
-      req.user,
+      currentUserId,
     );
     if (!result) {
       throw new HttpException({}, 404);
@@ -46,7 +48,7 @@ export class CommentsController {
   async update(
     @Body() inputModel: CreateCommentType,
     @Param('commentId') commentId: string,
-    @Req() req,
+    @CurrentUserId() currentUserId: string,
   ) {
     const comment = await this.commentsQueryRepository.findCommentById(
       commentId,
@@ -54,7 +56,7 @@ export class CommentsController {
     if (!comment) {
       throw new HttpException({}, 404);
     }
-    if (comment.userId !== req.user.id) {
+    if (comment.userId !== currentUserId) {
       throw new HttpException({}, 403);
     }
     return this.commentsService.update(commentId, inputModel.content);
@@ -66,18 +68,18 @@ export class CommentsController {
   async updateLikeStatus(
     @Param('commentId') commentId: string,
     @Body() likesStatus: LikesDto,
-    @Req() req,
+    @CurrentUserId() currentUserId: string,
   ) {
     const comment =
       await this.commentsQueryRepository.findCommentByUserIdAndCommentId(
         commentId,
-        req.user,
+        currentUserId,
       );
     if (comment) {
       return this.likesService.updateLikeStatus(
         likesStatus.likeStatus,
         commentId,
-        req.user.id,
+        currentUserId,
       );
     } else {
       throw new HttpException({}, 404);
@@ -86,14 +88,17 @@ export class CommentsController {
   @Delete(':commentId')
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
-  async delete(@Param('commentId') commentId: string, @Req() req) {
+  async delete(
+    @Param('commentId') commentId: string,
+    @CurrentUserId() currentUserId: string,
+  ) {
     const comment = await this.commentsQueryRepository.findCommentById(
       commentId,
     );
     if (!comment) {
       throw new HttpException({}, 404);
     }
-    if (comment.userId !== req.user.id) {
+    if (comment.userId !== currentUserId) {
       throw new HttpException({}, 403);
     }
     return this.commentsService.delete(commentId);

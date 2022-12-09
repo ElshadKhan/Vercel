@@ -14,13 +14,10 @@ export class SessionsService {
     private jwtService: JwtService,
   ) {}
 
-  async createSession(user: UserAccountDBType, ip: string, deviceName: string) {
-    const userId = user.id;
+  async createSession(userId: string, ip: string, deviceName: string) {
     const deviceId = randomUUID();
-    const tokens = await this.jwtService.createJWTTokens(user, deviceId);
-    const payload = await this.jwtService.getUserIdByRefreshToken(
-      tokens.refreshToken,
-    );
+    const tokens = await this.jwtService.createJWTTokens(userId, deviceId);
+    const payload = await this.jwtService.getUserIdByToken(tokens.refreshToken);
 
     const session: SessionDBType = {
       ip: ip,

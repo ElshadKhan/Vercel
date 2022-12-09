@@ -35,6 +35,11 @@ export class UsersService {
         expirationDate: add(new Date(), { hours: 2, minutes: 2 }),
         isConfirmed: false,
       },
+      {
+        isBanned: false,
+        banDate: null,
+        banReason: null,
+      },
     );
     return await this.usersRepository.create(newUser);
   }

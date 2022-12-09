@@ -22,15 +22,15 @@ export class CommentsQueryRepository {
   constructor(private likesRepository: LikesQueryRepository) {}
   async findCommentByUserIdAndCommentId(
     id: string,
-    user?: UserAccountDBType,
+    userId?: string,
   ): Promise<CommentDtoType | null> {
     const comment = await this.commentModel.findOne({ id: id });
     if (!comment) return null;
 
     let myStatus = LikeStatusEnam.None;
 
-    if (user) {
-      const result = await this.likesRepository.getLikeStatus(id, user.id);
+    if (userId) {
+      const result = await this.likesRepository.getLikeStatus(id, userId);
       myStatus = result?.type || LikeStatusEnam.None;
     }
 
@@ -59,13 +59,13 @@ export class CommentsQueryRepository {
 
   async findCommentById(
     id: string,
-    user?: UserAccountDBType,
+    userId?: string,
   ): Promise<CommentDtoType | null> {
     const comment = await this.commentModel.findOne({ id });
     if (!comment) return null;
     let myStatus = LikeStatusEnam.None;
-    if (user) {
-      const result = await this.likesRepository.getLikeStatus(id, user.id);
+    if (userId) {
+      const result = await this.likesRepository.getLikeStatus(id, userId);
       myStatus = result?.type || LikeStatusEnam.None;
     }
     const likesCount = await this.likesRepository.getLikesCount(
@@ -93,7 +93,7 @@ export class CommentsQueryRepository {
   async findCommentsByPostIdAndUserId(
     postId: string,
     { pageNumber, pageSize, sortBy, sortDirection }: QueryValidationType,
-    user?: UserAccountDBType,
+    userId?: string,
   ): Promise<CommentsBusinessType | null> {
     const comment = await this.commentModel.findOne({ postId: postId });
     const findComments = await this.commentModel
@@ -110,11 +110,8 @@ export class CommentsQueryRepository {
       const promis = findComments.map(async (c) => {
         let myStatus = LikeStatusEnam.None;
 
-        if (user) {
-          const result = await this.likesRepository.getLikeStatus(
-            c.id,
-            user.id,
-          );
+        if (userId) {
+          const result = await this.likesRepository.getLikeStatus(c.id, userId);
           myStatus = result?.type || LikeStatusEnam.None;
         }
         const likesCount = await this.likesRepository.getLikesCount(

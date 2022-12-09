@@ -24,7 +24,7 @@ export class PostsQueryRepository {
 
   async findAll(
     { pageNumber, pageSize, sortBy, sortDirection }: QueryValidationType,
-    user?: UserAccountDBType,
+    userId?: string,
   ): Promise<PostsBusinessType> {
     const posts = await this.postModel
       .find()
@@ -37,10 +37,10 @@ export class PostsQueryRepository {
       const promise = posts.map(async (post: PostDbTypeWithId) => {
         let myStatus = LikeStatusEnam.None;
 
-        if (user) {
+        if (userId) {
           const result = await this.likesQueryRepository.getLikeStatus(
             post.id,
-            user.id,
+            userId,
           );
           myStatus = result?.type || LikeStatusEnam.None;
         }
@@ -91,7 +91,7 @@ export class PostsQueryRepository {
   async findOneByBlogId(
     blogId: string,
     { pageNumber, pageSize, sortBy, sortDirection }: QueryValidationType,
-    user?: UserAccountDBType,
+    userId?: string,
   ): Promise<PostsBusinessType> {
     const blog = await this.blogsQueryRepository.findOne(blogId);
     const findPosts = await this.postModel
@@ -108,10 +108,10 @@ export class PostsQueryRepository {
       const promise = findPosts.map(async (post: PostDbTypeWithId) => {
         let myStatus = LikeStatusEnam.None;
 
-        if (user) {
+        if (userId) {
           const result = await this.likesQueryRepository.getLikeStatus(
             post.id,
-            user.id,
+            userId,
           );
           myStatus = result?.type || LikeStatusEnam.None;
         }
@@ -159,17 +159,17 @@ export class PostsQueryRepository {
     return null;
   }
 
-  async findOne(id: string, user?: UserAccountDBType): Promise<PostDtoType> {
+  async findOne(id: string, userId?: string): Promise<PostDtoType> {
     const post: PostDbTypeWithId | null = await this.postModel.findOne({
       id,
     });
     if (post) {
       let myStatus = LikeStatusEnam.None;
 
-      if (user) {
+      if (userId) {
         const result = await this.likesQueryRepository.getLikeStatus(
           post.id,
-          user.id,
+          userId,
         );
         myStatus = result?.type || LikeStatusEnam.None;
       }
