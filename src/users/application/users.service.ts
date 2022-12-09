@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { add } from 'date-fns';
 import { CreateUserDto } from '../api/dto/create-user.dto';
@@ -6,7 +6,7 @@ import { UsersRepository } from '../infrastructure/users.repository';
 import { PasswordService } from '../../helpers/password/password.service';
 import { UserAccountDBType } from '../domain/dto/user.account.dto';
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class UsersService {
   constructor(
     private usersRepository: UsersRepository,
@@ -17,7 +17,6 @@ export class UsersService {
     const passwordHash = await this.passwordService.generateSaltAndHash(
       inputModel.password,
     );
-    console.log();
     const newUser = new UserAccountDBType(
       String(+new Date()),
       {

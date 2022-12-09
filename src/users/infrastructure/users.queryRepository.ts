@@ -1,13 +1,13 @@
 import { User, UserDbTypeWithId } from '../domain/entities/users.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { getPagesCounts, getSkipNumber } from '../../helpers/helpFunctions';
 import { UsersBusinessType } from './dto/userBusinessDto';
 import { UserAccountDBType } from '../domain/dto/user.account.dto';
 import { QueryValidationType } from '../../helpers/middleware/queryValidation';
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class UsersQueryRepository {
   @InjectModel(User.name) private userModel: Model<UserDbTypeWithId>;
 
