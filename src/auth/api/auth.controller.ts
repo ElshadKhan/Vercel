@@ -24,6 +24,8 @@ import { CustomThrottlerGuard } from '../guards/custom.throttler.guard';
 import { RefreshTokenGuard } from '../guards/refresh.token.guard';
 import { UsersQueryRepository } from '../../users/infrastructure/users.queryRepository';
 import { CurrentUserId } from '../current-user-id.param.decorator';
+import { LocalAuthGuard } from '../guards/local.auth.guard';
+import { JwtAuthGuard } from '../guards/jwt.auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -36,7 +38,7 @@ export class AuthController {
   ) {}
 
   @Get('/me')
-  @UseGuards(BearerAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async findAuthUser(@CurrentUserId() currentUserId: string) {
     const user = await this.usersQueryRepository.getUser(currentUserId);
     return {
@@ -72,14 +74,14 @@ export class AuthController {
     }
     return await this.authService.registration(inputModel);
   }
-  @UseGuards(CustomThrottlerGuard)
+  @UseGuards(LocalAuthGuard)
   @Post('/login')
   async login(@Body() inputModel: LoginUserDto, @Req() req, @Res() res) {
-    const user = await this.authService.checkCredentials(inputModel);
-    if (!user) throw new HttpException({}, 401);
+    // const user = await this.authService.checkCredentials(inputModel);
+    // if (!user) throw new HttpException({}, 401);
 
     const tokens = await this.sessionsService.createSession(
-      user.id,
+      req.user.id,
       req.ip,
       req.headers['user-agent'],
     );

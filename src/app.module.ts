@@ -47,6 +47,10 @@ import { AuthService } from './auth/application/auth.service';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { RemoveAllDataController } from './helpers/remove.all.data.controller';
 import { BlogExistsRule } from './helpers/middleware/blogIdValidator';
+import { AuthModule } from './auth/auth.module';
+import { BasicStrategy } from './auth/strategies/basic.strategy';
+import { JwtStrategy } from './auth/strategies/jwt.strategy';
+import { LocalStrategy } from './auth/strategies/local.strategy';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -109,6 +113,9 @@ const schemas = [
     PasswordManagers,
     PasswordAdapter,
     PasswordService,
+    BasicStrategy,
+    JwtStrategy,
+    LocalStrategy,
   ],
 })
 export class AppModule {}

@@ -21,6 +21,19 @@ export class AuthService {
     private passwordManager: PasswordManagers,
   ) {}
 
+  async validateUser(loginOrEmail: string, password: string): Promise<any> {
+    const user = await this.usersQueryRepository.findUserByLoginOrEmail(
+      loginOrEmail,
+    );
+    if (!user || user.banInfo.isBanned) return false;
+    const isValid = await bcrypt.compare(
+      password,
+      user.accountData.passwordHash,
+    );
+    if (!isValid) return false;
+    return user;
+  }
+
   async registration(inputModel: CreateUserDto) {
     const newUser = await this.usersService.create(inputModel);
     const result = await this.emailManager.sendEmailConfirmationMessage(
