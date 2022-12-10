@@ -7,10 +7,9 @@ import {
   Res,
   UseGuards,
   HttpCode,
-  HttpException,
   BadRequestException,
+  UnauthorizedException,
 } from '@nestjs/common';
-import { AuthService } from '../application/auth.service';
 import { LoginUserDto } from '../domain/dto/login.dto';
 import { CreateUserDto } from '../../users/api/dto/create-user.dto';
 import { SessionsService } from '../../sessions/application/sessions.service';
@@ -19,18 +18,24 @@ import { SessionsRepository } from '../../sessions/infrastructure/sessionsReposi
 import { ResendingDto } from '../domain/dto/resending.dto';
 import { ConfirmationCodeDto } from '../domain/dto/confirmation.code.dto';
 import { PasswordConfirmationCodeDto } from '../domain/dto/password.confirmation.code.dto';
-import { BearerAuthGuard } from '../guards/bearer.auth.guard';
 import { CustomThrottlerGuard } from '../guards/custom.throttler.guard';
 import { RefreshTokenGuard } from '../guards/refresh.token.guard';
 import { UsersQueryRepository } from '../../users/infrastructure/users.queryRepository';
 import { CurrentUserId } from '../current-user-id.param.decorator';
-import { LocalAuthGuard } from '../guards/local.auth.guard';
-import { JwtAuthGuard } from '../guards/jwt.auth.guard';
+import { BearerAuthGuard } from '../guards/bearer.auth.guard';
+import { CheckCredentialsCommand } from '../application/use-cases/check-credentials-use-case';
+import { EmailResendingCommand } from '../application/use-cases/email-resending-use-case';
+import { CommandBus } from '@nestjs/cqrs';
+import { RegistrationUserCommand } from '../application/use-cases/registration-user-use-case';
+import { PasswordResendingCommand } from '../application/use-cases/password-resending-use-case';
+import { EmailConfirmationCommand } from '../application/use-cases/email-confirmation-use-case';
+import { PasswordConfirmationCommand } from '../application/use-cases/password-confirmation-use-case';
 
 @Controller('auth')
 export class AuthController {
   constructor(
-    private authService: AuthService,
+    // private authService: AuthService,
+    private commandBus: CommandBus,
     private sessionsService: SessionsService,
     private sessionsRepository: SessionsRepository,
     private usersQueryRepository: UsersQueryRepository,
@@ -38,7 +43,7 @@ export class AuthController {
   ) {}
 
   @Get('/me')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(BearerAuthGuard)
   async findAuthUser(@CurrentUserId() currentUserId: string) {
     const user = await this.usersQueryRepository.getUser(currentUserId);
     return {
@@ -47,6 +52,7 @@ export class AuthController {
       userId: user.id,
     };
   }
+
   @UseGuards(CustomThrottlerGuard)
   @Post('/registration')
   @HttpCode(204)
@@ -72,20 +78,23 @@ export class AuthController {
         },
       ]);
     }
-    return await this.authService.registration(inputModel);
+    return await this.commandBus.execute(
+      new RegistrationUserCommand(inputModel),
+    );
   }
-  @UseGuards(LocalAuthGuard)
+
+  @UseGuards(CustomThrottlerGuard)
   @Post('/login')
   async login(@Body() inputModel: LoginUserDto, @Req() req, @Res() res) {
-    // const user = await this.authService.checkCredentials(inputModel);
-    // if (!user) throw new HttpException({}, 401);
-
+    const user = await this.commandBus.execute(
+      new CheckCredentialsCommand(inputModel),
+    );
+    if (!user || user.banInfo.isBanned) throw new UnauthorizedException();
     const tokens = await this.sessionsService.createSession(
-      req.user.id,
+      user.id,
       req.ip,
       req.headers['user-agent'],
     );
-
     res
       .cookie('refreshToken', tokens.refreshToken, {
         maxAge: 200000000,
@@ -97,6 +106,7 @@ export class AuthController {
         accessToken: tokens.accessToken,
       });
   }
+
   @UseGuards(RefreshTokenGuard)
   @Post('/refresh-token')
   async resendingRefreshTokens(
@@ -104,14 +114,14 @@ export class AuthController {
     @Req() req,
     @Res() res,
   ) {
-    const payload = await this.jwtService.getUserIdByToken(
+    const payload = await this.jwtService.getUserIdByRefreshToken(
       req.cookies.refreshToken.split(' ')[0],
     );
     const tokens = await this.jwtService.createJWTTokens(
       currentUserId,
       payload.deviceId,
     );
-    const newLastActiveDate = await this.jwtService.getUserIdByToken(
+    const newLastActiveDate = await this.jwtService.getUserIdByRefreshToken(
       tokens.refreshToken.split(' ')[0],
     );
     const lastActiveDate = new Date(newLastActiveDate.iat * 1000).toISOString();
@@ -132,11 +142,12 @@ export class AuthController {
         accessToken: tokens.accessToken,
       });
   }
+
   @UseGuards(RefreshTokenGuard)
   @Post('/logout')
   @HttpCode(204)
   async logoutUser(@Req() req) {
-    const payload = await this.jwtService.getUserIdByToken(
+    const payload = await this.jwtService.getUserIdByRefreshToken(
       req.cookies.refreshToken.split(' ')[0],
     );
     return await this.sessionsRepository.deleteSessionsByDeviceId(
@@ -144,11 +155,14 @@ export class AuthController {
       payload.deviceId,
     );
   }
+
   @UseGuards(CustomThrottlerGuard)
   @Post('/registration-confirmation')
   @HttpCode(204)
   async confirmationEmail(@Body() inputModel: ConfirmationCodeDto) {
-    const result = await this.authService.confirmationEmail(inputModel.code);
+    const result = await this.commandBus.execute(
+      new EmailConfirmationCommand(inputModel.code),
+    );
     if (!result) {
       throw new BadRequestException([
         {
@@ -159,13 +173,13 @@ export class AuthController {
     }
     return result;
   }
+
   @UseGuards(CustomThrottlerGuard)
   @Post('/new-password')
   @HttpCode(204)
   async confirmationPassword(@Body() inputModel: PasswordConfirmationCodeDto) {
-    const result = await this.authService.confirmationPassword(
-      inputModel.newPassword,
-      inputModel.recoveryCode,
+    const result = await this.commandBus.execute(
+      new PasswordConfirmationCommand(inputModel),
     );
     if (!result) {
       throw new BadRequestException([
@@ -177,11 +191,14 @@ export class AuthController {
     }
     return result;
   }
+
   @UseGuards(CustomThrottlerGuard)
   @Post('/registration-email-resending')
   @HttpCode(204)
   async emailResending(@Body() inputModel: ResendingDto) {
-    const result = await this.authService.emailResending(inputModel.email);
+    const result = await this.commandBus.execute(
+      new EmailResendingCommand(inputModel.email),
+    );
     if (!result) {
       throw new BadRequestException([
         {
@@ -192,11 +209,14 @@ export class AuthController {
     }
     return result;
   }
+
   @UseGuards(CustomThrottlerGuard)
   @Post('/password-recovery')
   @HttpCode(204)
   async passwordResending(@Body() inputModel: ResendingDto) {
-    const result = await this.authService.passwordResending(inputModel.email);
+    const result = await this.commandBus.execute(
+      new PasswordResendingCommand(inputModel.email),
+    );
     if (!result) {
       throw new BadRequestException([
         {

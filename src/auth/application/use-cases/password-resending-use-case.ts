@@ -1,0 +1,37 @@
+import { UsersQueryRepository } from '../../../users/infrastructure/users.queryRepository';
+import { randomUUID } from 'crypto';
+import { UsersRepository } from '../../../users/infrastructure/users.repository';
+import { PasswordManagers } from '../../../helpers/managers/passwordManagers';
+import { CommandHandler } from '@nestjs/cqrs';
+
+export class PasswordResendingCommand {
+  constructor(public email: string) {}
+}
+
+@CommandHandler(PasswordResendingCommand)
+export class PasswordResendingUseCase {
+  constructor(
+    private usersQueryRepository: UsersQueryRepository,
+    private usersRepository: UsersRepository,
+    private passwordManager: PasswordManagers,
+  ) {}
+
+  async execute(command: PasswordResendingCommand) {
+    const user = await this.usersQueryRepository.findUserByLoginOrEmail(
+      command.email,
+    );
+    if (
+      !user ||
+      user.passwordConfirmation.isConfirmed ||
+      user.passwordConfirmation.expirationDate < new Date()
+    )
+      return null;
+    const code = randomUUID();
+    await this.usersRepository.updatePasswordResendingCode(user.id, code);
+    await this.passwordManager.passwordResendingConfirmationMessage(
+      command.email,
+      code,
+    );
+    return user;
+  }
+}

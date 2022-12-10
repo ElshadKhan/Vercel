@@ -47,10 +47,12 @@ import { AuthService } from './auth/application/auth.service';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { RemoveAllDataController } from './helpers/remove.all.data.controller';
 import { BlogExistsRule } from './helpers/middleware/blogIdValidator';
-import { AuthModule } from './auth/auth.module';
-import { BasicStrategy } from './auth/strategies/basic.strategy';
-import { JwtStrategy } from './auth/strategies/jwt.strategy';
-import { LocalStrategy } from './auth/strategies/local.strategy';
+import { RegistrationUserUseCase } from './auth/application/use-cases/registration-user-use-case';
+import { CheckCredentialsUseCase } from './auth/application/use-cases/check-credentials-use-case';
+import { EmailResendingUseCase } from './auth/application/use-cases/email-resending-use-case';
+import { PasswordResendingUseCase } from './auth/application/use-cases/password-resending-use-case';
+import { EmailConfirmationUseCase } from './auth/application/use-cases/email-confirmation-use-case';
+import { PasswordConfirmationUseCase } from './auth/application/use-cases/password-confirmation-use-case';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -59,6 +61,15 @@ const schemas = [
   { name: Comment.name, schema: CommentSchema },
   { name: Like.name, schema: LikeSchema },
   { name: Session.name, schema: SessionSchema },
+];
+
+const authUseCases = [
+  RegistrationUserUseCase,
+  CheckCredentialsUseCase,
+  EmailResendingUseCase,
+  PasswordResendingUseCase,
+  EmailConfirmationUseCase,
+  PasswordConfirmationUseCase,
 ];
 
 @Module({
@@ -113,9 +124,10 @@ const schemas = [
     PasswordManagers,
     PasswordAdapter,
     PasswordService,
-    BasicStrategy,
-    JwtStrategy,
-    LocalStrategy,
+    ...authUseCases,
+    // BasicStrategy,
+    // JwtStrategy,
+    // LocalStrategy,
   ],
 })
 export class AppModule {}

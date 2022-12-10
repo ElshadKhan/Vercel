@@ -23,7 +23,7 @@ export class RefreshTokenGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     const token = refToken.split(' ')[0];
-    const user = await this.jwtService.getUserIdByToken(token);
+    const user = await this.jwtService.getUserIdByRefreshToken(token);
     if (!user) {
       throw new UnauthorizedException();
     }

@@ -40,7 +40,7 @@ export class SessionsController {
   @Delete()
   @HttpCode(204)
   async deleteAllSessionsExceptOne(@Req() req) {
-    const payload = await this.jwtService.getUserIdByToken(
+    const payload = await this.jwtService.getUserIdByRefreshToken(
       req.cookies.refreshToken.split(' ')[0],
     );
     return await this.sessionsService.deleteAllSessionsExceptOne(
@@ -56,7 +56,7 @@ export class SessionsController {
     @Param('deviceId') deviceId: string,
     @Req() req,
   ) {
-    const payload = await this.jwtService.getUserIdByToken(
+    const payload = await this.jwtService.getUserIdByRefreshToken(
       req.cookies.refreshToken.split(' ')[0],
     );
     const comment = await this.sessionsQueryRepository.getSession(deviceId);

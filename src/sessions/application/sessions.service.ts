@@ -17,7 +17,9 @@ export class SessionsService {
   async createSession(userId: string, ip: string, deviceName: string) {
     const deviceId = randomUUID();
     const tokens = await this.jwtService.createJWTTokens(userId, deviceId);
-    const payload = await this.jwtService.getUserIdByToken(tokens.refreshToken);
+    const payload = await this.jwtService.getUserIdByRefreshToken(
+      tokens.refreshToken,
+    );
 
     const session: SessionDBType = {
       ip: ip,

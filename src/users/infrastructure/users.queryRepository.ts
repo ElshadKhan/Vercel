@@ -6,13 +6,14 @@ import { getPagesCounts, getSkipNumber } from '../../helpers/helpFunctions';
 import { UsersBusinessType } from './dto/userBusinessDto';
 import { UserAccountDBType } from '../domain/dto/user.account.dto';
 import { QueryValidationType } from '../../helpers/middleware/queryValidation';
+import { LoginUserDto } from '../../auth/domain/dto/login.dto';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class UsersQueryRepository {
   @InjectModel(User.name) private userModel: Model<UserDbTypeWithId>;
 
   async findUserByLoginOrEmail(
-    loginOrEmail: string,
+    loginOrEmail: string | LoginUserDto,
   ): Promise<UserAccountDBType | null> {
     return this.userModel
       .findOne({

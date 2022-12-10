@@ -5,20 +5,21 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class JwtService {
   constructor(private configService: ConfigService) {}
-  private accessJwtSecret = this.configService.get<string>('ACCESS_JWT_SECRET');
-  private refreshJwtSecret =
-    this.configService.get<string>('REFRESH_JWT_SECRET');
 
   async createJWTTokens(userId: string, deviceId: string) {
-    const accessToken = jwt.sign({ userId: userId }, this.accessJwtSecret, {
-      expiresIn: '10sec',
-    });
+    const accessToken = jwt.sign(
+      { userId: userId },
+      this.configService.get<string>('ACCESS_JWT_SECRET'),
+      {
+        expiresIn: '20sec',
+      },
+    );
     const refreshToken = jwt.sign(
       {
         userId: userId,
         deviceId: deviceId,
       },
-      this.refreshJwtSecret,
+      this.configService.get<string>('REFRESH_JWT_SECRET'),
       { expiresIn: '20sec' },
     );
     return {
@@ -27,18 +28,24 @@ export class JwtService {
     };
   }
 
-  async getUserIdByTokenn(token: string) {
+  async getUserIdByAccessToken(token: string) {
     try {
-      const result: any = jwt.verify(token, this.JwtSecret);
+      const result: any = jwt.verify(
+        token,
+        this.configService.get<string>('ACCESS_JWT_SECRET'),
+      );
       return result.userId;
     } catch (error) {
       return null;
     }
   }
 
-  async getUserIdByToken(token: string) {
+  async getUserIdByRefreshToken(token: string) {
     try {
-      const result: any = jwt.verify(token, this.JwtSecret);
+      const result: any = jwt.verify(
+        token,
+        this.configService.get<string>('REFRESH_JWT_SECRET'),
+      );
       return result;
     } catch (error) {
       return null;

@@ -20,7 +20,7 @@ export class BearerAuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     const token = req.headers.authorization.split(' ')[1];
-    const userId = await this.jwtService.getUserIdByToken(token);
+    const userId = await this.jwtService.getUserIdByAccessToken(token);
     if (userId) {
       req.user = await this.userQueryRepository.getUser(userId);
       return true;
