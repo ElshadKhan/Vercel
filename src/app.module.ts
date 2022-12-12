@@ -47,12 +47,31 @@ import { AuthService } from './auth/application/auth.service';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { RemoveAllDataController } from './helpers/remove.all.data.controller';
 import { BlogExistsRule } from './helpers/middleware/blogIdValidator';
-import { RegistrationUserUseCase } from './auth/application/use-cases/registration-user-use-case';
-import { CheckCredentialsUseCase } from './auth/application/use-cases/check-credentials-use-case';
-import { EmailResendingUseCase } from './auth/application/use-cases/email-resending-use-case';
-import { PasswordResendingUseCase } from './auth/application/use-cases/password-resending-use-case';
-import { EmailConfirmationUseCase } from './auth/application/use-cases/email-confirmation-use-case';
-import { PasswordConfirmationUseCase } from './auth/application/use-cases/password-confirmation-use-case';
+import {
+  RegistrationUserCommand,
+  RegistrationUserUseCase,
+} from './auth/application/use-cases/registration-user-use-case';
+import {
+  CheckCredentialsCommand,
+  CheckCredentialsUseCase,
+} from './auth/application/use-cases/check-credentials-use-case';
+import {
+  EmailResendingCommand,
+  EmailResendingUseCase,
+} from './auth/application/use-cases/email-resending-use-case';
+import {
+  PasswordResendingCommand,
+  PasswordResendingUseCase,
+} from './auth/application/use-cases/password-resending-use-case';
+import {
+  EmailConfirmationCommand,
+  EmailConfirmationUseCase,
+} from './auth/application/use-cases/email-confirmation-use-case';
+import {
+  PasswordConfirmationCommand,
+  PasswordConfirmationUseCase,
+} from './auth/application/use-cases/password-confirmation-use-case';
+import { CqrsModule } from '@nestjs/cqrs';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -87,6 +106,7 @@ const authUseCases = [
       ttl: 10,
       limit: 5,
     }),
+    CqrsModule,
   ],
   controllers: [
     UsersController,

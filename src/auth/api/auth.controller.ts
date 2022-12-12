@@ -34,7 +34,7 @@ import { PasswordConfirmationCommand } from '../application/use-cases/password-c
 @Controller('auth')
 export class AuthController {
   constructor(
-    private authService: AuthService,
+    // private authService: AuthService,
     private commandBus: CommandBus,
     private sessionsService: SessionsService,
     private sessionsRepository: SessionsRepository,
