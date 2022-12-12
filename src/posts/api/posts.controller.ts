@@ -28,10 +28,14 @@ import { UpdatePostDtoBlogId } from './dto/update-post.dto';
 import { CreatePostDtoWithBlogId } from './dto/createPostWithBlogIdDto';
 import { CreateCommentType } from '../../comments/api/dto/createCommentDto';
 import { CurrentUserId } from '../../auth/current-user-id.param.decorator';
+import { CommandBus } from '@nestjs/cqrs';
+import { CreateCommentCommand } from '../../comments/application/use-cases/create-comment-use-case';
+import { CommentCreateUseCaseDtoType } from '../../comments/application/dto/commentCreateUseCaseDtoType';
 
 @Controller('posts')
 export class PostsController {
   constructor(
+    private commandBus: CommandBus,
     private postsService: PostsService,
     private postsQueryRepository: PostsQueryRepository,
     private commentsService: CommentsService,
@@ -53,14 +57,17 @@ export class PostsController {
   @Post(':postId/comments')
   @UseGuards(BearerAuthGuard)
   async createComment(
-    @Body() inputModel: CreateCommentType,
+    @Body() inputParameter: CreateCommentType,
     @Param('postId') postId: string,
     @CurrentUserId() currentUserId: string,
   ) {
-    const result = await this.commentsService.create(
-      inputModel.content,
-      postId,
-      currentUserId,
+    const inputModel: CommentCreateUseCaseDtoType = {
+      content: inputParameter.content,
+      userId: currentUserId,
+      postId: postId,
+    };
+    const result = await this.commandBus.execute(
+      new CreateCommentCommand(inputModel),
     );
     if (!result) {
       throw new HttpException({}, 404);

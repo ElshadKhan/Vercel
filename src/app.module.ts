@@ -72,6 +72,14 @@ import {
   PasswordConfirmationUseCase,
 } from './auth/application/use-cases/password-confirmation-use-case';
 import { CqrsModule } from '@nestjs/cqrs';
+import { CreateBlogUseCase } from './blogs/application/use-cases/create-blog-use-case';
+import { UpdateBlogUseCase } from './blogs/application/use-cases/update-blog-use-case';
+import { DeleteBlogUseCase } from './blogs/application/use-cases/delete-blog-use-case';
+import { DeleteAllBlogsUseCase } from './blogs/application/use-cases/delete-all-blogs-use-case';
+import { CreateCommentUseCase } from './comments/application/use-cases/create-comment-use-case';
+import { UpdateCommentCommand } from './comments/application/use-cases/update-comment-use-case';
+import { DeleteCommentUseCase } from './comments/application/use-cases/delete-comment-use-case';
+import { DeleteAllCommentsUseCase } from './comments/application/use-cases/delete-all-comments-use-case';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -89,6 +97,20 @@ const authUseCases = [
   PasswordResendingUseCase,
   EmailConfirmationUseCase,
   PasswordConfirmationUseCase,
+];
+
+const blogUseCases = [
+  CreateBlogUseCase,
+  UpdateBlogUseCase,
+  DeleteBlogUseCase,
+  DeleteAllBlogsUseCase,
+];
+
+const commentUseCases = [
+  CreateCommentUseCase,
+  UpdateCommentCommand,
+  DeleteCommentUseCase,
+  DeleteAllCommentsUseCase,
 ];
 
 @Module({
@@ -145,9 +167,8 @@ const authUseCases = [
     PasswordAdapter,
     PasswordService,
     ...authUseCases,
-    // BasicStrategy,
-    // JwtStrategy,
-    // LocalStrategy,
+    ...blogUseCases,
+    ...commentUseCases,
   ],
 })
 export class AppModule {}

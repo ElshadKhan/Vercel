@@ -7,7 +7,6 @@ import {
   HttpCode,
   Put,
   HttpException,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { CommentsService } from '../application/comments.service';
@@ -18,13 +17,19 @@ import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
 import { SpecialBearerAuthGuard } from '../../auth/guards/special.bearer.auth.guard';
 import { CreateCommentType } from './dto/createCommentDto';
 import { CurrentUserId } from '../../auth/current-user-id.param.decorator';
+import { CommentUpdateUseCaseDtoType } from '../application/dto/commentUpdateUseCaseDtoType';
+import { CommandBus } from '@nestjs/cqrs';
+import { UpdateCommentCommand } from '../application/use-cases/update-comment-use-case';
+import { DeleteCommentCommand } from '../application/use-cases/delete-comment-use-case';
+import { DeleteAllCommentsCommand } from '../application/use-cases/delete-all-comments-use-case';
 
 @Controller('comments')
 export class CommentsController {
   constructor(
-    private readonly commentsService: CommentsService,
+    private commandBus: CommandBus,
+    private commentsService: CommentsService,
     private commentsQueryRepository: CommentsQueryRepository,
-    private readonly likesService: LikesService,
+    private likesService: LikesService,
   ) {}
   @UseGuards(SpecialBearerAuthGuard)
   @Get(':id')
@@ -59,7 +64,11 @@ export class CommentsController {
     if (comment.userId !== currentUserId) {
       throw new HttpException({}, 403);
     }
-    return this.commentsService.update(commentId, inputModel.content);
+    const inputDto: CommentUpdateUseCaseDtoType = {
+      id: commentId,
+      content: inputModel.content,
+    };
+    return this.commandBus.execute(new UpdateCommentCommand(inputDto));
   }
 
   @Put(':commentId/like-status')
@@ -101,12 +110,12 @@ export class CommentsController {
     if (comment.userId !== currentUserId) {
       throw new HttpException({}, 403);
     }
-    return this.commentsService.delete(commentId);
+    return this.commandBus.execute(new DeleteCommentCommand(commentId));
   }
 
   @Delete()
   @HttpCode(204)
   deleteAll() {
-    return this.commentsService.deleteAll();
+    return this.commandBus.execute(new DeleteAllCommentsCommand());
   }
 }

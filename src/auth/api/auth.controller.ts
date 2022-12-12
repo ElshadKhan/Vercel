@@ -34,7 +34,6 @@ import { PasswordConfirmationCommand } from '../application/use-cases/password-c
 @Controller('auth')
 export class AuthController {
   constructor(
-    // private authService: AuthService,
     private commandBus: CommandBus,
     private sessionsService: SessionsService,
     private sessionsRepository: SessionsRepository,
@@ -67,7 +66,7 @@ export class AuthController {
         },
       ]);
     }
-
+    console.log();
     const findUserByLogin =
       await this.usersQueryRepository.findUserByLoginOrEmail(inputModel.login);
     if (findUserByLogin) {

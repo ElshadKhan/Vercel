@@ -21,10 +21,17 @@ import { SpecialBearerAuthGuard } from '../../auth/guards/special.bearer.auth.gu
 import { CreatePostDto } from '../../posts/api/dto/createPostDto';
 import { CreateBlogDto } from '../domain/dto/createBlogDto';
 import { CurrentUserId } from '../../auth/current-user-id.param.decorator';
+import { CommandBus } from '@nestjs/cqrs';
+import { CreateBlogCommand } from '../application/use-cases/create-blog-use-case';
+import { UpdateBlogCommand } from '../application/use-cases/update-blog-use-case';
+import { UpdateBlogDbType } from '../domain/dto/updateBlogDbType';
+import { DeleteBlogCommand } from '../application/use-cases/delete-blog-use-case';
+import { DeleteAllBlogsCommand } from '../application/use-cases/delete-all-blogs-use-case';
 
 @Controller('blogs')
 export class BlogsController {
   constructor(
+    private commandBus: CommandBus,
     private blogsService: BlogsService,
     private postsService: PostsService,
     private blogsQueryRepository: BlogsQueryRepository,
@@ -34,7 +41,7 @@ export class BlogsController {
   @Post()
   @UseGuards(BasicAuthGuard)
   create(@Body() createBlogDto: CreateBlogDto) {
-    return this.blogsService.create(createBlogDto);
+    return this.commandBus.execute(new CreateBlogCommand(createBlogDto));
   }
 
   @Post(':blogId/posts')
@@ -90,7 +97,15 @@ export class BlogsController {
   @HttpCode(204)
   @UseGuards(BasicAuthGuard)
   async update(@Param('id') id: string, @Body() updateBlogDto: CreateBlogDto) {
-    const result = await this.blogsService.update(id, updateBlogDto);
+    const updateDto: UpdateBlogDbType = {
+      id: id,
+      name: updateBlogDto.name,
+      description: updateBlogDto.description,
+      websiteUrl: updateBlogDto.websiteUrl,
+    };
+    const result = await this.commandBus.execute(
+      new UpdateBlogCommand(updateDto),
+    );
     if (!result) {
       throw new HttpException({}, 404);
     }
@@ -101,7 +116,7 @@ export class BlogsController {
   @HttpCode(204)
   @UseGuards(BasicAuthGuard)
   async delete(@Param('id') id: string) {
-    const result = await this.blogsService.delete(id);
+    const result = await this.commandBus.execute(new DeleteBlogCommand(id));
     if (!result) {
       throw new HttpException({}, 404);
     }
@@ -110,7 +125,7 @@ export class BlogsController {
 
   @Delete()
   @HttpCode(204)
-  deleteAll() {
-    return this.blogsService.deleteAll();
+  async deleteAll() {
+    return await this.commandBus.execute(new DeleteAllBlogsCommand());
   }
 }
