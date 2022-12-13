@@ -33,6 +33,10 @@ import { CreateCommentCommand } from '../../comments/application/use-cases/creat
 import { CommentCreateUseCaseDtoType } from '../../comments/application/dto/commentCreateUseCaseDtoType';
 import { UpdateLikesCommand } from '../../likes/application/use-cases/update-likes-use-case';
 import { LikesUseCasesDtoType } from '../../likes/domain/dto/likesUseCasesDtoType';
+import { CreatePostCommand } from '../application/use-cases/create-post-use-case';
+import { CreatePostUseCaseDto } from '../application/dto/createPostUseCaseDto';
+import { UpdatePostCommand } from '../application/use-cases/update-post-use-case';
+import { DeletePostCommand } from '../application/use-cases/delete-post-use-case';
 
 @Controller('posts')
 export class PostsController {
@@ -48,12 +52,7 @@ export class PostsController {
   @Post()
   @UseGuards(BasicAuthGuard)
   async create(@Body() createPostDto: CreatePostDtoWithBlogId) {
-    return await this.postsService.create(
-      createPostDto.title,
-      createPostDto.shortDescription,
-      createPostDto.content,
-      createPostDto.blogId,
-    );
+    return await this.commandBus.execute(new CreatePostCommand(createPostDto));
   }
 
   @Post(':postId/comments')
@@ -124,9 +123,18 @@ export class PostsController {
   @UseGuards(BasicAuthGuard)
   async update(
     @Param('id') id: string,
-    @Body() updateBlogDto: UpdatePostDtoBlogId,
+    @Body() updatePostDto: UpdatePostDtoBlogId,
   ) {
-    const result = await this.postsService.update(id, updateBlogDto);
+    const useCaseDto: CreatePostUseCaseDto = {
+      id: id,
+      title: updatePostDto.title,
+      shortDescription: updatePostDto.shortDescription,
+      content: updatePostDto.content,
+      blogId: updatePostDto.blogId,
+    };
+    const result = await this.commandBus.execute(
+      new UpdatePostCommand(useCaseDto),
+    );
     if (!result) {
       throw new HttpException({}, 404);
     }
@@ -157,16 +165,10 @@ export class PostsController {
   @HttpCode(204)
   @UseGuards(BasicAuthGuard)
   async delete(@Param('id') id: string) {
-    const result = await this.postsService.delete(id);
+    const result = await this.commandBus.execute(new DeletePostCommand(id));
     if (!result) {
       throw new HttpException({}, 404);
     }
     return result;
-  }
-
-  @Delete()
-  @HttpCode(204)
-  deleteAll() {
-    return this.postsService.deleteAll();
   }
 }

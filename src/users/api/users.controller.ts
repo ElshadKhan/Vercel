@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -14,33 +15,51 @@ import { UsersService } from '../application/users.service';
 import { UsersQueryRepository } from '../infrastructure/users.queryRepository';
 import { pagination } from '../../helpers/middleware/queryValidation';
 import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserCommand } from '../application/use-cases/create-user-use-case';
+import { CommandBus } from '@nestjs/cqrs';
 import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
-import { PasswordBasicAuthGuard } from '../../auth/guards/password.basic.auth.guard';
+import { DeleteUserCommand } from '../application/use-cases/delete-user-use-case';
 
 @Controller('users')
 export class UsersController {
   constructor(
+    private commandBus: CommandBus,
     private usersService: UsersService,
     private usersQueryRepository: UsersQueryRepository,
   ) {}
 
   @Get()
-  @UseGuards(PasswordBasicAuthGuard)
+  @UseGuards(BasicAuthGuard)
   getUsers(@Query() query: any) {
     return this.usersQueryRepository.getUsers(pagination(query));
   }
 
   @Post()
-  @UseGuards(PasswordBasicAuthGuard)
+  @UseGuards(BasicAuthGuard)
   async createUser(@Body() inputModel: CreateUserDto) {
     const findUserByEmail =
       await this.usersQueryRepository.findUserByLoginOrEmail(inputModel.email);
+    if (findUserByEmail) {
+      throw new BadRequestException([
+        {
+          message: 'Email already exists',
+          field: 'email',
+        },
+      ]);
+    }
     const findUserByLogin =
       await this.usersQueryRepository.findUserByLoginOrEmail(inputModel.login);
-    if (findUserByEmail || findUserByLogin) {
-      throw new HttpException({}, 400);
+    if (findUserByLogin) {
+      throw new BadRequestException([
+        {
+          message: 'Login already exists',
+          field: 'login',
+        },
+      ]);
     }
-    const newUser = await this.usersService.create(inputModel);
+    const newUser = await this.commandBus.execute(
+      new CreateUserCommand(inputModel),
+    );
     return {
       id: newUser.id,
       login: newUser.accountData.login,
@@ -51,18 +70,12 @@ export class UsersController {
 
   @Delete(':id')
   @HttpCode(204)
-  @UseGuards(PasswordBasicAuthGuard)
+  @UseGuards(BasicAuthGuard)
   async deleteUser(@Param('id') userId: string) {
-    const result = await this.usersService.delete(userId);
+    const result = await this.commandBus.execute(new DeleteUserCommand(userId));
     if (!result) {
       throw new HttpException({}, 404);
     }
     return result;
-  }
-
-  @Delete()
-  @HttpCode(204)
-  deleteAllUsers() {
-    return this.usersService.deleteAll();
   }
 }

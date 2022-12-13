@@ -47,40 +47,35 @@ import { AuthService } from './auth/application/auth.service';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { RemoveAllDataController } from './helpers/remove.all.data.controller';
 import { BlogExistsRule } from './helpers/middleware/blogIdValidator';
-import {
-  RegistrationUserCommand,
-  RegistrationUserUseCase,
-} from './auth/application/use-cases/registration-user-use-case';
-import {
-  CheckCredentialsCommand,
-  CheckCredentialsUseCase,
-} from './auth/application/use-cases/check-credentials-use-case';
-import {
-  EmailResendingCommand,
-  EmailResendingUseCase,
-} from './auth/application/use-cases/email-resending-use-case';
-import {
-  PasswordResendingCommand,
-  PasswordResendingUseCase,
-} from './auth/application/use-cases/password-resending-use-case';
-import {
-  EmailConfirmationCommand,
-  EmailConfirmationUseCase,
-} from './auth/application/use-cases/email-confirmation-use-case';
-import {
-  PasswordConfirmationCommand,
-  PasswordConfirmationUseCase,
-} from './auth/application/use-cases/password-confirmation-use-case';
+import { RegistrationUserUseCase } from './auth/application/use-cases/registration-user-use-case';
+import { CheckCredentialsUseCase } from './auth/application/use-cases/check-credentials-use-case';
+import { EmailResendingUseCase } from './auth/application/use-cases/email-resending-use-case';
+import { PasswordResendingUseCase } from './auth/application/use-cases/password-resending-use-case';
+import { EmailConfirmationUseCase } from './auth/application/use-cases/email-confirmation-use-case';
+import { PasswordConfirmationUseCase } from './auth/application/use-cases/password-confirmation-use-case';
 import { CqrsModule } from '@nestjs/cqrs';
 import { CreateBlogUseCase } from './blogs/application/use-cases/create-blog-use-case';
 import { UpdateBlogUseCase } from './blogs/application/use-cases/update-blog-use-case';
 import { DeleteBlogUseCase } from './blogs/application/use-cases/delete-blog-use-case';
 import { DeleteAllBlogsUseCase } from './blogs/application/use-cases/delete-all-blogs-use-case';
 import { CreateCommentUseCase } from './comments/application/use-cases/create-comment-use-case';
-import { UpdateCommentCommand } from './comments/application/use-cases/update-comment-use-case';
+import { UpdateCommentUseCase } from './comments/application/use-cases/update-comment-use-case';
 import { DeleteCommentUseCase } from './comments/application/use-cases/delete-comment-use-case';
 import { DeleteAllCommentsUseCase } from './comments/application/use-cases/delete-all-comments-use-case';
-import { UpdateLikesCommand } from './likes/application/use-cases/update-likes-use-case';
+import { UpdateLikesUseCase } from './likes/application/use-cases/update-likes-use-case';
+import { DeleteAllLikesUseCase } from './likes/application/use-cases/delete-all-likes-use-case';
+import { CreateSessionUseCase } from './sessions/application/use-cases/create-session-use-case';
+import { UpdateSessionUseCase } from './sessions/application/use-cases/update-session-use-case';
+import { DeleteSessionsByDeviceIdUseCase } from './sessions/application/use-cases/delete-sessions-byDeviceId-use-case';
+import { DeleteAllSessionsExceptOneUseCase } from './sessions/application/use-cases/delete-all-sessions-exceptOne-use-case';
+import { DeleteAllSessionsUseCase } from './sessions/application/use-cases/delete-all-sessions-use-case';
+import { CreateUserUseCase } from './users/application/use-cases/create-user-use-case';
+import { DeleteUserUseCase } from './users/application/use-cases/delete-user-use-case';
+import { DeleteAllUsersUseCase } from './users/application/use-cases/delete-all-users-use-case';
+import { CreatePostUseCase } from './posts/application/use-cases/create-post-use-case';
+import { UpdatePostUseCase } from './posts/application/use-cases/update-post-use-case';
+import { DeletePostUseCase } from './posts/application/use-cases/delete-post-use-case';
+import { DeleteAllPostsUseCase } from './posts/application/use-cases/delete-all-posts-use-case';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -100,21 +95,42 @@ const authUseCases = [
   PasswordConfirmationUseCase,
 ];
 
-const blogUseCases = [
+const blogsUseCases = [
   CreateBlogUseCase,
   UpdateBlogUseCase,
   DeleteBlogUseCase,
   DeleteAllBlogsUseCase,
 ];
 
-const commentUseCases = [
+const usersUseCases = [
+  CreateUserUseCase,
+  DeleteUserUseCase,
+  DeleteAllUsersUseCase,
+];
+
+const postsUseCases = [
+  CreatePostUseCase,
+  UpdatePostUseCase,
+  DeletePostUseCase,
+  DeleteAllPostsUseCase,
+];
+
+const commentsUseCases = [
   CreateCommentUseCase,
-  UpdateCommentCommand,
+  UpdateCommentUseCase,
   DeleteCommentUseCase,
   DeleteAllCommentsUseCase,
 ];
 
-const likesUseCases = [UpdateLikesCommand];
+const sessionsUseCases = [
+  CreateSessionUseCase,
+  UpdateSessionUseCase,
+  DeleteSessionsByDeviceIdUseCase,
+  DeleteAllSessionsExceptOneUseCase,
+  DeleteAllSessionsUseCase,
+];
+
+const likesUseCases = [UpdateLikesUseCase, DeleteAllLikesUseCase];
 
 @Module({
   imports: [
@@ -170,9 +186,12 @@ const likesUseCases = [UpdateLikesCommand];
     PasswordAdapter,
     PasswordService,
     ...authUseCases,
-    ...blogUseCases,
-    ...commentUseCases,
+    ...blogsUseCases,
+    ...commentsUseCases,
     ...likesUseCases,
+    ...sessionsUseCases,
+    ...usersUseCases,
+    ...postsUseCases,
   ],
 })
 export class AppModule {}

@@ -27,6 +27,8 @@ import { UpdateBlogCommand } from '../application/use-cases/update-blog-use-case
 import { UpdateBlogDbType } from '../domain/dto/updateBlogDbType';
 import { DeleteBlogCommand } from '../application/use-cases/delete-blog-use-case';
 import { DeleteAllBlogsCommand } from '../application/use-cases/delete-all-blogs-use-case';
+import { CreatePostCommand } from '../../posts/application/use-cases/create-post-use-case';
+import { CreatePostDtoWithBlogId } from '../../posts/api/dto/createPostWithBlogIdDto';
 
 @Controller('blogs')
 export class BlogsController {
@@ -50,11 +52,14 @@ export class BlogsController {
     @Param('blogId') blogId: string,
     @Body() createPostDto: CreatePostDto,
   ) {
-    const result = await this.postsService.create(
-      createPostDto.title,
-      createPostDto.shortDescription,
-      createPostDto.content,
-      blogId,
+    const useCaseDto: CreatePostDtoWithBlogId = {
+      title: createPostDto.title,
+      shortDescription: createPostDto.shortDescription,
+      content: createPostDto.content,
+      blogId: blogId,
+    };
+    const result = await this.commandBus.execute(
+      new CreatePostCommand(useCaseDto),
     );
     if (!result) {
       throw new HttpException({}, 404);

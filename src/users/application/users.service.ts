@@ -13,42 +13,42 @@ export class UsersService {
     private passwordService: PasswordService,
   ) {}
 
-  async create(inputModel: CreateUserDto) {
-    const passwordHash = await this.passwordService.generateSaltAndHash(
-      inputModel.password,
-    );
-    const newUser = new UserAccountDBType(
-      String(+new Date()),
-      {
-        login: inputModel.login,
-        email: inputModel.email,
-        passwordHash,
-        createdAt: new Date().toISOString(),
-      },
-      {
-        confirmationCode: uuidv4(),
-        expirationDate: add(new Date(), { hours: 1, minutes: 1 }),
-        isConfirmed: false,
-      },
-      {
-        confirmationCode: uuidv4(),
-        expirationDate: add(new Date(), { hours: 2, minutes: 2 }),
-        isConfirmed: false,
-      },
-      {
-        isBanned: false,
-        banDate: null,
-        banReason: null,
-      },
-    );
-    return await this.usersRepository.create(newUser);
-  }
+  // async create(inputModel: CreateUserDto) {
+  //   const passwordHash = await this.passwordService.generateSaltAndHash(
+  //     inputModel.password,
+  //   );
+  //   const newUser = new UserAccountDBType(
+  //     String(+new Date()),
+  //     {
+  //       login: inputModel.login,
+  //       email: inputModel.email,
+  //       passwordHash,
+  //       createdAt: new Date().toISOString(),
+  //     },
+  //     {
+  //       confirmationCode: uuidv4(),
+  //       expirationDate: add(new Date(), { hours: 1, minutes: 1 }),
+  //       isConfirmed: false,
+  //     },
+  //     {
+  //       confirmationCode: uuidv4(),
+  //       expirationDate: add(new Date(), { hours: 2, minutes: 2 }),
+  //       isConfirmed: false,
+  //     },
+  //     {
+  //       isBanned: false,
+  //       banDate: null,
+  //       banReason: null,
+  //     },
+  //   );
+  //   return await this.usersRepository.create(newUser);
+  // }
 
-  delete(userId: string) {
-    return this.usersRepository.delete(userId);
-  }
-
-  deleteAll() {
-    return this.usersRepository.deleteAll();
-  }
+  // delete(userId: string) {
+  //   return this.usersRepository.delete(userId);
+  // }
+  //
+  // deleteAll() {
+  //   return this.usersRepository.deleteAll();
+  // }
 }
