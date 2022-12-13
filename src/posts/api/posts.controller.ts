@@ -31,6 +31,8 @@ import { CurrentUserId } from '../../auth/current-user-id.param.decorator';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateCommentCommand } from '../../comments/application/use-cases/create-comment-use-case';
 import { CommentCreateUseCaseDtoType } from '../../comments/application/dto/commentCreateUseCaseDtoType';
+import { UpdateLikesCommand } from '../../likes/application/use-cases/update-likes-use-case';
+import { LikesUseCasesDtoType } from '../../likes/domain/dto/likesUseCasesDtoType';
 
 @Controller('posts')
 export class PostsController {
@@ -140,11 +142,12 @@ export class PostsController {
   ) {
     const post = await this.postsQueryRepository.findOne(postId, currentUserId);
     if (post) {
-      return this.likesService.updateLikeStatus(
-        likesStatus.likeStatus,
-        postId,
-        currentUserId,
-      );
+      const useCaseDto: LikesUseCasesDtoType = {
+        likesStatus: likesStatus.likeStatus,
+        parentId: postId,
+        userId: currentUserId,
+      };
+      return this.commandBus.execute(new UpdateLikesCommand(useCaseDto));
     } else {
       throw new HttpException({}, 404);
     }

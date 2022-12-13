@@ -36,21 +36,21 @@ export class SessionsService {
     };
   }
 
-  async updateSession(
-    userId: string,
-    deviceId: string,
-    lastActiveDate: string,
-  ) {
-    return await this.sessionsRepository.updateSessions(
-      userId,
-      deviceId,
-      lastActiveDate,
-    );
-  }
+  // async updateSession(
+  //   userId: string,
+  //   deviceId: string,
+  //   lastActiveDate: string,
+  // ) {
+  //   return await this.sessionsRepository.updateSessions(
+  //     userId,
+  //     deviceId,
+  //     lastActiveDate,
+  //   );
+  // }
 
-  async deleteAll() {
-    return await this.sessionsRepository.deleteAll();
-  }
+  // async deleteAll() {
+  //   return await this.sessionsRepository.deleteAll();
+  // }
 
   async deleteSessionsByDeviceId(userId: string, deviceId: string) {
     return await this.sessionsRepository.deleteSessionsByDeviceId(

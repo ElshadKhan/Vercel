@@ -30,6 +30,9 @@ import { RegistrationUserCommand } from '../application/use-cases/registration-u
 import { PasswordResendingCommand } from '../application/use-cases/password-resending-use-case';
 import { EmailConfirmationCommand } from '../application/use-cases/email-confirmation-use-case';
 import { PasswordConfirmationCommand } from '../application/use-cases/password-confirmation-use-case';
+import { CreateSessionCommand } from '../../sessions/application/use-cases/create-session-use-case';
+import { CreateSessionUseCaseDtoType } from '../../sessions/domain/dto/createSessionUseCaseDtoType';
+import { UpdateSessionCommand } from '../../sessions/application/use-cases/update-session-use-case';
 
 @Controller('auth')
 export class AuthController {
@@ -89,10 +92,13 @@ export class AuthController {
       new CheckCredentialsCommand(inputModel),
     );
     if (!user || user.banInfo.isBanned) throw new UnauthorizedException();
-    const tokens = await this.sessionsService.createSession(
-      user.id,
-      req.ip,
-      req.headers['user-agent'],
+    const useCaseDto: CreateSessionUseCaseDtoType = {
+      userId: user.id,
+      ip: req.ip,
+      deviceName: req.headers['user-agent'],
+    };
+    const tokens = await this.commandBus.execute(
+      new CreateSessionCommand(useCaseDto),
     );
     res
       .cookie('refreshToken', tokens.refreshToken, {
@@ -124,11 +130,12 @@ export class AuthController {
       tokens.refreshToken.split(' ')[0],
     );
     const lastActiveDate = new Date(newLastActiveDate.iat * 1000).toISOString();
-    await this.sessionsService.updateSession(
-      payload.userId,
-      payload.deviceId,
-      lastActiveDate,
-    );
+    const useCaseDto = {
+      userId: payload.userId,
+      deviceId: payload.deviceId,
+      lastActiveDate: lastActiveDate,
+    };
+    await this.commandBus.execute(new UpdateSessionCommand(useCaseDto));
 
     res
       .cookie('refreshToken', tokens.refreshToken, {

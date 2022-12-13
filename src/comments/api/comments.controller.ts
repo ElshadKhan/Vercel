@@ -22,6 +22,8 @@ import { CommandBus } from '@nestjs/cqrs';
 import { UpdateCommentCommand } from '../application/use-cases/update-comment-use-case';
 import { DeleteCommentCommand } from '../application/use-cases/delete-comment-use-case';
 import { DeleteAllCommentsCommand } from '../application/use-cases/delete-all-comments-use-case';
+import { UpdateLikesCommand } from '../../likes/application/use-cases/update-likes-use-case';
+import { LikesUseCasesDtoType } from '../../likes/domain/dto/likesUseCasesDtoType';
 
 @Controller('comments')
 export class CommentsController {
@@ -79,17 +81,18 @@ export class CommentsController {
     @Body() likesStatus: LikesDto,
     @CurrentUserId() currentUserId: string,
   ) {
+    const useCaseDto: LikesUseCasesDtoType = {
+      likesStatus: likesStatus.likeStatus,
+      parentId: commentId,
+      userId: currentUserId,
+    };
     const comment =
       await this.commentsQueryRepository.findCommentByUserIdAndCommentId(
         commentId,
         currentUserId,
       );
     if (comment) {
-      return this.likesService.updateLikeStatus(
-        likesStatus.likeStatus,
-        commentId,
-        currentUserId,
-      );
+      return this.commandBus.execute(new UpdateLikesCommand(useCaseDto));
     } else {
       throw new HttpException({}, 404);
     }

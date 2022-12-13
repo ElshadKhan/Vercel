@@ -47,15 +47,15 @@ export class CommentsService {
   //   };
   // }
 
-  update(commentId: string, content: string) {
-    return this.commentsRepository.update(commentId, content);
-  }
-
-  delete(id: string) {
-    return this.commentsRepository.delete(id);
-  }
-
-  deleteAll() {
-    return this.commentsRepository.deleteAll();
-  }
+  // update(commentId: string, content: string) {
+  //   return this.commentsRepository.update(commentId, content);
+  // }
+  //
+  // delete(id: string) {
+  //   return this.commentsRepository.delete(id);
+  // }
+  //
+  // deleteAll() {
+  //   return this.commentsRepository.deleteAll();
+  // }
 }

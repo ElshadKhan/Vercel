@@ -13,10 +13,15 @@ import { SessionsQueryRepository } from '../infrastructure/sessionsQueryReposito
 import { JwtService } from '../../auth/application/jwt-service';
 import { RefreshTokenGuard } from '../../auth/guards/refresh.token.guard';
 import { SessionDBType } from '../domain/dto/sessionDbTypeDto';
+import { CommandBus } from '@nestjs/cqrs';
+import { DeleteSessionsByDeviceIdCommand } from '../application/use-cases/delete-sessions-byDeviceId-use-case';
+import { DeleteSessionUseCaseDtoType } from '../domain/dto/deleteSessionUseCaseDtoType';
+import { DeleteAllSessionsExceptOneCommand } from '../application/use-cases/delete-all-sessions-exceptOne-use-case';
 
 @Controller('/security/devices')
 export class SessionsController {
   constructor(
+    private commandBus: CommandBus,
     private readonly sessionsService: SessionsService,
     private sessionsQueryRepository: SessionsQueryRepository,
     private jwtService: JwtService,
@@ -43,9 +48,12 @@ export class SessionsController {
     const payload = await this.jwtService.getUserIdByRefreshToken(
       req.cookies.refreshToken.split(' ')[0],
     );
-    return await this.sessionsService.deleteAllSessionsExceptOne(
-      payload.userId,
-      payload.deviceId,
+    const useCaseDto: DeleteSessionUseCaseDtoType = {
+      userId: payload.userId,
+      deviceId: payload.deviceId,
+    };
+    return await this.commandBus.execute(
+      new DeleteAllSessionsExceptOneCommand(useCaseDto),
     );
   }
 
@@ -66,9 +74,12 @@ export class SessionsController {
     if (comment.userId !== payload.userId) {
       throw new HttpException({}, 403);
     }
-    return await this.sessionsService.deleteSessionsByDeviceId(
-      payload.userId,
-      deviceId,
+    const useCaseDto: DeleteSessionUseCaseDtoType = {
+      userId: payload.userId,
+      deviceId: deviceId,
+    };
+    return await this.commandBus.execute(
+      new DeleteSessionsByDeviceIdCommand(useCaseDto),
     );
   }
 }

@@ -80,6 +80,7 @@ import { CreateCommentUseCase } from './comments/application/use-cases/create-co
 import { UpdateCommentCommand } from './comments/application/use-cases/update-comment-use-case';
 import { DeleteCommentUseCase } from './comments/application/use-cases/delete-comment-use-case';
 import { DeleteAllCommentsUseCase } from './comments/application/use-cases/delete-all-comments-use-case';
+import { UpdateLikesCommand } from './likes/application/use-cases/update-likes-use-case';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -112,6 +113,8 @@ const commentUseCases = [
   DeleteCommentUseCase,
   DeleteAllCommentsUseCase,
 ];
+
+const likesUseCases = [UpdateLikesCommand];
 
 @Module({
   imports: [
@@ -169,6 +172,7 @@ const commentUseCases = [
     ...authUseCases,
     ...blogUseCases,
     ...commentUseCases,
+    ...likesUseCases,
   ],
 })
 export class AppModule {}
