@@ -6,6 +6,7 @@ import { HttpExceptionFilter } from './helpers/exception.filter';
 import cookieParser from 'cookie-parser';
 import { useContainer } from 'class-validator';
 
+console.log();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
