@@ -3,6 +3,7 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { Blog, BlogDbTypeWithId } from '../domain/entities/blog.entity';
 import { CreateBlogDbType } from '../domain/dto/createBlogDbType';
+import { UpdateBlogOnNewUserRepo } from '../domain/dto/updateBlogDbType';
 
 @Injectable()
 export class BlogsRepository {
@@ -42,6 +43,39 @@ export class BlogsRepository {
     // return true
   }
 
+  async updateBlogsOnNewUser(model: UpdateBlogOnNewUserRepo) {
+    const result = await this.blogModel.updateOne(
+      { id: model.id },
+      {
+        blogOwnerInfo: {
+          userId: model.userId,
+          userLogin: model.userLogin,
+        },
+      },
+    );
+    return;
+  }
+
+  async banUsers(userId: string, value: boolean) {
+    const result = await this.blogModel.updateMany(
+      { 'blogOwnerInfo.userId': userId },
+      {
+        isBan: value,
+      },
+    );
+    return;
+  }
+
+  async banBlogs(blogId: string, value: boolean) {
+    const result = await this.blogModel.updateOne(
+      { id: blogId },
+      {
+        isBan: value,
+      },
+    );
+    return;
+  }
+
   async delete(id: string) {
     const result = await this.blogModel.deleteOne({ id });
     return result.deletedCount === 1;
@@ -51,7 +85,7 @@ export class BlogsRepository {
     // return true
   }
 
-  async deleteAll() {
-    return await this.blogModel.deleteMany({});
+  deleteAll() {
+    return this.blogModel.deleteMany({});
   }
 }

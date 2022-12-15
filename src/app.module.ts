@@ -33,6 +33,10 @@ import {
   Session,
   SessionSchema,
 } from './sessions/domain/entities/session.entity';
+import {
+  BloggerUsersBan,
+  BloggerUsersBanSchema,
+} from './users/domain/entities/blogger.users.blogs.ban.entity';
 import { SessionsRepository } from './sessions/infrastructure/sessionsRepository';
 import { SessionsQueryRepository } from './sessions/infrastructure/sessionsQueryRepository';
 import { SessionsService } from './sessions/application/sessions.service';
@@ -84,6 +88,7 @@ const schemas = [
   { name: Comment.name, schema: CommentSchema },
   { name: Like.name, schema: LikeSchema },
   { name: Session.name, schema: SessionSchema },
+  { name: BloggerUsersBan.name, schema: BloggerUsersBanSchema },
 ];
 
 const authUseCases = [

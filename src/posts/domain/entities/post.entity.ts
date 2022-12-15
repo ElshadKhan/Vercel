@@ -17,6 +17,9 @@ export class Post {
   @Prop({ required: true, min: 1, max: 1000 })
   content: string;
 
+  @Prop({ require: true })
+  userId: string;
+
   @Prop({ required: true })
   blogId: string;
 
@@ -25,6 +28,9 @@ export class Post {
 
   @Prop({ required: true })
   createdAt: string;
+
+  @Prop()
+  isBan: boolean;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

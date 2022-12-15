@@ -6,15 +6,17 @@ export type LikeDbTypeWithId = HydratedDocument<Like>;
 @Schema()
 export class Like {
   @Prop()
-  parentId: string;
+  type: string;
   @Prop()
   userId: string;
   @Prop()
+  parentId: string;
+  @Prop()
   login: string;
   @Prop()
-  type: string;
-  @Prop()
   createdAt: string;
+  @Prop()
+  isBan: boolean;
 }
 
 export const LikeSchema = SchemaFactory.createForClass(Like);

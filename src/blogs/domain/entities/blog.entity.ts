@@ -1,6 +1,15 @@
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
+@Schema({ id: false })
+export class BlogOwnerInfo {
+  @Prop({ require: true })
+  userId: string;
+  @Prop({ require: true })
+  userLogin: string;
+}
+const BlogOwnerInfoSchema = SchemaFactory.createForClass(BlogOwnerInfo);
+
 export type BlogDbTypeWithId = HydratedDocument<Blog>;
 
 @Schema()
@@ -19,6 +28,12 @@ export class Blog {
 
   @Prop({ required: true })
   createdAt: string;
+
+  @Prop({ type: BlogOwnerInfoSchema })
+  blogOwnerInfo: BlogOwnerInfo;
+
+  @Prop()
+  isBan: boolean;
 }
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);

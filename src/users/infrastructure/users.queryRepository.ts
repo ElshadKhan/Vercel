@@ -88,11 +88,16 @@ export class UsersQueryRepository {
         ],
       })
       .count();
-    const items = users.map((u) => ({
-      id: u.id,
-      login: u.accountData.login,
-      email: u.accountData.email,
-      createdAt: u.accountData.createdAt,
+    const items = users.map((user) => ({
+      id: user.id,
+      login: user.accountData.login,
+      email: user.accountData.email,
+      createdAt: user.accountData.createdAt,
+      banInfo: {
+        isBanned: user.banInfo.isBanned,
+        banDate: user.banInfo.banDate,
+        banReason: user.banInfo.banReason,
+      },
     }));
     const userDto = new UsersBusinessType(
       getPagesCounts(totalCountUsers, pageSize),

@@ -24,6 +24,16 @@ export class CommentsRepository {
     return result.matchedCount === 1;
   }
 
+  async banUsers(userId: string, value: boolean) {
+    await this.commentModel.updateMany(
+      { userId },
+      {
+        isBan: value,
+      },
+    );
+    return;
+  }
+
   async delete(id: string) {
     const result = await this.commentModel.deleteOne({ id });
     return result.deletedCount === 1;

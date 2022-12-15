@@ -3,10 +3,16 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Injectable, Scope } from '@nestjs/common';
 import { UserAccountDBType } from '../domain/dto/user.account.dto';
+import {
+  BloggerUsersBan,
+  BloggerUsersBanDocument,
+} from '../domain/entities/blogger.users.blogs.ban.entity';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class UsersRepository {
   @InjectModel(User.name) private userModel: Model<UserDbTypeWithId>;
+  @InjectModel(BloggerUsersBan.name)
+  private bloggerUsersBanModel: Model<BloggerUsersBanDocument>;
 
   async create(user: UserAccountDBType) {
     return this.userModel.create(user);
@@ -46,6 +52,31 @@ export class UsersRepository {
       { $set: { 'accountData.passwordHash': passwordHash } },
     );
     return result.modifiedCount === 1;
+  }
+
+  async banBloggerUsers(user: any) {
+    const banUsers = await new this.bloggerUsersBanModel(user);
+    return banUsers.save();
+  }
+
+  async unbanBloggerUsers(banUserId: string, bloggerId: string) {
+    const result = await this.bloggerUsersBanModel.deleteOne({
+      banUserId,
+      bloggerId,
+    });
+    return result.deletedCount === 1;
+  }
+
+  async updateUsers(model: any) {
+    const result = await this.userModel.updateOne(
+      { id: model.id },
+      {
+        'banInfo.isBanned': model.isBanned,
+        'banInfo.banDate': model.banDate,
+        'banInfo.banReason': model.banReason,
+      },
+    );
+    return result.matchedCount === 1;
   }
 
   async delete(id: string) {
