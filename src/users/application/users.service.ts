@@ -5,11 +5,15 @@ import { CreateUserDto } from '../api/dto/create-user.dto';
 import { UsersRepository } from '../infrastructure/users.repository';
 import { PasswordService } from '../../helpers/password/password.service';
 import { UserAccountDBType } from '../domain/dto/user.account.dto';
+import { UsersQueryRepository } from '../infrastructure/users.queryRepository';
+import { BanBLoggerUsersInputModel } from '../api/dto/ban-bloger-users-input-dto';
+import { BanUserInputModel } from '../api/dto/update-user-banStatus-dto';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class UsersService {
   constructor(
     private usersRepository: UsersRepository,
+    private usersQueryRepository: UsersQueryRepository,
     private passwordService: PasswordService,
   ) {}
 
@@ -43,6 +47,71 @@ export class UsersService {
   //   );
   //   return await this.usersRepository.create(newUser);
   // }
+
+  // async updateUsers(id: string, inputModel: BanUserInputModel) {
+  //   if (inputModel.isBanned) {
+  //     const newUser = new BanUsersFactory(
+  //       id,
+  //       inputModel.isBanned,
+  //       new Date().toISOString(),
+  //       inputModel.banReason,
+  //     );
+  //
+  //     await this.sessionService.deleteUserDevices(newUser.id);
+  //     await this.userRepository.updateUsers(newUser);
+  //     await this.blogsRepository.banUsers(newUser.id, inputModel.isBanned);
+  //     await this.postsRepository.banUsers(newUser.id, inputModel.isBanned);
+  //     await this.commentsRepository.banUsers(newUser.id, inputModel.isBanned);
+  //
+  //     return newUser;
+  //   } else {
+  //     const newUser = new BanUsersFactory(id, inputModel.isBanned, null, null);
+  //
+  //     await this.userRepository.updateUsers(newUser);
+  //     await this.blogsRepository.banUsers(newUser.id, inputModel.isBanned);
+  //     await this.postsRepository.banUsers(newUser.id, inputModel.isBanned);
+  //     await this.commentsRepository.banUsers(newUser.id, inputModel.isBanned);
+  //
+  //     return newUser;
+  //   }
+  // }
+
+  async banBloggerUsers(
+    banUserId: string,
+    bloggerId: string,
+    model: BanBLoggerUsersInputModel,
+  ) {
+    const user = await this.usersQueryRepository.findUserById(banUserId);
+    if (!user) return false;
+    if (model.isBanned) {
+      const newBanUser = new BanBloggerUsersFactory(
+        String(+new Date()),
+        model.blogId,
+        bloggerId,
+        banUserId,
+        user.accountData.login,
+        {
+          isBanned: model.isBanned,
+          banDate: new Date().toISOString(),
+          banReason: model.banReason,
+        },
+      );
+
+      await this.usersRepository.banBloggerUsers(newBanUser);
+
+      return newBanUser;
+    } else {
+      // const newBanUser = new BanUsersFactory(id, model.isBanned, null, null);
+      await this.usersRepository.unbanBloggerUsers(banUserId, bloggerId);
+
+      // await this.userRepository.updateUsers(newBanUser);
+      // await this.blogsRepository.banUsers(newBanUser.id, model.isBanned);
+      // await this.postsRepository.banUsers(newBanUser.id, model.isBanned);
+      // await this.commentsRepository.banUsers(newBanUser.id, model.isBanned);
+
+      return true;
+    }
+  }
 
   // delete(userId: string) {
   //   return this.usersRepository.delete(userId);

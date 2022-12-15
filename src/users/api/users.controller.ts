@@ -8,6 +8,7 @@ import {
   HttpException,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -19,6 +20,9 @@ import { CreateUserCommand } from '../application/use-cases/create-user-use-case
 import { CommandBus } from '@nestjs/cqrs';
 import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
 import { DeleteUserCommand } from '../application/use-cases/delete-user-use-case';
+import { BlogsQueryRepository } from 'src/blogs/infrastructure/blogs.queryRepository';
+import { BanBLoggerUsersInputModel } from './dto/ban-bloger-users-input-dto';
+import { CurrentUserId } from 'src/auth/current-user-id.param.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -26,6 +30,7 @@ export class UsersController {
     private commandBus: CommandBus,
     private usersService: UsersService,
     private usersQueryRepository: UsersQueryRepository,
+    private blogsQueryRepository: BlogsQueryRepository,
   ) {}
 
   @Get()
@@ -66,6 +71,34 @@ export class UsersController {
       email: newUser.accountData.email,
       createdAt: newUser.accountData.createdAt,
     };
+  }
+
+  @Put(':id/ban')
+  @HttpCode(204)
+  async banBloggerUsers(
+    @Param('id') id: string,
+    @Body() inputModel: BanBLoggerUsersInputModel,
+    @CurrentUserId() currentUserId,
+  ) {
+    const resultFound = await this.blogsQueryRepository.findBlogById(
+      inputModel.blogId,
+    );
+    if (!resultFound) {
+      throw new HttpException('invalid blog', 404);
+    }
+    if (resultFound.blogOwnerInfo.userId !== currentUserId) {
+      throw new HttpException('Forbidden', 403);
+    }
+    const user = await this.usersService.banBloggerUsers(
+      id,
+      currentUserId,
+      inputModel,
+    );
+    if (!user) {
+      throw new HttpException('invalid user', 404);
+    }
+
+    return;
   }
 
   @Delete(':id')

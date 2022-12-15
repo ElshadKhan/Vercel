@@ -63,4 +63,18 @@ export class BlogsQueryRepository {
     }
     return findBlog;
   }
+
+  async findBlogById(id: string): Promise<Blog> {
+    return this.blogModel.findOne(
+      { id, isBan: false },
+      { _id: false, __v: 0, blogOwnerInfo: false, isBan: 0 },
+    );
+  }
+
+  async findBlogByUserId(id: string): Promise<Blog> {
+    return this.blogModel.findOne(
+      { 'blogOwnerInfo.userId': id, isBan: false },
+      { _id: false, __v: 0, isBan: 0 },
+    );
+  }
 }

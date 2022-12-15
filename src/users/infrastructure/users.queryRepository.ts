@@ -12,6 +12,12 @@ import { LoginUserDto } from '../../auth/domain/dto/login.dto';
 export class UsersQueryRepository {
   @InjectModel(User.name) private userModel: Model<UserDbTypeWithId>;
 
+  async findUserById(
+    id: string | LoginUserDto,
+  ): Promise<UserAccountDBType | null> {
+    return this.userModel.findOne({ id }).lean();
+  }
+
   async findUserByLoginOrEmail(
     loginOrEmail: string | LoginUserDto,
   ): Promise<UserAccountDBType | null> {

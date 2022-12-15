@@ -13,6 +13,7 @@ export class LikesRepository {
     await this.likeModel.create(newLikeStatus);
     return newLikeStatus;
   }
+
   async updateLikeStatusComment(
     parentId: string,
     userId: string,
@@ -24,6 +25,17 @@ export class LikesRepository {
     );
     return result.matchedCount === 1;
   }
+
+  async banUsers(userId: string, value: boolean) {
+    await this.likeModel.updateMany(
+      { userId: userId },
+      {
+        isBan: value,
+      },
+    );
+    return;
+  }
+
   async deleteAll() {
     return await this.likeModel.deleteMany({});
   }
