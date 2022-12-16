@@ -1,37 +1,67 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { SessionsService } from '../../../sessions/application/sessions.service';
+import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { BlogsRepository } from 'src/blogs/infrastructure/blogs.repository';
+import { DeleteAllUserSessionsCommand } from '../../../sessions/application/use-cases/delete-all-user-sessions-use-case';
+import { UsersRepository } from '../../infrastructure/users.repository';
+import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
+import { CommentsRepository } from 'src/comments/infrastructure/comments.repository';
 
 export class UpdateUserCommand {
-  constructor(public updateDto: UpdateBlogDbType) {}
+  constructor(public inputModel: UpdateBlogDbType) {}
 }
 
 @CommandHandler(UpdateUserCommand)
 export class UpdateUserUseCase implements ICommandHandler<UpdateUserCommand> {
-  constructor(private sessionService: SessionsService) {}
+  constructor(
+    private commandBus: CommandBus,
+    private userRepository: UsersRepository,
+    private blogsRepository: BlogsRepository,
+    private postsRepository: PostsRepository,
+    private commentsRepository: CommentsRepository,
+  ) {}
 
   async execute(command: UpdateUserCommand) {
-    if (inputModel.isBanned) {
+    if (command.inputModel.isBanned) {
       const newUser = new BanUsersFactory(
-        id,
-        inputModel.isBanned,
+        command.inputModel.id,
+        command.inputModel.isBanned,
         new Date().toISOString(),
-        inputModel.banReason,
+        command.inputModel.banReason,
       );
 
-      await this.sessionService.deleteUserDevices(newUser.id);
+      await this.commandBus.execute(
+        new DeleteAllUserSessionsCommand(newUser.id),
+      );
       await this.userRepository.updateUsers(newUser);
-      await this.blogsRepository.banUsers(newUser.id, inputModel.isBanned);
-      await this.postsRepository.banUsers(newUser.id, inputModel.isBanned);
-      await this.commentsRepository.banUsers(newUser.id, inputModel.isBanned);
+      await this.blogsRepository.banUsers(
+        newUser.id,
+        command.inputModel.isBanned,
+      );
+      await this.postsRepository.banUsers(
+        newUser.id,
+        command.inputModel.isBanned,
+      );
+      await this.commentsRepository.banUsers(
+        newUser.id,
+        command.inputModel.isBanned,
+      );
 
       return newUser;
     } else {
       const newUser = new BanUsersFactory(id, inputModel.isBanned, null, null);
 
       await this.userRepository.updateUsers(newUser);
-      await this.blogsRepository.banUsers(newUser.id, inputModel.isBanned);
-      await this.postsRepository.banUsers(newUser.id, inputModel.isBanned);
-      await this.commentsRepository.banUsers(newUser.id, inputModel.isBanned);
+      await this.blogsRepository.banUsers(
+        newUser.id,
+        command.inputModel.isBanned,
+      );
+      await this.postsRepository.banUsers(
+        newUser.id,
+        command.inputModel.isBanned,
+      );
+      await this.commentsRepository.banUsers(
+        newUser.id,
+        command.inputModel.isBanned,
+      );
 
       return newUser;
     }

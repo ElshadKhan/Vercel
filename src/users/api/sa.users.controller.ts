@@ -20,6 +20,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
 import { DeleteUserCommand } from '../application/use-cases/delete-user-use-case';
 import { BanUserInputModel } from './dto/update-user-banStatus-dto';
+import { UpdateUserCommand } from '../application/use-cases/update-user-use-case';
 
 @Controller('sa/users')
 export class UsersSaController {
@@ -80,7 +81,14 @@ export class UsersSaController {
     @Param('id') id: string,
     @Body() inputModel: BanUserInputModel,
   ) {
-    const user = await this.usersService.updateUsers(id, inputModel);
+    const useCaseDto = {
+      id: id,
+      isBanned: inputModel.isBanned,
+      banReason: inputModel.isBanned,
+    };
+    const user = await this.commandBus.execute(
+      new UpdateUserCommand(useCaseDto),
+    );
     if (user) return;
   }
 

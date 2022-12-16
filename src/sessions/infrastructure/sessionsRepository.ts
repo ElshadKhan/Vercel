@@ -36,6 +36,13 @@ export class SessionsRepository {
     return result.deletedCount === 1;
   }
 
+  async deleteUserDevices(userId: string) {
+    const result = await this.sessionModel.deleteMany({
+      userId: userId,
+    });
+    return result.deletedCount === 1;
+  }
+
   async deleteSessionsByDeviceId(userId: string, deviceId: string) {
     const result = await this.sessionModel.deleteMany({
       userId: userId,
