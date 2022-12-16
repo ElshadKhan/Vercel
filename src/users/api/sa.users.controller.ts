@@ -8,6 +8,7 @@ import {
   HttpException,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -19,7 +20,10 @@ import { CreateUserCommand } from '../application/use-cases/create-user-use-case
 import { CommandBus } from '@nestjs/cqrs';
 import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
 import { DeleteUserCommand } from '../application/use-cases/delete-user-use-case';
-import { BanUserInputModel } from './dto/update-user-banStatus-dto';
+import {
+  BanUserInputModel,
+  BanUserInputUseCase,
+} from './dto/update-user-banStatus-dto';
 import { UpdateUserCommand } from '../application/use-cases/update-user-use-case';
 
 @Controller('sa/users')
@@ -81,10 +85,10 @@ export class UsersSaController {
     @Param('id') id: string,
     @Body() inputModel: BanUserInputModel,
   ) {
-    const useCaseDto = {
+    const useCaseDto: BanUserInputUseCase = {
       id: id,
       isBanned: inputModel.isBanned,
-      banReason: inputModel.isBanned,
+      banReason: inputModel.banReason,
     };
     const user = await this.commandBus.execute(
       new UpdateUserCommand(useCaseDto),

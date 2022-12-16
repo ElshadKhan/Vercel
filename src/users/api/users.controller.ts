@@ -21,8 +21,13 @@ import { CommandBus } from '@nestjs/cqrs';
 import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
 import { DeleteUserCommand } from '../application/use-cases/delete-user-use-case';
 import { BlogsQueryRepository } from 'src/blogs/infrastructure/blogs.queryRepository';
-import { BanBLoggerUsersInputModel } from './dto/ban-bloger-users-input-dto';
+import {
+  BanBLoggerUsersInputModel,
+  BanUsersUseCaseType,
+} from './dto/ban-bloger-users-input-dto';
 import { CurrentUserId } from 'src/auth/current-user-id.param.decorator';
+import { BanUserInputUseCase } from './dto/update-user-banStatus-dto';
+import { UpdateBanBloggerUserCommand } from '../application/use-cases/update-banBlogerUser-use-case';
 
 @Controller('users')
 export class UsersController {
@@ -89,10 +94,15 @@ export class UsersController {
     if (resultFound.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
-    const user = await this.usersService.banBloggerUsers(
-      id,
-      currentUserId,
-      inputModel,
+    const useCaseDto: BanUsersUseCaseType = {
+      bloggerId: id,
+      banUserId: currentUserId,
+      isBanned: inputModel.isBanned,
+      banReason: inputModel.banReason,
+      blogId: inputModel.blogId,
+    };
+    const user = await this.commandBus.execute(
+      new UpdateBanBloggerUserCommand(useCaseDto),
     );
     if (!user) {
       throw new HttpException('invalid user', 404);

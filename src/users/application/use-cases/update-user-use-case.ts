@@ -4,9 +4,13 @@ import { DeleteAllUserSessionsCommand } from '../../../sessions/application/use-
 import { UsersRepository } from '../../infrastructure/users.repository';
 import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
 import { CommentsRepository } from 'src/comments/infrastructure/comments.repository';
+import {
+  BanUserInputUseCase,
+  BanUsersFactory,
+} from '../../api/dto/update-user-banStatus-dto';
 
 export class UpdateUserCommand {
-  constructor(public inputModel: UpdateBlogDbType) {}
+  constructor(public inputModel: BanUserInputUseCase) {}
 }
 
 @CommandHandler(UpdateUserCommand)
@@ -47,7 +51,12 @@ export class UpdateUserUseCase implements ICommandHandler<UpdateUserCommand> {
 
       return newUser;
     } else {
-      const newUser = new BanUsersFactory(id, inputModel.isBanned, null, null);
+      const newUser = new BanUsersFactory(
+        command.inputModel.id,
+        command.inputModel.isBanned,
+        null,
+        null,
+      );
 
       await this.userRepository.updateUsers(newUser);
       await this.blogsRepository.banUsers(

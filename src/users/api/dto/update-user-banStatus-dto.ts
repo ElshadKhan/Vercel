@@ -6,3 +6,18 @@ export class BanUserInputModel {
   @Length(20)
   banReason: string;
 }
+
+export class BanUserInputUseCase {
+  id: string;
+  isBanned: boolean;
+  banReason: string;
+}
+
+export class BanUsersFactory {
+  constructor(
+    public id: string,
+    public isBanned: boolean,
+    public banDate: string,
+    public banReason: string,
+  ) {}
+}
