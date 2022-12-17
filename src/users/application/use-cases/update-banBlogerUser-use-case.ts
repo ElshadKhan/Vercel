@@ -25,6 +25,7 @@ export class UpdateBanBloggerUserUseCase
     const user = await this.usersQueryRepository.findUserById(
       command.useCaseDto.banUserId,
     );
+    console.log();
     if (!user) return false;
     if (command.useCaseDto.isBanned) {
       const newBanUser = new BanBloggerUsersModel(
