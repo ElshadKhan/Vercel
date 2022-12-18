@@ -118,28 +118,6 @@ export class PostsController {
     return result;
   }
 
-  @Put(':id')
-  @HttpCode(204)
-  @UseGuards(BasicAuthGuard)
-  async update(
-    @Param('id') id: string,
-    @Body() updatePostDto: UpdatePostDtoBlogId,
-  ) {
-    const useCaseDto: CreatePostUseCaseDto = {
-      id: id,
-      title: updatePostDto.title,
-      shortDescription: updatePostDto.shortDescription,
-      content: updatePostDto.content,
-      blogId: updatePostDto.blogId,
-    };
-    const result = await this.commandBus.execute(
-      new UpdatePostCommand(useCaseDto),
-    );
-    if (!result) {
-      throw new HttpException({}, 404);
-    }
-    return result;
-  }
   @Put(':postId/like-status')
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
@@ -159,16 +137,5 @@ export class PostsController {
     } else {
       throw new HttpException({}, 404);
     }
-  }
-
-  @Delete(':id')
-  @HttpCode(204)
-  @UseGuards(BasicAuthGuard)
-  async delete(@Param('id') id: string) {
-    const result = await this.commandBus.execute(new DeletePostCommand(id));
-    if (!result) {
-      throw new HttpException({}, 404);
-    }
-    return result;
   }
 }

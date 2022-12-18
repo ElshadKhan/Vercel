@@ -7,7 +7,7 @@ export class BanUserInputModel {
   banReason: string;
 }
 
-export class BanUserInputUseCase {
+export class BanUserInputUseCaseType {
   id: string;
   isBanned: boolean;
   banReason: string;

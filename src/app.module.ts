@@ -80,6 +80,11 @@ import { CreatePostUseCase } from './posts/application/use-cases/create-post-use
 import { UpdatePostUseCase } from './posts/application/use-cases/update-post-use-case';
 import { DeletePostUseCase } from './posts/application/use-cases/delete-post-use-case';
 import { DeleteAllPostsUseCase } from './posts/application/use-cases/delete-all-posts-use-case';
+import { UsersSaController } from './users/api/sa.users.controller';
+import { UpdateUserUseCase } from './users/application/use-cases/update-user-use-case';
+import { DeleteAllUserSessionsUseCase } from './sessions/application/use-cases/delete-all-user-sessions-use-case';
+import { BloggersController } from './blogs/api/blogger.controller';
+import { BlogsSaController } from './blogs/api/sa.blogs.controller';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -111,6 +116,7 @@ const usersUseCases = [
   CreateUserUseCase,
   DeleteUserUseCase,
   DeleteAllUsersUseCase,
+  UpdateUserUseCase,
 ];
 
 const postsUseCases = [
@@ -133,6 +139,7 @@ const sessionsUseCases = [
   DeleteSessionsByDeviceIdUseCase,
   DeleteAllSessionsExceptOneUseCase,
   DeleteAllSessionsUseCase,
+  DeleteAllUserSessionsUseCase,
 ];
 
 const likesUseCases = [UpdateLikesUseCase, DeleteAllLikesUseCase];
@@ -155,8 +162,11 @@ const likesUseCases = [UpdateLikesUseCase, DeleteAllLikesUseCase];
     CqrsModule,
   ],
   controllers: [
+    UsersSaController,
     UsersController,
+    BlogsSaController,
     BlogsController,
+    BloggersController,
     PostsController,
     CommentsController,
     SessionsController,

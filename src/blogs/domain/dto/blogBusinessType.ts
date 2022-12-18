@@ -1,4 +1,4 @@
-import { CreateBlogDbType } from './createBlogDbType';
+import { CreateBlogDtoType } from './createBlogDbType';
 
 export class BlogsBusinessType {
   constructor(
@@ -6,6 +6,6 @@ export class BlogsBusinessType {
     public page: number,
     public pageSize: number,
     public totalCount: number,
-    public items: Array<CreateBlogDbType>,
+    public items: Array<CreateBlogDtoType>,
   ) {}
 }

@@ -1,5 +1,7 @@
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { BanInfoType } from '../../../users/domain/dto/user.account.dto';
+import { UsersBanInfoTypeDataSchema } from '../../../users/domain/entities/users.entity';
 
 @Schema({ id: false })
 export class BlogOwnerInfo {
@@ -9,6 +11,18 @@ export class BlogOwnerInfo {
   userLogin: string;
 }
 const BlogOwnerInfoSchema = SchemaFactory.createForClass(BlogOwnerInfo);
+
+@Schema({ id: false })
+export class BlogBanInfoTypeData {
+  @Prop()
+  isBanned: boolean;
+
+  @Prop()
+  banDate: string;
+}
+
+export const BlogBanInfoTypeDataSchema =
+  SchemaFactory.createForClass(BlogBanInfoTypeData);
 
 export type BlogDbTypeWithId = HydratedDocument<Blog>;
 
@@ -32,8 +46,8 @@ export class Blog {
   @Prop({ type: BlogOwnerInfoSchema })
   blogOwnerInfo: BlogOwnerInfo;
 
-  @Prop()
-  isBan: boolean;
+  @Prop({ type: BlogBanInfoTypeDataSchema })
+  banInfo: BlogBanInfoTypeData;
 }
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);

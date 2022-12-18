@@ -18,3 +18,10 @@ export class CreateBlogDto {
   @Transform(({ value }: TransformFnParams) => value?.trim())
   websiteUrl: string;
 }
+
+export class CreateBlogUseCaseDto {
+  userId: string;
+  name: string;
+  description: string;
+  websiteUrl: string;
+}

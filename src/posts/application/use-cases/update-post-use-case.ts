@@ -12,7 +12,7 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
 
   async execute(command: UpdatePostCommand) {
     return await this.postsRepository.update(
-      command.useCaseDto.id,
+      command.useCaseDto.postId,
       command.useCaseDto.title,
       command.useCaseDto.shortDescription,
       command.useCaseDto.content,

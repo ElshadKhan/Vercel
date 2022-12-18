@@ -20,7 +20,7 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
   ) {}
 
   async execute(command: CreatePostCommand): Promise<PostDtoType | null> {
-    const blog = await this.blogQueryRepository.findOne(
+    const blog = await this.blogQueryRepository.findBlogById(
       command.createPostDto.blogId,
     );
     if (!blog) return null;
@@ -44,7 +44,7 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
       shortDescription: newPostDto.shortDescription,
       content: newPostDto.content,
       blogId: newPostDto.blogId,
-      blogName: blog!.name,
+      blogName: blog.name,
       createdAt: newPostDto.createdAt,
       extendedLikesInfo: {
         likesCount: 0,

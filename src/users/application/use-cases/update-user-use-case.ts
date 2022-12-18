@@ -5,12 +5,12 @@ import { UsersRepository } from '../../infrastructure/users.repository';
 import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
 import { CommentsRepository } from 'src/comments/infrastructure/comments.repository';
 import {
-  BanUserInputUseCase,
+  BanUserInputUseCaseType,
   BanUsersFactory,
 } from '../../api/dto/update-user-banStatus-dto';
 
 export class UpdateUserCommand {
-  constructor(public inputModel: BanUserInputUseCase) {}
+  constructor(public inputModel: BanUserInputUseCaseType) {}
 }
 
 @CommandHandler(UpdateUserCommand)

@@ -26,7 +26,6 @@ import {
   BanUsersUseCaseType,
 } from './dto/ban-bloger-users-input-dto';
 import { CurrentUserId } from 'src/auth/current-user-id.param.decorator';
-import { BanUserInputUseCase } from './dto/update-user-banStatus-dto';
 import { UpdateBanBloggerUserCommand } from '../application/use-cases/update-banBlogerUser-use-case';
 
 @Controller('users')

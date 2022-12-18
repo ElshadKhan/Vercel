@@ -22,7 +22,7 @@ import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
 import { DeleteUserCommand } from '../application/use-cases/delete-user-use-case';
 import {
   BanUserInputModel,
-  BanUserInputUseCase,
+  BanUserInputUseCaseType,
 } from './dto/update-user-banStatus-dto';
 import { UpdateUserCommand } from '../application/use-cases/update-user-use-case';
 
@@ -79,13 +79,14 @@ export class UsersSaController {
     };
   }
 
+  @UseGuards(BasicAuthGuard)
   @Put(':id/ban')
   @HttpCode(204)
   async updateUserStatus(
     @Param('id') id: string,
     @Body() inputModel: BanUserInputModel,
   ) {
-    const useCaseDto: BanUserInputUseCase = {
+    const useCaseDto: BanUserInputUseCaseType = {
       id: id,
       isBanned: inputModel.isBanned,
       banReason: inputModel.banReason,
