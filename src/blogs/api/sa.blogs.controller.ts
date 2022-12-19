@@ -30,6 +30,7 @@ import { DeleteAllBlogsCommand } from '../application/use-cases/delete-all-blogs
 import { CreatePostCommand } from '../../posts/application/use-cases/create-post-use-case';
 import { CreatePostDtoWithBlogId } from '../../posts/api/dto/createPostWithBlogIdDto';
 
+@UseGuards(BasicAuthGuard)
 @Controller('sa/blogs')
 export class BlogsSaController {
   constructor(
