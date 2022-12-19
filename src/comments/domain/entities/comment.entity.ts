@@ -46,8 +46,6 @@ export class Comment {
   @Prop()
   content: string;
   @Prop()
-  userId: string;
-  @Prop()
   userLogin: string;
   @Prop()
   postId: string;

@@ -54,6 +54,54 @@ export class BlogsQueryRepository {
     return blogDto;
   }
 
+  async findAllBlogsForSa({
+    searchNameTerm,
+    pageNumber,
+    pageSize,
+    sortBy,
+    sortDirection,
+  }: QueryValidationType): Promise<BlogsBusinessType> {
+    const blogs = await this.blogModel
+      .find({
+        name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' },
+      })
+      .sort([[sortBy, sortDirection]])
+      .skip(getSkipNumber(pageNumber, pageSize))
+      .limit(pageSize)
+      .lean();
+    const totalCountBlogs = await this.blogModel
+      .find({
+        name: {
+          $regex: searchNameTerm,
+          $options: '(?i)a(?-i)cme',
+        },
+      })
+      .count();
+    const blogDto = new BlogsBusinessType(
+      getPagesCounts(totalCountBlogs, pageSize),
+      pageNumber,
+      pageSize,
+      totalCountBlogs,
+      blogs.map((b) => ({
+        id: b.id,
+        name: b.name,
+        description: b.description,
+        websiteUrl: b.websiteUrl,
+        createdAt: b.createdAt,
+        blogOwnerInfo: {
+          userId: b.blogOwnerInfo.userId,
+          userLogin: b.blogOwnerInfo.userLogin,
+        },
+        banInfo: {
+          isBanned: b.banInfo.isBanned,
+          banDate: b.banInfo.banDate,
+        },
+      })),
+    );
+
+    return blogDto;
+  }
+
   async findAllBloggerBlogs(
     {
       searchNameTerm,

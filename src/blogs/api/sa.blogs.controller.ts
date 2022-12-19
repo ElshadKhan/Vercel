@@ -10,6 +10,7 @@ import {
   Put,
   HttpException,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { BlogsService } from '../application/blogs.service';
 import { BlogsQueryRepository } from '../infrastructure/blogs.queryRepository';
@@ -38,7 +39,7 @@ export class BlogsSaController {
     private blogsService: BlogsService,
     private postsService: PostsService,
     private blogsQueryRepository: BlogsQueryRepository,
-    private postsQueryRepository: PostsQueryRepository,
+    private usersQueryRepository: UsersQueryRepository,
   ) {}
 
   // @Post()
@@ -70,54 +71,68 @@ export class BlogsSaController {
 
   @Get()
   findAll(@Query() query: any) {
-    return this.blogsQueryRepository.findAllBlogs(pagination(query));
+    return this.blogsQueryRepository.findAllBlogsForSa(pagination(query));
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const result = await this.blogsQueryRepository.findOne(id);
-    if (!result) {
-      throw new HttpException({}, 404);
-    }
-    return result;
-  }
-
-  @UseGuards(SpecialBearerAuthGuard)
-  @Get(':blogId/posts')
-  async findOneByBlogId(
-    @Param('blogId') blogId: string,
-    @Query() query: any,
-    @CurrentUserId() currentUserId: string,
-  ) {
-    const result = await this.postsQueryRepository.findOneByBlogId(
-      blogId,
-      pagination(query),
-      currentUserId,
-    );
-    if (!result) {
-      throw new HttpException({}, 404);
-    }
-    return result;
-  }
-
-  // @Put(':id')
-  // @HttpCode(204)
-  // @UseGuards(BasicAuthGuard)
-  // async update(@Param('id') id: string, @Body() updateBlogDto: CreateBlogDto) {
-  //   const updateDto: UpdateBlogDbType = {
-  //     id: id,
-  //     name: updateBlogDto.name,
-  //     description: updateBlogDto.description,
-  //     websiteUrl: updateBlogDto.websiteUrl,
-  //   };
-  //   const result = await this.commandBus.execute(
-  //     new UpdateBlogCommand(updateDto),
+  // @Get(':id')
+  // async findOne(@Param('id') id: string) {
+  //   const result = await this.blogsQueryRepository.findOne(id);
+  //   if (!result) {
+  //     throw new HttpException({}, 404);
+  //   }
+  //   return result;
+  // }
+  //
+  // @UseGuards(SpecialBearerAuthGuard)
+  // @Get(':blogId/posts')
+  // async findOneByBlogId(
+  //   @Param('blogId') blogId: string,
+  //   @Query() query: any,
+  //   @CurrentUserId() currentUserId: string,
+  // ) {
+  //   const result = await this.postsQueryRepository.findOneByBlogId(
+  //     blogId,
+  //     pagination(query),
+  //     currentUserId,
   //   );
   //   if (!result) {
   //     throw new HttpException({}, 404);
   //   }
   //   return result;
   // }
+
+  @Put(':id/bind-with-user/:userId')
+  @HttpCode(204)
+  async updateBlogsBindWithUser(
+    @Param() model: IdModelType,
+    @CurrentUserId() currentUserId,
+  ) {
+    const resultFound = await this.blogsQueryRepository.findBlogById(model.id);
+    if (!resultFound || resultFound.blogOwnerInfo.userId) {
+      throw new BadRequestException([
+        { message: 'blogId Not Found', filed: 'blogId' },
+      ]);
+    }
+
+    const user = await this.usersQueryRepository.findUsersById(model.userId);
+    if (!user) {
+      throw new BadRequestException([
+        { message: 'userId Not Found', filed: 'userId' },
+      ]);
+    }
+    return this.blogsService.updatePostsOnNewUser(user.login, model);
+  }
+
+  @Put(':id/ban')
+  @HttpCode(204)
+  async updateBanBlogs(
+    @Param('id') id: string,
+    @Body() inputModel: BanBlogsInputModel,
+  ) {
+    const blog = await this.blogsService.banBlogs(id, inputModel.isBanned);
+    // if (blog) return;
+    return;
+  }
   //
   // @Delete(':id')
   // @HttpCode(204)
