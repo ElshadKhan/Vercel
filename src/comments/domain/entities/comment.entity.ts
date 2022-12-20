@@ -1,6 +1,7 @@
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { LikesInfoType } from '../dto/likeInfoType';
+import { LikeStatusEnam } from 'src/helpers/helpFunctions';
 
 @Schema()
 class LikesInfo {
@@ -24,10 +25,12 @@ export class commentatorInfoType {
 export const commentatorInfoSchema =
   SchemaFactory.createForClass(commentatorInfoType);
 
-@Schema({ id: false })
+@Schema()
 export class postInfoType {
+  @Prop({ require: true })
+  ownerUserId: string;
   @Prop({ required: true })
-  id: string;
+  postId: string;
   @Prop({ required: true })
   title: string;
   @Prop({ required: true })
@@ -46,19 +49,11 @@ export class Comment {
   @Prop()
   content: string;
   @Prop()
-  userLogin: string;
-  @Prop()
-  postId: string;
-  @Prop()
   createdAt: string;
-  @Prop({ type: LikesInfoSchema })
-  likesInfo: LikesInfoType;
   @Prop({ type: commentatorInfoSchema })
   commentatorInfo: commentatorInfoType;
   @Prop({ type: postInfoSchema })
   postInfo: postInfoType;
-  @Prop({ require: true })
-  ownerUserId: string;
   @Prop()
   isBan: boolean;
 }

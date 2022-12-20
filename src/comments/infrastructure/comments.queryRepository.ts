@@ -46,8 +46,8 @@ export class CommentsQueryRepository {
     return {
       id: comment.id,
       content: comment.content,
-      userId: comment.ownerUserId,
-      userLogin: comment.userLogin,
+      userId: comment.commentatorInfo.userId,
+      userLogin: comment.commentatorInfo.userLogin,
       createdAt: comment.createdAt,
       likesInfo: {
         likesCount: likesCount,
@@ -79,8 +79,8 @@ export class CommentsQueryRepository {
     return {
       id: comment.id,
       content: comment.content,
-      userId: comment.ownerUserId,
-      userLogin: comment.userLogin,
+      userId: comment.commentatorInfo.userId,
+      userLogin: comment.commentatorInfo.userLogin,
       createdAt: comment.createdAt,
       likesInfo: {
         likesCount: likesCount,
@@ -125,8 +125,8 @@ export class CommentsQueryRepository {
         return {
           id: c.id,
           content: c.content,
-          userId: c.ownerUserId,
-          userLogin: c.userLogin,
+          userId: c.commentatorInfo.userId,
+          userLogin: c.commentatorInfo.userLogin,
           createdAt: c.createdAt,
           likesInfo: {
             likesCount: likesCount,
