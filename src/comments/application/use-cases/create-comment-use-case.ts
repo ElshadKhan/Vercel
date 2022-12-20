@@ -6,11 +6,6 @@ import { UsersQueryRepository } from '../../../users/infrastructure/users.queryR
 import { CommentsRepository } from '../../infrastructure/comments.repository';
 import { PostsQueryRepository } from '../../../posts/infrastructure/posts.queryRepository';
 import { CommentCreateUseCaseDtoType } from '../dto/commentCreateUseCaseDtoType';
-import {
-  commentatorInfoType,
-  postInfoType,
-} from '../../domain/entities/comment.entity';
-import { Prop } from '@nestjs/mongoose';
 
 export class CreateCommentCommand {
   constructor(public inputModel: CommentCreateUseCaseDtoType) {}
@@ -33,6 +28,7 @@ export class CreateCommentUseCase
     const post = await this.postsQueryRepository.findPostById(
       command.inputModel.postId,
     );
+    console.log('post', post);
     if (!post) return null;
     const comment: CreateCommentDbType = {
       id: String(+new Date()),

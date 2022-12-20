@@ -97,15 +97,16 @@ export class CommentsQueryRepository {
   ): Promise<CommentsBusinessType | null> {
     const comment = await this.commentModel.findOne({
       postId: postId,
+      isBan: false,
     });
     const findComments = await this.commentModel
-      .find({ postId: postId })
+      .find({ postId: postId, isBan: false })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
     const totalCountComments = await this.commentModel
-      .find({ postId: postId })
+      .find({ postId: postId, isBan: false })
       .sort([[sortBy, sortDirection]])
       .count();
     if (comment) {
