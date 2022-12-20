@@ -43,26 +43,6 @@ export class UsersSaController {
   @Post()
   @UseGuards(BasicAuthGuard)
   async createUser(@Body() inputModel: CreateUserDto) {
-    const findUserByEmail =
-      await this.usersQueryRepository.findUserByLoginOrEmail(inputModel.email);
-    if (findUserByEmail) {
-      throw new BadRequestException([
-        {
-          message: 'Email already exists',
-          field: 'email',
-        },
-      ]);
-    }
-    const findUserByLogin =
-      await this.usersQueryRepository.findUserByLoginOrEmail(inputModel.login);
-    if (findUserByLogin) {
-      throw new BadRequestException([
-        {
-          message: 'Login already exists',
-          field: 'login',
-        },
-      ]);
-    }
     const newUser = await this.commandBus.execute(
       new CreateUserCommand(inputModel),
     );
