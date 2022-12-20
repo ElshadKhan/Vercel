@@ -14,22 +14,22 @@ export class LikesQueryRepository {
     userId: string,
   ): Promise<LikeDbType | null> {
     return this.likeModel.findOne({
-      $and: [{ parentId: parentId }, { userId: userId }, { isBan: false }],
+      $and: [{ parentId: parentId }, { userId: userId }],
     });
   }
   async getLikesCount(id: string, like: string): Promise<number> {
     return this.likeModel.countDocuments({
-      $and: [{ parentId: id }, { type: like }, { isBan: false }],
+      $and: [{ parentId: id }, { type: like }],
     });
   }
   async getDislikesCount(id: string, dislike: string): Promise<number> {
     return this.likeModel.countDocuments({
-      $and: [{ parentId: id }, { type: dislike }, { isBan: false }],
+      $and: [{ parentId: id }, { type: dislike }],
     });
   }
   async getLastLikes(id: string, like: string): Promise<LikeDbTypeWithId[]> {
     return this.likeModel
-      .find({ $and: [{ parentId: id }, { type: like }, { isBan: false }] })
+      .find({ $and: [{ parentId: id }, { type: like }] })
       .sort([['createdAt', -1]]);
   }
 }
