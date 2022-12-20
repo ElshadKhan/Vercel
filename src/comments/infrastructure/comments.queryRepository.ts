@@ -107,7 +107,7 @@ export class CommentsQueryRepository {
       .sort([[sortBy, sortDirection]])
       .count();
     if (comment) {
-      const promis = findComments.map(async (c) => {
+      const promise = findComments.map(async (c) => {
         let myStatus = LikeStatusEnam.None;
 
         if (userId) {
@@ -135,7 +135,7 @@ export class CommentsQueryRepository {
           },
         };
       });
-      const items = await Promise.all(promis);
+      const items = await Promise.all(promise);
       return {
         pagesCount: getPagesCounts(totalCountComments, pageSize),
         page: pageNumber,
