@@ -10,6 +10,7 @@ import {
   Put,
   HttpException,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { PostsService } from '../application/posts.service';
 import { PostsQueryRepository } from '../infrastructure/posts.queryRepository';
@@ -106,16 +107,22 @@ export class PostsController {
 
   @UseGuards(SpecialBearerAuthGuard)
   @Get(':id')
-  async findOne(
-    @Param('id') id: string,
-    @CurrentUserId() currentUserId: string,
-  ) {
-    const result = await this.postsQueryRepository.findOne(id, currentUserId);
+  async findOne(@Param('id') id: string, @Req() req) {
+    if (!req.user) {
+      const result = await this.postsQueryRepository.findOne(id, req.user);
 
-    if (!result) {
-      throw new HttpException({}, 404);
+      if (!result) {
+        throw new HttpException({}, 404);
+      }
+      return result;
+    } else {
+      const result = await this.postsQueryRepository.findOne(id, req.user.id);
+
+      if (!result) {
+        throw new HttpException({}, 404);
+      }
+      return result;
     }
-    return result;
   }
 
   @Put(':postId/like-status')

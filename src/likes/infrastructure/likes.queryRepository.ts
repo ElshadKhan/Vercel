@@ -13,17 +13,29 @@ export class LikesQueryRepository {
     parentId: string,
     userId: string,
   ): Promise<LikeDbType | null> {
-    return this.likeModel.findOne({ parentId: parentId, userId: userId });
+    return this.likeModel.findOne({
+      parentId: parentId,
+      userId: userId,
+      isBan: false,
+    });
   }
   async getLikesCount(id: string, like: string): Promise<number> {
-    return this.likeModel.countDocuments({ parentId: id, type: like });
+    return this.likeModel.countDocuments({
+      parentId: id,
+      type: like,
+      isBan: false,
+    });
   }
   async getDislikesCount(id: string, dislike: string): Promise<number> {
-    return this.likeModel.countDocuments({ parentId: id, type: dislike });
+    return this.likeModel.countDocuments({
+      parentId: id,
+      type: dislike,
+      isBan: false,
+    });
   }
   async getLastLikes(id: string, like: string): Promise<LikeDbTypeWithId[]> {
     return this.likeModel
-      .find({ parentId: id, type: like })
+      .find({ parentId: id, type: like, isBan: false })
       .sort([['createdAt', -1]]);
   }
 }

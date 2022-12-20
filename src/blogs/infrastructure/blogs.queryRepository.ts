@@ -4,7 +4,10 @@ import { Injectable } from '@nestjs/common';
 import { getPagesCounts, getSkipNumber } from '../../helpers/helpFunctions';
 import { Blog, BlogDbTypeWithId } from '../domain/entities/blog.entity';
 import { QueryValidationType } from '../../helpers/middleware/queryValidation';
-import { BlogsBusinessType } from '../domain/dto/blogBusinessType';
+import {
+  BlogsBusinessType,
+  SaBlogsBusinessType,
+} from '../domain/dto/blogBusinessType';
 import {
   CreateBlogDbType,
   CreateBlogDtoType,
@@ -77,7 +80,7 @@ export class BlogsQueryRepository {
         },
       })
       .count();
-    const blogDto = new BlogsBusinessType(
+    const blogDto = new SaBlogsBusinessType(
       getPagesCounts(totalCountBlogs, pageSize),
       pageNumber,
       pageSize,
@@ -91,10 +94,6 @@ export class BlogsQueryRepository {
         blogOwnerInfo: {
           userId: b.blogOwnerInfo.userId,
           userLogin: b.blogOwnerInfo.userLogin,
-        },
-        banInfo: {
-          isBanned: b.banInfo.isBanned,
-          banDate: b.banInfo.banDate,
         },
       })),
     );
@@ -125,10 +124,10 @@ export class BlogsQueryRepository {
       .lean();
     const totalCountBlogs = await this.blogModel
       .find({
-        name: {
-          $regex: searchNameTerm,
-          $options: '(?i)a(?-i)cme',
-        },
+        $and: [
+          { name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' } },
+          { 'blogOwnerInfo.userId': currentUserId },
+        ],
       })
       .count();
     const blogDto = new BlogsBusinessType(
