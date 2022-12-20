@@ -61,7 +61,7 @@ export class CommentsQueryRepository {
     id: string,
     userId?: string,
   ): Promise<CommentDtoType | null> {
-    const comment = await this.commentModel.findOne({ id, isBan: false });
+    const comment = await this.commentModel.findOne({ id });
     if (!comment) return null;
     let myStatus = LikeStatusEnam.None;
     if (userId) {
