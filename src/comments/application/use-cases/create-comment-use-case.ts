@@ -6,6 +6,11 @@ import { UsersQueryRepository } from '../../../users/infrastructure/users.queryR
 import { CommentsRepository } from '../../infrastructure/comments.repository';
 import { PostsQueryRepository } from '../../../posts/infrastructure/posts.queryRepository';
 import { CommentCreateUseCaseDtoType } from '../dto/commentCreateUseCaseDtoType';
+import {
+  commentatorInfoType,
+  postInfoType,
+} from '../../domain/entities/comment.entity';
+import { Prop } from '@nestjs/mongoose';
 
 export class CreateCommentCommand {
   constructor(public inputModel: CommentCreateUseCaseDtoType) {}
@@ -25,35 +30,38 @@ export class CreateCommentUseCase
     const user = await this.usersQueryRepository.getUser(
       command.inputModel.userId,
     );
-    const post = await this.postsQueryRepository.findOne(
+    const post = await this.postsQueryRepository.findPostById(
       command.inputModel.postId,
-      command.inputModel.userId,
     );
     if (!post) return null;
     const comment: CreateCommentDbType = {
       id: String(+new Date()),
       content: command.inputModel.content,
-      userId: command.inputModel.userId,
-      userLogin: user.accountData.login,
-      postId: command.inputModel.postId,
       createdAt: new Date().toISOString(),
-      likesInfo: {
-        likesCount: 0,
-        dislikesCount: 0,
-        myStatus: LikeStatusEnam.None,
+      commentatorInfo: {
+        userId: command.inputModel.userId,
+        userLogin: user.accountData.login,
       },
+      postInfo: {
+        ownerUserId: post.userId,
+        postId: post.id,
+        title: post.title,
+        blogId: post.blogId,
+        blogName: post.blogName,
+      },
+      isBan: false,
     };
     const newComment = await this.commentsRepository.create(comment);
     return {
       id: newComment.id,
       content: newComment.content,
-      userId: newComment.userId,
-      userLogin: newComment.userLogin,
+      userId: newComment.postInfo.ownerUserId,
+      userLogin: user.accountData.login,
       createdAt: newComment.createdAt,
       likesInfo: {
-        likesCount: newComment.likesInfo.likesCount,
-        dislikesCount: newComment.likesInfo.dislikesCount,
-        myStatus: newComment.likesInfo.myStatus,
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: LikeStatusEnam.None,
       },
     };
   }

@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PostsRepository } from '../../infrastructure/posts.repository';
-import { CreatePostUseCaseDto } from '../dto/createPostUseCaseDto';
+import { UpdatePostUseCaseDto } from '../dto/createPostUseCaseDto';
 
 export class UpdatePostCommand {
-  constructor(public useCaseDto: CreatePostUseCaseDto) {}
+  constructor(public useCaseDto: UpdatePostUseCaseDto) {}
 }
 
 @CommandHandler(UpdatePostCommand)

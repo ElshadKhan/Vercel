@@ -1,11 +1,13 @@
-import { LikesInfoType } from '../../domain/dto/likeInfoType';
+import {
+  commentatorInfoType,
+  postInfoType,
+} from '../../domain/entities/comment.entity';
 
 export class CreateCommentDbType {
   id: string;
   content: string;
-  userId: string;
-  userLogin: string;
-  postId: string;
   createdAt: string;
-  likesInfo: LikesInfoType;
+  commentatorInfo: commentatorInfoType;
+  postInfo: postInfoType;
+  isBan: boolean;
 }

@@ -48,12 +48,12 @@ export class PostsController {
     private commentsQueryRepository: CommentsQueryRepository,
     private readonly likesService: LikesService,
   ) {}
-  @UseGuards(SpecialBearerAuthGuard)
-  @Post()
-  @UseGuards(BasicAuthGuard)
-  async create(@Body() createPostDto: CreatePostDtoWithBlogId) {
-    return await this.commandBus.execute(new CreatePostCommand(createPostDto));
-  }
+  // @UseGuards(SpecialBearerAuthGuard)
+  // @Post()
+  // @UseGuards(BasicAuthGuard)
+  // async create(@Body() createPostDto: CreatePostDtoWithBlogId) {
+  //   return await this.commandBus.execute(new CreatePostCommand(createPostDto));
+  // }
 
   @Post(':postId/comments')
   @UseGuards(BearerAuthGuard)

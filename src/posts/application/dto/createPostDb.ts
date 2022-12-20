@@ -7,5 +7,6 @@ export class CreatePostDbType {
     public blogId: string,
     public blogName: string | null,
     public createdAt: string,
+    public userId: string,
   ) {}
 }

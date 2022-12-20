@@ -12,7 +12,7 @@ import { PostsBusinessType } from './dto/postBusinessType';
 import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.queryRepository';
 import { LikesQueryRepository } from '../../likes/infrastructure/likes.queryRepository';
 import { UserAccountDBType } from '../../users/domain/dto/user.account.dto';
-import { PostDtoType } from '../application/dto/PostDto';
+import { PostDbType, PostDtoType } from '../application/dto/PostDto';
 
 @Injectable()
 export class PostsQueryRepository {
@@ -157,6 +157,10 @@ export class PostsQueryRepository {
       };
     }
     return null;
+  }
+
+  async findPostById(id: string): Promise<PostDbType> {
+    return await this.postModel.findOne({ id });
   }
 
   async findOne(id: string, userId?: string): Promise<PostDtoType> {

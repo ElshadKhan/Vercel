@@ -8,6 +8,7 @@ import {
   Put,
   HttpException,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { CommentsService } from '../application/comments.service';
 import { CommentsQueryRepository } from '../infrastructure/comments.queryRepository';
@@ -33,15 +34,13 @@ export class CommentsController {
     private commentsQueryRepository: CommentsQueryRepository,
     private likesService: LikesService,
   ) {}
+
   @UseGuards(SpecialBearerAuthGuard)
   @Get(':id')
-  async findOne(
-    @Param('id') id: string,
-    @CurrentUserId() currentUserId: string,
-  ) {
+  async findOne(@Param('id') id: string, @Req() req) {
     const result = await this.commentsQueryRepository.findCommentById(
       id,
-      currentUserId,
+      req.user.id,
     );
     if (!result) {
       throw new HttpException({}, 404);

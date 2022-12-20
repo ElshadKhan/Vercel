@@ -28,9 +28,11 @@ import { UpdateBlogCommand } from '../application/use-cases/update-blog-use-case
 import { UpdateBlogDbType } from '../domain/dto/updateBlogDbType';
 import { DeleteBlogCommand } from '../application/use-cases/delete-blog-use-case';
 import { CreatePostCommand } from '../../posts/application/use-cases/create-post-use-case';
-import { CreatePostDtoWithBlogId } from '../../posts/api/dto/createPostWithBlogIdDto';
 import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
-import { CreatePostUseCaseDto } from '../../posts/application/dto/createPostUseCaseDto';
+import {
+  CreatePostUseCaseDto,
+  UpdatePostUseCaseDto,
+} from '../../posts/application/dto/createPostUseCaseDto';
 import { UpdatePostCommand } from '../../posts/application/use-cases/update-post-use-case';
 import { DeletePostCommand } from '../../posts/application/use-cases/delete-post-use-case';
 
@@ -91,11 +93,12 @@ export class BloggersController {
     if (resultFound.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
-    const useCaseDto: CreatePostDtoWithBlogId = {
+    const useCaseDto: CreatePostUseCaseDto = {
       title: createPostDto.title,
       shortDescription: createPostDto.shortDescription,
       content: createPostDto.content,
       blogId: blogId,
+      userId: currentUserId,
     };
     const post = await this.commandBus.execute(
       new CreatePostCommand(useCaseDto),
@@ -145,7 +148,7 @@ export class BloggersController {
     if (blog.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
-    const useCaseDto: CreatePostUseCaseDto = {
+    const useCaseDto: UpdatePostUseCaseDto = {
       postId: postId,
       title: updatePostDto.title,
       shortDescription: updatePostDto.shortDescription,

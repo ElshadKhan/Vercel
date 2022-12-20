@@ -1,3 +1,17 @@
+export class PostDbType {
+  constructor(
+    public id: string,
+    public title: string,
+    public shortDescription: string,
+    public content: string,
+    public blogId: string,
+    public blogName: string | null,
+    public createdAt: string,
+    public userId: string,
+    public extendedLikesInfo: ExtendedLikesInfoType,
+  ) {}
+}
+
 export class PostDtoType {
   constructor(
     public id: string,

@@ -1,4 +1,4 @@
-import { CreatePostDbType } from '../../application/dto/createPostDb';
+import { PostDtoType } from '../../application/dto/PostDto';
 
 export class PostsBusinessType {
   constructor(
@@ -6,6 +6,6 @@ export class PostsBusinessType {
     public page: number,
     public pageSize: number,
     public totalCount: number,
-    public items: Array<CreatePostDbType>,
+    public items: Array<PostDtoType>,
   ) {}
 }

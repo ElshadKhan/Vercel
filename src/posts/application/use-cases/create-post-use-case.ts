@@ -5,10 +5,10 @@ import { LikeStatusEnam } from '../../../helpers/helpFunctions';
 import { BlogsQueryRepository } from '../../../blogs/infrastructure/blogs.queryRepository';
 import { PostsRepository } from '../../infrastructure/posts.repository';
 import { LikesQueryRepository } from '../../../likes/infrastructure/likes.queryRepository';
-import { CreatePostDtoWithBlogId } from '../../api/dto/createPostWithBlogIdDto';
+import { CreatePostUseCaseDto } from '../dto/createPostUseCaseDto';
 
 export class CreatePostCommand {
-  constructor(public createPostDto: CreatePostDtoWithBlogId) {}
+  constructor(public createPostDto: CreatePostUseCaseDto) {}
 }
 
 @CommandHandler(CreatePostCommand)
@@ -32,6 +32,7 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
       blogId: command.createPostDto.blogId,
       blogName: blog.name,
       createdAt: new Date().toISOString(),
+      userId: command.createPostDto.userId,
     };
     const newPostDto = await this.postsRepository.create(newPost);
     const lastLikes = await this.likesQueryRepository.getLastLikes(
