@@ -27,7 +27,7 @@ export class PostsQueryRepository {
     userId?: string,
   ): Promise<PostsBusinessType> {
     const posts = await this.postModel
-      .find()
+      .find({ isBan: false }, { _id: false, __v: 0, isBan: 0 })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
@@ -95,13 +95,13 @@ export class PostsQueryRepository {
   ): Promise<PostsBusinessType> {
     const blog = await this.blogsQueryRepository.findOne(blogId);
     const findPosts = await this.postModel
-      .find({ blogId })
+      .find({ blogId, isBan: false }, { _id: false, __v: 0, isBan: 0 })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
     const totalCountPosts = await this.postModel
-      .find({ blogId })
+      .find({ blogId, isBan: false })
       .sort([[sortBy, sortDirection]])
       .count();
     if (blog) {
@@ -160,7 +160,7 @@ export class PostsQueryRepository {
   }
 
   async findPostById(id: string): Promise<PostDbType> {
-    return await this.postModel.findOne({ id });
+    return await this.postModel.findOne({ id, isBan: false });
   }
 
   async findOne(id: string, userId?: string): Promise<PostDtoType> {

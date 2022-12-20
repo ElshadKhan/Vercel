@@ -25,20 +25,37 @@ export class BlogsQueryRepository {
     sortDirection,
   }: QueryValidationType): Promise<BlogsBusinessType> {
     const blogs = await this.blogModel
-      .find({
-        name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' },
-      })
+      .find(
+        {
+          $and: [
+            {
+              name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' },
+            },
+            {
+              'banInfo.isBanned': false,
+            },
+          ],
+        },
+        { _id: false, __v: 0, 'banInfo.isBanned': 0 },
+      )
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
     const totalCountBlogs = await this.blogModel
-      .find({
-        name: {
-          $regex: searchNameTerm,
-          $options: '(?i)a(?-i)cme',
+      .find(
+        {
+          $and: [
+            {
+              name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' },
+            },
+            {
+              'banInfo.isBanned': false,
+            },
+          ],
         },
-      })
+        { _id: false, __v: 0, 'banInfo.isBanned': 0 },
+      )
       .count();
     const blogDto = new BlogsBusinessType(
       getPagesCounts(totalCountBlogs, pageSize),
@@ -116,6 +133,9 @@ export class BlogsQueryRepository {
         $and: [
           { name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' } },
           { 'blogOwnerInfo.userId': currentUserId },
+          {
+            'banInfo.isBanned': false,
+          },
         ],
       })
       .sort([[sortBy, sortDirection]])
@@ -127,6 +147,9 @@ export class BlogsQueryRepository {
         $and: [
           { name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' } },
           { 'blogOwnerInfo.userId': currentUserId },
+          {
+            'banInfo.isBanned': false,
+          },
         ],
       })
       .count();
@@ -148,7 +171,10 @@ export class BlogsQueryRepository {
   }
 
   async findOne(id: string): Promise<CreateBlogDtoType | null> {
-    const findBlog = await this.blogModel.findOne({ id });
+    const findBlog = await this.blogModel.findOne({
+      id,
+      'banInfo.isBanned': false,
+    });
     if (findBlog) {
       const blog = new CreateBlogDtoType(
         findBlog.id,

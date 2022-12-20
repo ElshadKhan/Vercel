@@ -24,7 +24,7 @@ export class CommentsQueryRepository {
     id: string,
     userId?: string,
   ): Promise<CommentDtoType | null> {
-    const comment = await this.commentModel.findOne({ id: id });
+    const comment = await this.commentModel.findOne({ id, isBan: false });
     if (!comment) return null;
 
     let myStatus = LikeStatusEnam.None;
@@ -95,15 +95,18 @@ export class CommentsQueryRepository {
     { pageNumber, pageSize, sortBy, sortDirection }: QueryValidationType,
     userId?: string,
   ): Promise<CommentsBusinessType | null> {
-    const comment = await this.commentModel.findOne({ postId: postId });
+    const comment = await this.commentModel.findOne({
+      postId: postId,
+      isBan: false,
+    });
     const findComments = await this.commentModel
-      .find({ postId: postId })
+      .find({ postId: postId, isBan: false })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
     const totalCountComments = await this.commentModel
-      .find({ postId: postId })
+      .find({ postId: postId, isBan: false })
       .sort([[sortBy, sortDirection]])
       .count();
     if (comment) {
