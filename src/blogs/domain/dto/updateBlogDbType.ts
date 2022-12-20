@@ -13,7 +13,11 @@ export class UpdateBlogOnNewUser {
 }
 
 export class UpdateBlogOnNewUserRepo {
-  id: string;
+  blogId: string;
   userId: string;
   userLogin: string;
+}
+
+export class BanBlogsInputModel {
+  isBanned: boolean;
 }

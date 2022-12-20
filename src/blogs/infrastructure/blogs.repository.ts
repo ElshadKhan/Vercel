@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { Blog, BlogDbTypeWithId } from '../domain/entities/blog.entity';
 import { CreateBlogDbType } from '../domain/dto/createBlogDbType';
 import { UpdateBlogOnNewUserRepo } from '../domain/dto/updateBlogDbType';
+import { BanBlogsRepoDto } from '../domain/dto/updateBlogsBindType';
 
 @Injectable()
 export class BlogsRepository {
@@ -45,7 +46,7 @@ export class BlogsRepository {
 
   async updateBlogsOnNewUser(model: UpdateBlogOnNewUserRepo) {
     const result = await this.blogModel.updateOne(
-      { id: model.id },
+      { id: model.blogId },
       {
         blogOwnerInfo: {
           userId: model.userId,
@@ -60,17 +61,18 @@ export class BlogsRepository {
     const result = await this.blogModel.updateMany(
       { 'blogOwnerInfo.userId': userId },
       {
-        isBan: value,
+        'banInfo.isBanned': value,
       },
     );
     return;
   }
 
-  async banBlogs(blogId: string, value: boolean) {
+  async banBlogs(banBlogDto: BanBlogsRepoDto) {
     const result = await this.blogModel.updateOne(
-      { id: blogId },
+      { id: banBlogDto.blogId },
       {
-        isBan: value,
+        'banInfo.isBanned': banBlogDto.isBanned,
+        'banInfo.banDate': banBlogDto.banDate,
       },
     );
     return;

@@ -44,6 +44,15 @@ export class BloggersController {
     private postsQueryRepository: PostsQueryRepository,
   ) {}
 
+  @Get()
+  @UseGuards(BearerAuthGuard)
+  findAll(@Query() query: any, @CurrentUserId() currentUserId) {
+    return this.blogsQueryRepository.findAllBloggerBlogs(
+      pagination(query),
+      currentUserId,
+    );
+  }
+
   @Post()
   @UseGuards(BearerAuthGuard)
   async createBlog(
@@ -93,42 +102,6 @@ export class BloggersController {
     );
     return post;
   }
-
-  @Get()
-  @UseGuards(BearerAuthGuard)
-  findAll(@Query() query: any, @CurrentUserId() currentUserId) {
-    return this.blogsQueryRepository.findAllBloggerBlogs(
-      pagination(query),
-      currentUserId,
-    );
-  }
-
-  // @Get(':id')
-  // async findOne(@Param('id') id: string) {
-  //   const result = await this.blogsQueryRepository.findOne(id);
-  //   if (!result) {
-  //     throw new HttpException({}, 404);
-  //   }
-  //   return result;
-  // }
-
-  // @UseGuards(SpecialBearerAuthGuard)
-  // @Get(':blogId/posts')
-  // async findOneByBlogId(
-  //   @Param('blogId') blogId: string,
-  //   @Query() query: any,
-  //   @CurrentUserId() currentUserId,
-  // ) {
-  //   const result = await this.postsQueryRepository.findOneByBlogId(
-  //     blogId,
-  //     pagination(query),
-  //     currentUserId,
-  //   );
-  //   if (!result) {
-  //     throw new HttpException({}, 404);
-  //   }
-  //   return result;
-  // }
 
   @Put(':id')
   @HttpCode(204)
@@ -223,10 +196,4 @@ export class BloggersController {
     }
     return result;
   }
-
-  // @Delete()
-  // @HttpCode(204)
-  // async deleteAll() {
-  //   return await this.commandBus.execute(new DeleteAllBlogsCommand());
-  // }
 }

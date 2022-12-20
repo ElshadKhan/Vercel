@@ -46,7 +46,7 @@ export class CommentsQueryRepository {
     return {
       id: comment.id,
       content: comment.content,
-      userId: comment.userId,
+      userId: comment.ownerUserId,
       userLogin: comment.userLogin,
       createdAt: comment.createdAt,
       likesInfo: {
@@ -79,7 +79,7 @@ export class CommentsQueryRepository {
     return {
       id: comment.id,
       content: comment.content,
-      userId: comment.userId,
+      userId: comment.ownerUserId,
       userLogin: comment.userLogin,
       createdAt: comment.createdAt,
       likesInfo: {
@@ -125,7 +125,7 @@ export class CommentsQueryRepository {
         return {
           id: c.id,
           content: c.content,
-          userId: c.userId,
+          userId: c.ownerUserId,
           userLogin: c.userLogin,
           createdAt: c.createdAt,
           likesInfo: {
