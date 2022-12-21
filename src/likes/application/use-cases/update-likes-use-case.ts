@@ -28,11 +28,12 @@ export class UpdateLikesUseCase implements ICommandHandler<UpdateLikesCommand> {
     );
     if (!likeDislikeStatus) {
       const newLikeStatus: LikeDbType = {
-        parentId: command.useCaseDto.parentId,
-        userId: command.useCaseDto.userId,
-        login: user.accountData.login,
         type: command.useCaseDto.likesStatus,
+        userId: command.useCaseDto.userId,
+        parentId: command.useCaseDto.parentId,
+        login: user.accountData.login,
         createdAt: new Date().toISOString(),
+        isBan: false,
       };
       await this.likesRepository.createLikeStatus(newLikeStatus);
       return true;

@@ -27,7 +27,7 @@ export class LikesRepository {
   }
 
   async banUsers(userId: string, value: boolean) {
-    return await this.likeModel.updateMany(
+    return this.likeModel.updateMany(
       { userId: userId },
       {
         isBan: value,
@@ -36,6 +36,6 @@ export class LikesRepository {
   }
 
   async deleteAll() {
-    return await this.likeModel.deleteMany({});
+    return this.likeModel.deleteMany({});
   }
 }
