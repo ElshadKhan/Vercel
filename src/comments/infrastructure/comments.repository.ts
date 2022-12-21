@@ -25,13 +25,12 @@ export class CommentsRepository {
   }
 
   async banUsers(userId: string, value: boolean) {
-    await this.commentModel.updateMany(
-      { userId },
+    return await this.commentModel.updateMany(
+      { 'postInfo.ownerUserId': userId },
       {
         isBan: value,
       },
     );
-    return;
   }
 
   async delete(id: string) {

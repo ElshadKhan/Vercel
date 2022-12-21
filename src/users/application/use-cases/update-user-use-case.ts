@@ -8,6 +8,7 @@ import {
   BanUserInputUseCaseType,
   BanUsersFactory,
 } from '../../api/dto/update-user-banStatus-dto';
+import { LikesRepository } from '../../../likes/infrastructure/likes.repository';
 
 export class UpdateUserCommand {
   constructor(public inputModel: BanUserInputUseCaseType) {}
@@ -21,6 +22,7 @@ export class UpdateUserUseCase implements ICommandHandler<UpdateUserCommand> {
     private blogsRepository: BlogsRepository,
     private postsRepository: PostsRepository,
     private commentsRepository: CommentsRepository,
+    private likesRepository: LikesRepository,
   ) {}
 
   async execute(command: UpdateUserCommand) {
@@ -48,6 +50,10 @@ export class UpdateUserUseCase implements ICommandHandler<UpdateUserCommand> {
         newUser.id,
         command.inputModel.isBanned,
       );
+      await this.likesRepository.banUsers(
+        newUser.id,
+        command.inputModel.isBanned,
+      );
 
       return newUser;
     } else {
@@ -68,6 +74,10 @@ export class UpdateUserUseCase implements ICommandHandler<UpdateUserCommand> {
         command.inputModel.isBanned,
       );
       await this.commentsRepository.banUsers(
+        newUser.id,
+        command.inputModel.isBanned,
+      );
+      await this.likesRepository.banUsers(
         newUser.id,
         command.inputModel.isBanned,
       );
