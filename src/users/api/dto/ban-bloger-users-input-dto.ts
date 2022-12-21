@@ -1,6 +1,6 @@
 import { IsBoolean, Length, Validate } from 'class-validator';
-import { BanInfoType } from 'src/users/domain/dto/user.account.dto';
 import { BlogExistsRule } from '../../../helpers/middleware/blogIdValidator';
+import { BanInfoType } from '../../domain/dto/user.account.dto';
 
 export class BanBLoggerUsersInputModel {
   @IsBoolean()

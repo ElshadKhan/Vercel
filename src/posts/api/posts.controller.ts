@@ -1,15 +1,15 @@
 import {
+  Body,
   Controller,
   Get,
-  Post,
-  Body,
-  Param,
   HttpCode,
-  Query,
-  Put,
   HttpException,
-  UseGuards,
+  Param,
+  Post,
+  Put,
+  Query,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { PostsService } from '../application/posts.service';
 import { PostsQueryRepository } from '../infrastructure/posts.queryRepository';
@@ -29,7 +29,7 @@ import { CreateCommentCommand } from '../../comments/application/use-cases/creat
 import { CommentCreateUseCaseDtoType } from '../../comments/application/dto/commentCreateUseCaseDtoType';
 import { UpdateLikesCommand } from '../../likes/application/use-cases/update-likes-use-case';
 import { LikesUseCasesDtoType } from '../../likes/domain/dto/likesUseCasesDtoType';
-import { UsersQueryRepository } from 'src/users/infrastructure/users.queryRepository';
+import { UsersQueryRepository } from '../../users/infrastructure/users.queryRepository';
 
 @Controller('posts')
 export class PostsController {

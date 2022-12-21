@@ -8,10 +8,7 @@ import {
   BlogsBusinessType,
   SaBlogsBusinessType,
 } from '../domain/dto/blogBusinessType';
-import {
-  CreateBlogDbType,
-  CreateBlogDtoType,
-} from '../domain/dto/createBlogDbType';
+import { CreateBlogDtoType } from '../domain/dto/createBlogDbType';
 
 @Injectable()
 export class BlogsQueryRepository {

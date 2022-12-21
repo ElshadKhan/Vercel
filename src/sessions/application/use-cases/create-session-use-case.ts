@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { randomUUID } from 'crypto';
 import { SessionDBType } from '../../domain/dto/sessionDbTypeDto';
-import { JwtService } from 'src/auth/application/jwt-service';
 import { SessionsRepository } from '../../infrastructure/sessionsRepository';
 import { CreateSessionUseCaseDtoType } from '../../domain/dto/createSessionUseCaseDtoType';
+import { JwtService } from '../../../auth/application/jwt-service';
 
 export class CreateSessionCommand {
   constructor(public useCaseDto: CreateSessionUseCaseDtoType) {}

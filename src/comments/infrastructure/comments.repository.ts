@@ -1,6 +1,7 @@
 import { InjectModel } from '@nestjs/mongoose';
 import {
   Comment,
+  commentatorInfoType,
   CommentDbTypeWithId,
 } from '../domain/entities/comment.entity';
 import { Model } from 'mongoose';
@@ -26,7 +27,7 @@ export class CommentsRepository {
 
   async banUsers(userId: string, value: boolean) {
     return await this.commentModel.updateMany(
-      { 'postInfo.ownerUserId': userId },
+      { 'commentatorInfoType.userId': userId },
       {
         isBanned: value,
       },

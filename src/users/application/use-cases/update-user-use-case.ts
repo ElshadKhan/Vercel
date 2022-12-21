@@ -1,14 +1,14 @@
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BlogsRepository } from 'src/blogs/infrastructure/blogs.repository';
 import { DeleteAllUserSessionsCommand } from '../../../sessions/application/use-cases/delete-all-user-sessions-use-case';
 import { UsersRepository } from '../../infrastructure/users.repository';
 import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
-import { CommentsRepository } from 'src/comments/infrastructure/comments.repository';
 import {
   BanUserInputUseCaseType,
   BanUsersFactory,
 } from '../../api/dto/update-user-banStatus-dto';
 import { LikesRepository } from '../../../likes/infrastructure/likes.repository';
+import { CommentsRepository } from '../../../comments/infrastructure/comments.repository';
+import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository';
 
 export class UpdateUserCommand {
   constructor(public inputModel: BanUserInputUseCaseType) {}

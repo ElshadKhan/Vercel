@@ -1,11 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersQueryRepository } from 'src/users/infrastructure/users.queryRepository';
-import { UsersRepository } from 'src/users/infrastructure/users.repository';
+
+import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository';
 import {
   BanBloggerUsersModel,
   BanUsersUseCaseType,
-} from 'src/users/api/dto/ban-bloger-users-input-dto';
-import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository';
+} from '../../api/dto/ban-bloger-users-input-dto';
+import { UsersRepository } from '../../infrastructure/users.repository';
+import { UsersQueryRepository } from '../../infrastructure/users.queryRepository';
 
 export class UpdateBanBloggerUserCommand {
   constructor(public useCaseDto: BanUsersUseCaseType) {}

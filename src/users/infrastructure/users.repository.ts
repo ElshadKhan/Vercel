@@ -7,6 +7,7 @@ import {
   BloggerUsersBan,
   BloggerUsersBanDocument,
 } from '../domain/entities/blogger.users.blogs.ban.entity';
+import { BanUsersFactory } from '../api/dto/update-user-banStatus-dto';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class UsersRepository {
@@ -67,7 +68,7 @@ export class UsersRepository {
     return result.deletedCount === 1;
   }
 
-  async updateUsers(model: any) {
+  async updateUsers(model: BanUsersFactory) {
     const result = await this.userModel.updateOne(
       { id: model.id },
       {

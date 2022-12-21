@@ -1,7 +1,5 @@
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { LikesInfoType } from '../dto/likeInfoType';
-import { LikeStatusEnam } from 'src/helpers/helpFunctions';
 
 @Schema()
 class LikesInfo {

@@ -20,13 +20,13 @@ import { CreateUserCommand } from '../application/use-cases/create-user-use-case
 import { CommandBus } from '@nestjs/cqrs';
 import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
 import { DeleteUserCommand } from '../application/use-cases/delete-user-use-case';
-import { BlogsQueryRepository } from 'src/blogs/infrastructure/blogs.queryRepository';
 import {
   BanBLoggerUsersInputModel,
   BanUsersUseCaseType,
 } from './dto/ban-bloger-users-input-dto';
-import { CurrentUserId } from 'src/auth/current-user-id.param.decorator';
 import { UpdateBanBloggerUserCommand } from '../application/use-cases/update-banBlogerUser-use-case';
+import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.queryRepository';
+import { CurrentUserId } from '../../auth/current-user-id.param.decorator';
 
 @Controller('blogger/users')
 export class UsersController {
