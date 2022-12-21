@@ -24,7 +24,7 @@ export class CommentsQueryRepository {
     id: string,
     userId?: string,
   ): Promise<CommentDtoType | null> {
-    const comment = await this.commentModel.findOne({ id, isBan: false });
+    const comment = await this.commentModel.findOne({ id, isBanned: false });
     if (!comment) return null;
 
     let myStatus = LikeStatusEnam.None;
@@ -61,7 +61,7 @@ export class CommentsQueryRepository {
     id: string,
     userId?: string,
   ): Promise<CommentDtoType | null> {
-    const comment = await this.commentModel.findOne({ id, isBan: false });
+    const comment = await this.commentModel.findOne({ id, isBanned: false });
     if (!comment) return null;
     let myStatus = LikeStatusEnam.None;
     if (userId) {
@@ -97,16 +97,16 @@ export class CommentsQueryRepository {
   ): Promise<CommentsBusinessType | null> {
     const comment = await this.commentModel.findOne({
       postId: postId,
-      isBan: false,
+      isBanned: false,
     });
     const findComments = await this.commentModel
-      .find({ postId: postId, isBan: false })
+      .find({ postId: postId, isBanned: false })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
     const totalCountComments = await this.commentModel
-      .find({ postId: postId, isBan: false })
+      .find({ postId: postId, isBanned: false })
       .sort([[sortBy, sortDirection]])
       .count();
     if (comment) {
