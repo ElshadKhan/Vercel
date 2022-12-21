@@ -162,7 +162,7 @@ export class PostsQueryRepository {
   }
 
   async findPostById(id: string): Promise<PostDbType> {
-    return await this.postModel.findOne({ id, isBanned: false });
+    return await this.postModel.findOne({ id });
   }
 
   async findOne(id: string, userId?: string): Promise<PostDtoType> {

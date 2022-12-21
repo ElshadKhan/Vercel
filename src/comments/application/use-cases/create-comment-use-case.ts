@@ -25,41 +25,40 @@ export class CreateCommentUseCase
     const user = await this.usersQueryRepository.getUser(
       command.inputModel.userId,
     );
-    if (!user) {
-      const post = await this.postsQueryRepository.findPostById(
-        command.inputModel.postId,
-      );
-      if (!post) return null;
-      const comment: CreateCommentDbType = {
-        id: String(+new Date()),
-        content: command.inputModel.content,
-        createdAt: new Date().toISOString(),
-        commentatorInfo: {
-          userId: command.inputModel.userId,
-          userLogin: user.accountData.login,
-        },
-        postInfo: {
-          ownerUserId: post.userId,
-          postId: post.id,
-          title: post.title,
-          blogId: post.blogId,
-          blogName: post.blogName,
-        },
-        isBanned: false,
-      };
-      const newComment = await this.commentsRepository.create(comment);
-      return {
-        id: newComment.id,
-        content: newComment.content,
-        userId: newComment.postInfo.ownerUserId,
+
+    const post = await this.postsQueryRepository.findPostById(
+      command.inputModel.postId,
+    );
+    if (!post) return null;
+    const comment: CreateCommentDbType = {
+      id: String(+new Date()),
+      content: command.inputModel.content,
+      createdAt: new Date().toISOString(),
+      commentatorInfo: {
+        userId: command.inputModel.userId,
         userLogin: user.accountData.login,
-        createdAt: newComment.createdAt,
-        likesInfo: {
-          likesCount: 0,
-          dislikesCount: 0,
-          myStatus: LikeStatusEnam.None,
-        },
-      };
-    }
+      },
+      postInfo: {
+        ownerUserId: post.userId,
+        postId: post.id,
+        title: post.title,
+        blogId: post.blogId,
+        blogName: post.blogName,
+      },
+      isBanned: false,
+    };
+    const newComment = await this.commentsRepository.create(comment);
+    return {
+      id: newComment.id,
+      content: newComment.content,
+      userId: newComment.postInfo.ownerUserId,
+      userLogin: user.accountData.login,
+      createdAt: newComment.createdAt,
+      likesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: LikeStatusEnam.None,
+      },
+    };
   }
 }

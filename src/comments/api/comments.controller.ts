@@ -38,12 +38,10 @@ export class CommentsController {
   @UseGuards(SpecialBearerAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req) {
-    console.log('1');
     const result = await this.commentsQueryRepository.findCommentById(
       id,
       req.user?.id,
     );
-    console.log('result', result);
     if (!result) {
       throw new HttpException({}, 404);
     }
