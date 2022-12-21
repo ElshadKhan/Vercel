@@ -113,6 +113,13 @@ export class UsersQueryRepository {
     return userDto;
   }
 
+  async findBanUser(userId: string): Promise<UserAccountDBType | null> {
+    return await this.userModel.findOne({
+      id: userId,
+      'banInfo.isBanned': false,
+    });
+  }
+
   async getUser(userId: string): Promise<UserAccountDBType | null> {
     return await this.userModel.findOne({
       id: userId,
