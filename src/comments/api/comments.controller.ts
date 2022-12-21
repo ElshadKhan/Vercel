@@ -25,7 +25,6 @@ import { DeleteCommentCommand } from '../application/use-cases/delete-comment-us
 import { DeleteAllCommentsCommand } from '../application/use-cases/delete-all-comments-use-case';
 import { UpdateLikesCommand } from '../../likes/application/use-cases/update-likes-use-case';
 import { LikesUseCasesDtoType } from '../../likes/domain/dto/likesUseCasesDtoType';
-import { CommentDtoType } from '../application/dto/commentDtoType';
 
 @Controller('comments')
 export class CommentsController {
