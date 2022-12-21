@@ -27,7 +27,7 @@ export class CommentsRepository {
 
   async banUsers(userId: string, value: boolean) {
     return await this.commentModel.updateMany(
-      { 'commentatorInfoType.userId': userId },
+      { 'commentatorInfo.userId': userId },
       {
         isBanned: value,
       },
