@@ -25,6 +25,7 @@ import { DeleteCommentCommand } from '../application/use-cases/delete-comment-us
 import { DeleteAllCommentsCommand } from '../application/use-cases/delete-all-comments-use-case';
 import { UpdateLikesCommand } from '../../likes/application/use-cases/update-likes-use-case';
 import { LikesUseCasesDtoType } from '../../likes/domain/dto/likesUseCasesDtoType';
+import { CommentDtoType } from '../application/dto/commentDtoType';
 
 @Controller('comments')
 export class CommentsController {
@@ -38,25 +39,16 @@ export class CommentsController {
   @UseGuards(SpecialBearerAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req) {
-    if (!req.user) {
-      const result = await this.commentsQueryRepository.findCommentById(
-        id,
-        req.user,
-      );
-      if (!result) {
-        throw new HttpException({}, 404);
-      }
-      return result;
-    } else {
-      const result = await this.commentsQueryRepository.findCommentById(
-        id,
-        req.user.id,
-      );
-      if (!result) {
-        throw new HttpException({}, 404);
-      }
-      return result;
+    console.log('1');
+    const result = await this.commentsQueryRepository.findCommentById(
+      id,
+      req.user?.id,
+    );
+    console.log('result', result);
+    if (!result) {
+      throw new HttpException({}, 404);
     }
+    return result;
   }
 
   @Put(':commentId')
