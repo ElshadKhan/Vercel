@@ -16,7 +16,7 @@ export class Like {
   @Prop()
   createdAt: string;
   @Prop()
-  isBan: boolean;
+  isBanned: boolean;
 }
 
 export const LikeSchema = SchemaFactory.createForClass(Like);

@@ -55,7 +55,7 @@ export class Comment {
   @Prop({ type: postInfoSchema })
   postInfo: postInfoType;
   @Prop()
-  isBan: boolean;
+  isBanned: boolean;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);

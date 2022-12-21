@@ -57,11 +57,12 @@ export class BlogsRepository {
     return;
   }
 
-  async banUsers(userId: string, value: boolean) {
+  async banUsers(userId: string, value: boolean, date: string) {
     return this.blogModel.updateMany(
       { 'blogOwnerInfo.userId': userId },
       {
         'banInfo.isBanned': value,
+        'banInfo.banDate': date,
       },
     );
   }

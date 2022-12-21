@@ -7,6 +7,6 @@ export class LikeDbType {
     public parentId: string,
     public login: string,
     public createdAt: string,
-    public isBan: boolean,
+    public isBanned: boolean,
   ) {}
 }

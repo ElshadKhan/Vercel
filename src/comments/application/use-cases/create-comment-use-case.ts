@@ -44,7 +44,7 @@ export class CreateCommentUseCase
         blogId: post.blogId,
         blogName: post.blogName,
       },
-      isBan: false,
+      isBanned: false,
     };
     const newComment = await this.commentsRepository.create(comment);
     return {

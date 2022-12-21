@@ -38,9 +38,11 @@ export class UpdateUserUseCase implements ICommandHandler<UpdateUserCommand> {
         new DeleteAllUserSessionsCommand(newUser.id),
       );
       await this.userRepository.updateUsers(newUser);
+
       await this.blogsRepository.banUsers(
         newUser.id,
         command.inputModel.isBanned,
+        newUser.banDate,
       );
       await this.postsRepository.banUsers(
         newUser.id,
@@ -65,9 +67,11 @@ export class UpdateUserUseCase implements ICommandHandler<UpdateUserCommand> {
       );
 
       await this.userRepository.updateUsers(newUser);
+
       await this.blogsRepository.banUsers(
         newUser.id,
         command.inputModel.isBanned,
+        newUser.banDate,
       );
       await this.postsRepository.banUsers(
         newUser.id,

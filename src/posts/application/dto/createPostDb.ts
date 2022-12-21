@@ -8,5 +8,6 @@ export class CreatePostDbType {
     public blogName: string | null,
     public createdAt: string,
     public userId: string,
+    public isBanned: false,
   ) {}
 }

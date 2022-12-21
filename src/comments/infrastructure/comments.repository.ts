@@ -28,7 +28,7 @@ export class CommentsRepository {
     return await this.commentModel.updateMany(
       { 'postInfo.ownerUserId': userId },
       {
-        isBan: value,
+        isBanned: value,
       },
     );
   }

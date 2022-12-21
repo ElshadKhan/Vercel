@@ -30,7 +30,7 @@ export class Post {
   createdAt: string;
 
   @Prop()
-  isBan: boolean;
+  isBanned: boolean;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

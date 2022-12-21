@@ -9,5 +9,5 @@ export class CreateCommentDbType {
   createdAt: string;
   commentatorInfo: commentatorInfoType;
   postInfo: postInfoType;
-  isBan: boolean;
+  isBanned: boolean;
 }

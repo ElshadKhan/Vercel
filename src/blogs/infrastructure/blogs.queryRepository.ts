@@ -189,13 +189,13 @@ export class BlogsQueryRepository {
   }
 
   async findBlogById(id: string): Promise<Blog> {
-    return this.blogModel.findOne({ id, isBan: false });
+    return this.blogModel.findOne({ id, 'banInfo.isBanned': false });
   }
 
   async findBlogByUserId(id: string): Promise<Blog> {
     return this.blogModel.findOne(
-      { 'blogOwnerInfo.userId': id, isBan: false },
-      { _id: false, __v: 0, isBan: 0 },
+      { 'blogOwnerInfo.userId': id, isBanned: false },
+      { _id: false, __v: 0, banInfo: 0 },
     );
   }
 }

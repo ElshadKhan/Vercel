@@ -33,6 +33,7 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
       blogName: blog.name,
       createdAt: new Date().toISOString(),
       userId: command.createPostDto.userId,
+      isBanned: false,
     };
     const newPostDto = await this.postsRepository.create(newPost);
     const lastLikes = await this.likesQueryRepository.getLastLikes(

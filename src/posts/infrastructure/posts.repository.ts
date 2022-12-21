@@ -56,7 +56,7 @@ export class PostsRepository {
     await this.postModel.updateMany(
       { userId: userId },
       {
-        isBan: value,
+        isBanned: value,
       },
     );
     return;

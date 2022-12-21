@@ -30,7 +30,7 @@ export class LikesRepository {
     return this.likeModel.updateMany(
       { userId: userId },
       {
-        isBan: value,
+        isBanned: value,
       },
     );
   }

@@ -33,7 +33,7 @@ export class UpdateLikesUseCase implements ICommandHandler<UpdateLikesCommand> {
         parentId: command.useCaseDto.parentId,
         login: user.accountData.login,
         createdAt: new Date().toISOString(),
-        isBan: false,
+        isBanned: false,
       };
       await this.likesRepository.createLikeStatus(newLikeStatus);
       return true;

@@ -27,12 +27,14 @@ export class PostsQueryRepository {
     userId?: string,
   ): Promise<PostsBusinessType> {
     const posts = await this.postModel
-      .find({ isBan: false }, { _id: false, __v: 0, isBan: 0 })
+      .find({ isBanned: false }, { _id: false, __v: 0, isBanned: 0 })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
-    const totalCountPosts = await this.postModel.find().count();
+    const totalCountPosts = await this.postModel
+      .find({ isBanned: false })
+      .count();
     if (posts) {
       const promise = posts.map(async (post: PostDbTypeWithId) => {
         let myStatus = LikeStatusEnam.None;
@@ -95,13 +97,13 @@ export class PostsQueryRepository {
   ): Promise<PostsBusinessType> {
     const blog = await this.blogsQueryRepository.findOne(blogId);
     const findPosts = await this.postModel
-      .find({ blogId, isBan: false }, { _id: false, __v: 0, isBan: 0 })
+      .find({ blogId, isBanned: false }, { _id: false, __v: 0, isBanned: 0 })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
     const totalCountPosts = await this.postModel
-      .find({ blogId, isBan: false })
+      .find({ blogId, isBanned: false })
       .sort([[sortBy, sortDirection]])
       .count();
     if (blog) {
@@ -160,13 +162,13 @@ export class PostsQueryRepository {
   }
 
   async findPostById(id: string): Promise<PostDbType> {
-    return await this.postModel.findOne({ id });
+    return await this.postModel.findOne({ id, isBanned: false });
   }
 
   async findOne(id: string, userId?: string): Promise<PostDtoType> {
     const post = await this.postModel.findOne(
-      { id },
-      { _id: false, __v: 0, isBan: 0 },
+      { id, isBanned: false },
+      { _id: false, __v: 0, isBanned: 0 },
     );
     if (post) {
       let myStatus = LikeStatusEnam.None;
