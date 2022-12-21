@@ -3,6 +3,7 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
+  HttpException,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { UsersQueryRepository } from '../../users/infrastructure/users.queryRepository';
@@ -11,7 +12,7 @@ import { JwtService } from '../application/jwt-service';
 @Injectable()
 export class BearerAuthGuard implements CanActivate {
   constructor(
-    private userQueryRepository: UsersQueryRepository,
+    private usersQueryRepository: UsersQueryRepository,
     private jwtService: JwtService,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -21,10 +22,10 @@ export class BearerAuthGuard implements CanActivate {
     }
     const token = req.headers.authorization.split(' ')[1];
     const userId = await this.jwtService.getUserIdByAccessToken(token);
-    const user = await this.userQueryRepository.findBanUser(userId);
-    if (!user) throw new UnauthorizedException();
+    const user = await this.usersQueryRepository.findBanUser(userId);
+    if (!user) throw new HttpException({}, 404);
     if (userId) {
-      req.user = await this.userQueryRepository.getUser(userId);
+      req.user = await this.usersQueryRepository.getUser(userId);
       return true;
     }
     throw new UnauthorizedException();

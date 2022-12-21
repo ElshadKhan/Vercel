@@ -4,7 +4,6 @@ import {
   Post,
   Body,
   Param,
-  Delete,
   HttpCode,
   Query,
   Put,
@@ -20,13 +19,9 @@ import {
 } from '../../helpers/middleware/queryValidation';
 import { CommentsService } from '../../comments/application/comments.service';
 import { CommentsQueryRepository } from '../../comments/infrastructure/comments.queryRepository';
-import { LikesService } from '../../likes/application/likes.service';
 import { LikesDto } from '../../likes/domain/dto/like-enam.dto';
-import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
 import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
 import { SpecialBearerAuthGuard } from '../../auth/guards/special.bearer.auth.guard';
-import { UpdatePostDtoBlogId } from './dto/update-post.dto';
-import { CreatePostDtoWithBlogId } from './dto/createPostWithBlogIdDto';
 import { CreateCommentType } from '../../comments/api/dto/createCommentDto';
 import { CurrentUserId } from '../../auth/current-user-id.param.decorator';
 import { CommandBus } from '@nestjs/cqrs';
@@ -34,10 +29,7 @@ import { CreateCommentCommand } from '../../comments/application/use-cases/creat
 import { CommentCreateUseCaseDtoType } from '../../comments/application/dto/commentCreateUseCaseDtoType';
 import { UpdateLikesCommand } from '../../likes/application/use-cases/update-likes-use-case';
 import { LikesUseCasesDtoType } from '../../likes/domain/dto/likesUseCasesDtoType';
-import { CreatePostCommand } from '../application/use-cases/create-post-use-case';
-import { CreatePostUseCaseDto } from '../application/dto/createPostUseCaseDto';
-import { UpdatePostCommand } from '../application/use-cases/update-post-use-case';
-import { DeletePostCommand } from '../application/use-cases/delete-post-use-case';
+import { UsersQueryRepository } from 'src/users/infrastructure/users.queryRepository';
 
 @Controller('posts')
 export class PostsController {
@@ -47,14 +39,8 @@ export class PostsController {
     private postsQueryRepository: PostsQueryRepository,
     private commentsService: CommentsService,
     private commentsQueryRepository: CommentsQueryRepository,
-    private readonly likesService: LikesService,
+    private usersQueryRepository: UsersQueryRepository,
   ) {}
-  // @UseGuards(SpecialBearerAuthGuard)
-  // @Post()
-  // @UseGuards(BasicAuthGuard)
-  // async create(@Body() createPostDto: CreatePostDtoWithBlogId) {
-  //   return await this.commandBus.execute(new CreatePostCommand(createPostDto));
-  // }
 
   @Post(':postId/comments')
   @UseGuards(BearerAuthGuard)
@@ -63,6 +49,8 @@ export class PostsController {
     @Param('postId') postId: string,
     @CurrentUserId() currentUserId: string,
   ) {
+    const user = await this.usersQueryRepository.findBanUser(currentUserId);
+    if (!user) throw new HttpException({}, 404);
     const inputModel: CommentCreateUseCaseDtoType = {
       content: inputParameter.content,
       userId: currentUserId,
