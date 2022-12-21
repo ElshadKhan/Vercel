@@ -27,7 +27,7 @@ export class UpdateUserUseCase implements ICommandHandler<UpdateUserCommand> {
 
   async execute(command: UpdateUserCommand) {
     if (command.inputModel.isBanned) {
-      const newUser = new BanUsersFactory(
+      const banInfo = new BanUsersFactory(
         command.inputModel.id,
         command.inputModel.isBanned,
         new Date().toISOString(),
@@ -35,58 +35,58 @@ export class UpdateUserUseCase implements ICommandHandler<UpdateUserCommand> {
       );
 
       await this.commandBus.execute(
-        new DeleteAllUserSessionsCommand(newUser.id),
+        new DeleteAllUserSessionsCommand(banInfo.id),
       );
-      await this.userRepository.updateUsers(newUser);
+      await this.userRepository.updateUsers(banInfo);
 
       await this.blogsRepository.banUsers(
-        newUser.id,
+        banInfo.id,
         command.inputModel.isBanned,
-        newUser.banDate,
+        banInfo.banDate,
       );
       await this.postsRepository.banUsers(
-        newUser.id,
+        banInfo.id,
         command.inputModel.isBanned,
       );
       await this.commentsRepository.banUsers(
-        newUser.id,
+        banInfo.id,
         command.inputModel.isBanned,
       );
       await this.likesRepository.banUsers(
-        newUser.id,
+        banInfo.id,
         command.inputModel.isBanned,
       );
 
-      return newUser;
+      return banInfo;
     } else {
-      const newUser = new BanUsersFactory(
+      const banInfo = new BanUsersFactory(
         command.inputModel.id,
         command.inputModel.isBanned,
         null,
         null,
       );
 
-      await this.userRepository.updateUsers(newUser);
+      await this.userRepository.updateUsers(banInfo);
 
       await this.blogsRepository.banUsers(
-        newUser.id,
+        banInfo.id,
         command.inputModel.isBanned,
-        newUser.banDate,
+        banInfo.banDate,
       );
       await this.postsRepository.banUsers(
-        newUser.id,
+        banInfo.id,
         command.inputModel.isBanned,
       );
       await this.commentsRepository.banUsers(
-        newUser.id,
+        banInfo.id,
         command.inputModel.isBanned,
       );
       await this.likesRepository.banUsers(
-        newUser.id,
+        banInfo.id,
         command.inputModel.isBanned,
       );
 
-      return newUser;
+      return banInfo;
     }
   }
 }
