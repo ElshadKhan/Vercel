@@ -40,7 +40,7 @@ export class UsersController {
   @Get()
   @UseGuards(BasicAuthGuard)
   getUsers(@Query() query: any) {
-    return this.usersQueryRepository.getUsers(pagination(query));
+    return this.usersQueryRepository.getUsersForSa(pagination(query));
   }
 
   @Post()

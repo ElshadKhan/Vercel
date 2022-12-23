@@ -1,8 +1,9 @@
+import { BanInfoType } from '../../domain/dto/user.account.dto';
+
 export type UserDto = {
   id: string;
   login: string;
-  email: string;
-  createdAt: string;
+  banInfo: BanInfoType;
 };
 
 export class UsersBusinessType {

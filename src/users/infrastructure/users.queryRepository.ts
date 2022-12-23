@@ -7,10 +7,16 @@ import { UsersBusinessType } from './dto/userBusinessDto';
 import { UserAccountDBType } from '../domain/dto/user.account.dto';
 import { QueryValidationType } from '../../helpers/middleware/queryValidation';
 import { LoginUserDto } from '../../auth/domain/dto/login.dto';
+import {
+  BloggerUsersBan,
+  BloggerUsersBanDocument,
+} from '../domain/entities/blogger.users.blogs.ban.entity';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class UsersQueryRepository {
   @InjectModel(User.name) private userModel: Model<UserDbTypeWithId>;
+  @InjectModel(BloggerUsersBan.name)
+  private bloggerUsersBanModel: Model<BloggerUsersBanDocument>;
 
   async findUserById(id: string): Promise<UserAccountDBType | null> {
     return this.userModel.findOne({ id, 'banInfo.isBanned': false }).lean();
@@ -45,7 +51,57 @@ export class UsersQueryRepository {
       .lean();
   }
 
-  async getUsers({
+  async getBanUsersForBlog(
+    bloggerId: string,
+    blogId: string,
+    {
+      searchLoginTerm,
+      pageNumber,
+      pageSize,
+      sortBy,
+      sortDirection,
+    }: QueryValidationType,
+  ): Promise<UsersBusinessType> {
+    const filter = {
+      $and: [
+        {
+          login: {
+            $regex: searchLoginTerm,
+            $options: '(?i)a(?-i)cme',
+          },
+        },
+        { blogId: blogId },
+        { 'banInfo.isBanned': true },
+      ],
+    };
+    const users = await this.bloggerUsersBanModel
+      .find(filter, { _id: false, __v: 0 })
+      .sort([[sortBy, sortDirection]])
+      .skip(getSkipNumber(pageNumber, pageSize))
+      .limit(pageSize)
+      .lean();
+    console.log(users);
+    const totalCount = await this.bloggerUsersBanModel.countDocuments(filter);
+    const items = users.map((u) => ({
+      id: u.id,
+      login: u.login,
+      banInfo: {
+        isBanned: u.banInfo.isBanned,
+        banDate: u.banInfo.banDate,
+        banReason: u.banInfo.banReason,
+      },
+    }));
+    const userDto = new UsersBusinessType(
+      getPagesCounts(totalCount, pageSize),
+      pageNumber,
+      pageSize,
+      totalCount,
+      items,
+    );
+    return userDto;
+  }
+
+  async getUsersForSa({
     searchLoginTerm,
     searchEmailTerm,
     pageNumber,

@@ -1,6 +1,4 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-
-import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository';
 import {
   BanBloggerUsersModel,
   BanUsersUseCaseType,
@@ -19,7 +17,6 @@ export class UpdateBanBloggerUserUseCase
   constructor(
     private usersQueryRepository: UsersQueryRepository,
     private usersRepository: UsersRepository,
-    private blogsRepository: BlogsRepository,
   ) {}
 
   async execute(command: UpdateBanBloggerUserCommand) {

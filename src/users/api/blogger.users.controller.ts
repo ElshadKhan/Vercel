@@ -20,19 +20,29 @@ import {
 import { UpdateBanBloggerUserCommand } from '../application/use-cases/update-banBlogerUser-use-case';
 import { CurrentUserId } from '../../auth/current-user-id.param.decorator';
 import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
+import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.queryRepository';
 
 @UseGuards(BearerAuthGuard)
 @Controller('blogger/users')
-export class UsersController {
+export class BloggerUsersController {
   constructor(
     private commandBus: CommandBus,
     private usersService: UsersService,
     private usersQueryRepository: UsersQueryRepository,
+    private blogsQueryRepository: BlogsQueryRepository,
   ) {}
 
-  @Get()
-  getUsers(@Query() query: any) {
-    return this.usersQueryRepository.getUsers(pagination(query));
+  @Get('blog/:id')
+  getUsers(
+    @Param('id') blogId: string,
+    @CurrentUserId() currentUserId,
+    @Query() query: any,
+  ) {
+    return this.usersQueryRepository.getBanUsersForBlog(
+      currentUserId,
+      blogId,
+      pagination(query),
+    );
   }
 
   @Put(':id/ban')
@@ -42,18 +52,18 @@ export class UsersController {
     @Body() inputModel: BanBLoggerUsersInputModel,
     @CurrentUserId() currentUserId,
   ) {
-    // const resultFound = await this.blogsQueryRepository.findBlogById(
-    //   inputModel.blogId,
-    // );
-    // if (!resultFound) {
-    //   throw new HttpException('invalid blog', 404);
-    // }
-    // if (resultFound.blogOwnerInfo.userId !== currentUserId) {
-    //   throw new HttpException('Forbidden', 403);
-    // }
+    const resultFound = await this.blogsQueryRepository.findBlogById(
+      inputModel.blogId,
+    );
+    if (!resultFound) {
+      throw new HttpException('invalid blog', 404);
+    }
+    if (resultFound.blogOwnerInfo.userId !== currentUserId) {
+      throw new HttpException('Forbidden', 403);
+    }
     const useCaseDto: BanUsersUseCaseType = {
-      bloggerId: id,
-      banUserId: currentUserId,
+      bloggerId: currentUserId,
+      banUserId: id,
       isBanned: inputModel.isBanned,
       banReason: inputModel.banReason,
       blogId: inputModel.blogId,

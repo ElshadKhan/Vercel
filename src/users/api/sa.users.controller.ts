@@ -37,7 +37,7 @@ export class UsersSaController {
 
   @Get()
   getUsers(@Query() query: any) {
-    return this.usersQueryRepository.getUsers(pagination(query));
+    return this.usersQueryRepository.getUsersForSa(pagination(query));
   }
 
   @Post()

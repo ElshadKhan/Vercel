@@ -88,6 +88,8 @@ import { BlogsSaController } from './blogs/api/sa.blogs.controller';
 import { UserExistsRule } from './helpers/middleware/userIdValidator';
 import { UpdateBlogForNewUserUseCase } from './blogs/application/use-cases/update-blog-for-newUser-use-case';
 import { BanBlogUseCase } from './blogs/application/use-cases/ban-blog-use-case';
+import { UpdateBanBloggerUserUseCase } from './users/application/use-cases/update-banBlogerUser-use-case';
+import { BloggerUsersController } from './users/api/blogger.users.controller';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -122,6 +124,7 @@ const usersUseCases = [
   DeleteUserUseCase,
   DeleteAllUsersUseCase,
   UpdateUserUseCase,
+  UpdateBanBloggerUserUseCase,
 ];
 
 const postsUseCases = [
@@ -167,6 +170,7 @@ const likesUseCases = [UpdateLikesUseCase, DeleteAllLikesUseCase];
     CqrsModule,
   ],
   controllers: [
+    BloggerUsersController,
     UsersSaController,
     UsersController,
     BlogsSaController,

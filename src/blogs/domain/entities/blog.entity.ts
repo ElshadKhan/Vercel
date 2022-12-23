@@ -1,7 +1,5 @@
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { BanInfoType } from '../../../users/domain/dto/user.account.dto';
-import { UsersBanInfoTypeDataSchema } from '../../../users/domain/entities/users.entity';
 
 @Schema({ id: false })
 export class BlogOwnerInfo {
