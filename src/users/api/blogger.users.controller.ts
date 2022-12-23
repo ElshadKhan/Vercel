@@ -33,11 +33,18 @@ export class BloggerUsersController {
   ) {}
 
   @Get('blog/:id')
-  getUsers(
+  async getUsers(
     @Param('id') blogId: string,
     @CurrentUserId() currentUserId,
     @Query() query: any,
   ) {
+    const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
+    if (!resultFound) {
+      throw new HttpException('invalid blog', 404);
+    }
+    if (resultFound.blogOwnerInfo.userId !== currentUserId) {
+      throw new HttpException('Forbidden', 403);
+    }
     return this.usersQueryRepository.getBanUsersForBlog(
       currentUserId,
       blogId,

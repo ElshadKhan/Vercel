@@ -29,6 +29,7 @@ export class CreateCommentUseCase
     const post = await this.postsQueryRepository.findPostById(
       command.inputModel.postId,
     );
+
     if (!post) return null;
     const comment: CreateCommentDbType = {
       id: String(+new Date()),

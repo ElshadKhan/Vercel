@@ -49,9 +49,16 @@ export class PostsController {
     @Param('postId') postId: string,
     @CurrentUserId() currentUserId: string,
   ) {
-    const user = await this.usersQueryRepository.findBanUser(currentUserId);
-    if (!user) throw new HttpException({}, 404);
-    const inputModel: CommentCreateUseCaseDtoType = {
+    const post = await this.postsQueryRepository.findPostById(postId);
+
+    const permission = await this.usersQueryRepository.getBanUserForBlog(
+      currentUserId,
+      post.blogId,
+    );
+    if (permission) {
+      throw new HttpException('Forbidden', 403);
+    }
+    const inputModel = {
       content: inputParameter.content,
       userId: currentUserId,
       postId: postId,

@@ -51,6 +51,19 @@ export class UsersQueryRepository {
       .lean();
   }
 
+  async getBanUserForBlog(
+    bloggerId: string,
+    blogId: string,
+  ): Promise<UserAccountDBType | null> {
+    return await this.bloggerUsersBanModel.findOne({
+      $and: [
+        { blogId: blogId },
+        { banUserId: bloggerId },
+        { 'banInfo.isBanned': true },
+      ],
+    });
+  }
+
   async getBanUsersForBlog(
     bloggerId: string,
     blogId: string,
@@ -80,7 +93,6 @@ export class UsersQueryRepository {
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
-    console.log(users);
     const totalCount = await this.bloggerUsersBanModel.countDocuments(filter);
     const items = users.map((u) => ({
       id: u.banUserId,
