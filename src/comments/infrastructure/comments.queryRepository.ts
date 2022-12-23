@@ -14,7 +14,10 @@ import {
 } from '../../helpers/helpFunctions';
 import { LikesQueryRepository } from '../../likes/infrastructure/likes.queryRepository';
 import { CommentDtoType } from '../application/dto/commentDtoType';
-import { CommentsBusinessType } from './dto/commentBusinessType';
+import {
+  CommentsBusinessDtoType,
+  CommentsBusinessType,
+} from './dto/commentBusinessType';
 
 @Injectable()
 export class CommentsQueryRepository {
@@ -94,7 +97,7 @@ export class CommentsQueryRepository {
   async findAllCommentsCurrentUser(
     { pageNumber, pageSize, sortBy, sortDirection }: QueryValidationType,
     userId: string,
-  ): Promise<CommentsBusinessType | null> {
+  ): Promise<CommentsBusinessDtoType | null> {
     const comment = await this.commentModel.findOne({
       'postInfo.ownerUserId': userId,
       isBanned: false,

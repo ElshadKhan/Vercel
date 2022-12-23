@@ -1,4 +1,7 @@
-import { CommentDtoType } from '../../application/dto/commentDtoType';
+import {
+  CommentBusinessDtoType,
+  CommentDtoType,
+} from '../../application/dto/commentDtoType';
 
 export class CommentsBusinessType {
   pagesCount: number;
@@ -6,4 +9,12 @@ export class CommentsBusinessType {
   pageSize: number;
   totalCount: number;
   items: Array<CommentDtoType>;
+}
+
+export class CommentsBusinessDtoType {
+  pagesCount: number;
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  items: Array<CommentBusinessDtoType>;
 }
