@@ -13,6 +13,7 @@ export class UsersQueryRepository {
   @InjectModel(User.name) private userModel: Model<UserDbTypeWithId>;
 
   async findUserById(id: string): Promise<UserAccountDBType | null> {
+    console.log('id', id);
     return this.userModel.findOne({ id, 'banInfo.isBanned': false }).lean();
   }
 
@@ -120,7 +121,7 @@ export class UsersQueryRepository {
     });
   }
 
-  async getUser(userId: string): Promise<UserAccountDBType | null> {
+  async getUser(userId: string): Promise<User | null> {
     return await this.userModel.findOne({
       id: userId,
     });

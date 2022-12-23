@@ -26,6 +26,7 @@ import {
 } from './dto/update-user-banStatus-dto';
 import { UpdateUserCommand } from '../application/use-cases/update-user-use-case';
 
+@UseGuards(BasicAuthGuard)
 @Controller('sa/users')
 export class UsersSaController {
   constructor(
@@ -35,13 +36,11 @@ export class UsersSaController {
   ) {}
 
   @Get()
-  @UseGuards(BasicAuthGuard)
   getUsers(@Query() query: any) {
     return this.usersQueryRepository.getUsers(pagination(query));
   }
 
   @Post()
-  @UseGuards(BasicAuthGuard)
   async createUser(@Body() inputModel: CreateUserDto) {
     const newUser = await this.commandBus.execute(
       new CreateUserCommand(inputModel),
@@ -59,7 +58,6 @@ export class UsersSaController {
     };
   }
 
-  @UseGuards(BasicAuthGuard)
   @Put(':id/ban')
   @HttpCode(204)
   async updateUserStatus(
@@ -79,7 +77,6 @@ export class UsersSaController {
 
   @Delete(':id')
   @HttpCode(204)
-  @UseGuards(BasicAuthGuard)
   async deleteUser(@Param('id') userId: string) {
     const result = await this.commandBus.execute(new DeleteUserCommand(userId));
     if (!result) {

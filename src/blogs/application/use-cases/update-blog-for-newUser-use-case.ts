@@ -3,6 +3,7 @@ import { BlogsRepository } from '../../infrastructure/blogs.repository';
 import { IdModelType } from '../../domain/dto/updateBlogsBindType';
 import { UsersQueryRepository } from '../../../users/infrastructure/users.queryRepository';
 import { UpdateBlogOnNewUserRepo } from '../../domain/dto/updateBlogDbType';
+import { BlogsQueryRepository } from '../../infrastructure/blogs.queryRepository';
 
 export class UpdateBlogForNewUserCommand {
   constructor(public inputModel: IdModelType) {}

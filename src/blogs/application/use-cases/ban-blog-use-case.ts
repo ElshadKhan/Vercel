@@ -4,6 +4,7 @@ import {
   BanBlogsFactory,
   BanBlogUseCaseDto,
 } from '../../domain/dto/updateBlogsBindType';
+import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
 
 export class BanBlogCommand {
   constructor(public banBlogUseCaseDto: BanBlogUseCaseDto) {}
@@ -11,7 +12,10 @@ export class BanBlogCommand {
 
 @CommandHandler(BanBlogCommand)
 export class BanBlogUseCase implements ICommandHandler<BanBlogCommand> {
-  constructor(private blogsRepository: BlogsRepository) {}
+  constructor(
+    private blogsRepository: BlogsRepository,
+    private postsRepository: PostsRepository,
+  ) {}
 
   async execute(command: BanBlogCommand) {
     const banBlogDto = new BanBlogsFactory(
@@ -19,6 +23,8 @@ export class BanBlogUseCase implements ICommandHandler<BanBlogCommand> {
       command.banBlogUseCaseDto.isBanned,
       new Date().toISOString(),
     );
-    return await this.blogsRepository.banBlogs(banBlogDto);
+    await this.blogsRepository.banBlogs(banBlogDto);
+    await this.postsRepository.banBlogs(banBlogDto.blogId, banBlogDto.isBanned);
+    return;
   }
 }

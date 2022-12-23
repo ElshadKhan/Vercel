@@ -1,12 +1,11 @@
 import { IsBoolean, Validate } from 'class-validator';
-import {
-  BlogExistsRule,
-  UserExistsRule,
-} from '../../../helpers/middleware/blogIdValidator';
+import { BlogExistsRule } from '../../../helpers/middleware/blogIdValidator';
+import { UserExistsRule } from '../../../helpers/middleware/userIdValidator';
 
 export class IdModelType {
   @Validate(BlogExistsRule)
   id: string;
+
   @Validate(UserExistsRule)
   userId: string;
 }

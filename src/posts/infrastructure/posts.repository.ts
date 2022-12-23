@@ -62,6 +62,16 @@ export class PostsRepository {
     return;
   }
 
+  async banBlogs(blogId: string, value: boolean) {
+    await this.postModel.updateMany(
+      { blogId: blogId },
+      {
+        isBanned: value,
+      },
+    );
+    return;
+  }
+
   async delete(id: string) {
     const result = await this.postModel.deleteOne({ id });
     return result.deletedCount === 1;

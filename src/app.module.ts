@@ -85,6 +85,8 @@ import { UpdateUserUseCase } from './users/application/use-cases/update-user-use
 import { DeleteAllUserSessionsUseCase } from './sessions/application/use-cases/delete-all-user-sessions-use-case';
 import { BloggersController } from './blogs/api/blogger.controller';
 import { BlogsSaController } from './blogs/api/sa.blogs.controller';
+import { UserExistsRule } from './helpers/middleware/userIdValidator';
+import { UpdateBlogForNewUserUseCase } from './blogs/application/use-cases/update-blog-for-newUser-use-case';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -110,6 +112,7 @@ const blogsUseCases = [
   UpdateBlogUseCase,
   DeleteBlogUseCase,
   DeleteAllBlogsUseCase,
+  UpdateBlogForNewUserUseCase,
 ];
 
 const usersUseCases = [
@@ -174,6 +177,7 @@ const likesUseCases = [UpdateLikesUseCase, DeleteAllLikesUseCase];
     RemoveAllDataController,
   ],
   providers: [
+    UserExistsRule,
     BlogExistsRule,
     AuthService,
     JwtService,
