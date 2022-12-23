@@ -18,14 +18,10 @@ export class BanBlogUseCase implements ICommandHandler<BanBlogCommand> {
   ) {}
 
   async execute(command: BanBlogCommand) {
-    let banDate = null;
-    if (command.banBlogUseCaseDto.isBanned) {
-      banDate = new Date().toISOString();
-    }
     const banBlogDto = new BanBlogsFactory(
       command.banBlogUseCaseDto.blogId,
       command.banBlogUseCaseDto.isBanned,
-      banDate,
+      new Date().toISOString(),
     );
     await this.blogsRepository.banBlogs(banBlogDto);
     await this.postsRepository.banBlogs(banBlogDto.blogId, banBlogDto.isBanned);
