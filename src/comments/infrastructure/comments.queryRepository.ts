@@ -128,8 +128,6 @@ export class CommentsQueryRepository {
         return {
           id: c.id,
           content: c.content,
-          userId: c.commentatorInfo.userId,
-          userLogin: c.commentatorInfo.userLogin,
           createdAt: c.createdAt,
           likesInfo: {
             likesCount: likesCount,
