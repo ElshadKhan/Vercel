@@ -21,9 +21,6 @@ export type BloggerUsersBanDocument = HydratedDocument<BloggerUsersBan>;
 
 @Schema()
 export class BloggerUsersBan {
-  @Prop({ required: true, unique: true })
-  id: string;
-
   @Prop({ required: true })
   blogId: string;
 

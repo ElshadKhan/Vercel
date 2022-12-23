@@ -13,7 +13,6 @@ export class BanBLoggerUsersInputModel {
 
 export class BanBloggerUsersModel {
   constructor(
-    public id: string,
     public blogId: string,
     public bloggerId: string,
     public banUserId: string,

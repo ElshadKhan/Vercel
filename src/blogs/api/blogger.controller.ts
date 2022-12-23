@@ -36,6 +36,7 @@ import {
 import { UpdatePostCommand } from '../../posts/application/use-cases/update-post-use-case';
 import { DeletePostCommand } from '../../posts/application/use-cases/delete-post-use-case';
 
+@UseGuards(BearerAuthGuard)
 @Controller('blogger/blogs')
 export class BloggersController {
   constructor(
@@ -47,7 +48,6 @@ export class BloggersController {
   ) {}
 
   @Get()
-  @UseGuards(BearerAuthGuard)
   findAll(@Query() query: any, @CurrentUserId() currentUserId) {
     return this.blogsQueryRepository.findAllBloggerBlogs(
       pagination(query),
@@ -55,8 +55,15 @@ export class BloggersController {
     );
   }
 
+  @Get('comments')
+  findAllComments(@Query() query: any, @CurrentUserId() currentUserId) {
+    return this.blogsQueryRepository.findAllBloggerBlogs(
+      pagination(query),
+      currentUserId,
+    );
+  }
+
   @Post()
-  @UseGuards(BearerAuthGuard)
   async createBlog(
     @Body() createBlogDto: CreateBlogDto,
     @CurrentUserId() currentUserId,
@@ -80,7 +87,6 @@ export class BloggersController {
   }
 
   @Post(':blogId/posts')
-  @UseGuards(BearerAuthGuard)
   async createPostByBlogId(
     @Param('blogId') blogId: string,
     @Body() createPostDto: CreatePostDto,
@@ -108,7 +114,6 @@ export class BloggersController {
 
   @Put(':id')
   @HttpCode(204)
-  @UseGuards(BearerAuthGuard)
   async updateBlog(
     @Param('id') id: string,
     @Body() updateBlogDto: CreateBlogDto,
@@ -135,7 +140,6 @@ export class BloggersController {
 
   @Put(':blogId/posts/:postId')
   @HttpCode(204)
-  @UseGuards(BearerAuthGuard)
   async updatePost(
     @Param() { blogId, postId },
     @Body() updatePostDto: CreatePostDto,
@@ -167,7 +171,6 @@ export class BloggersController {
 
   @Delete(':id')
   @HttpCode(204)
-  @UseGuards(BearerAuthGuard)
   async deleteBlog(@Param('id') id: string, @CurrentUserId() currentUserId) {
     const blog = await this.blogsQueryRepository.findBlogById(id);
     if (!blog) {
@@ -181,7 +184,6 @@ export class BloggersController {
 
   @Delete(':blogId/posts/:postId')
   @HttpCode(204)
-  @UseGuards(BearerAuthGuard)
   async deletePost(
     @Param() { blogId, postId },
     @CurrentUserId() currentUserId,

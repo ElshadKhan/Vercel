@@ -83,7 +83,7 @@ export class UsersQueryRepository {
     console.log(users);
     const totalCount = await this.bloggerUsersBanModel.countDocuments(filter);
     const items = users.map((u) => ({
-      id: u.id,
+      id: u.banUserId,
       login: u.login,
       banInfo: {
         isBanned: u.banInfo.isBanned,

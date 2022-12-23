@@ -26,7 +26,6 @@ export class UpdateBanBloggerUserUseCase
     if (!user) return false;
     if (command.useCaseDto.isBanned) {
       const newBanUser = new BanBloggerUsersModel(
-        String(+new Date()),
         command.useCaseDto.blogId,
         command.useCaseDto.bloggerId,
         command.useCaseDto.banUserId,
