@@ -15,7 +15,6 @@ import { BlogsService } from '../application/blogs.service';
 import { BlogsQueryRepository } from '../infrastructure/blogs.queryRepository';
 import { pagination } from '../../helpers/middleware/queryValidation';
 import { PostsService } from '../../posts/application/posts.service';
-import { PostsQueryRepository } from '../../posts/infrastructure/posts.queryRepository';
 import { CreatePostDto } from '../../posts/api/dto/createPostDto';
 import {
   CreateBlogDto,
@@ -35,6 +34,7 @@ import {
 } from '../../posts/application/dto/createPostUseCaseDto';
 import { UpdatePostCommand } from '../../posts/application/use-cases/update-post-use-case';
 import { DeletePostCommand } from '../../posts/application/use-cases/delete-post-use-case';
+import { CommentsQueryRepository } from '../../comments/infrastructure/comments.queryRepository';
 
 @UseGuards(BearerAuthGuard)
 @Controller('blogger/blogs')
@@ -44,7 +44,7 @@ export class BloggersController {
     private blogsService: BlogsService,
     private postsService: PostsService,
     private blogsQueryRepository: BlogsQueryRepository,
-    private postsQueryRepository: PostsQueryRepository,
+    private commentsQueryRepository: CommentsQueryRepository,
   ) {}
 
   @Get()
@@ -57,7 +57,7 @@ export class BloggersController {
 
   @Get('comments')
   findAllComments(@Query() query: any, @CurrentUserId() currentUserId) {
-    return this.blogsQueryRepository.findAllBloggerBlogs(
+    return this.commentsQueryRepository.findAllCommentsCurrentUser(
       pagination(query),
       currentUserId,
     );
