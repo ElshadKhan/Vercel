@@ -87,6 +87,7 @@ import { BloggersController } from './blogs/api/blogger.controller';
 import { BlogsSaController } from './blogs/api/sa.blogs.controller';
 import { UserExistsRule } from './helpers/middleware/userIdValidator';
 import { UpdateBlogForNewUserUseCase } from './blogs/application/use-cases/update-blog-for-newUser-use-case';
+import { BanBlogUseCase } from './blogs/application/use-cases/ban-blog-use-case';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -113,6 +114,7 @@ const blogsUseCases = [
   DeleteBlogUseCase,
   DeleteAllBlogsUseCase,
   UpdateBlogForNewUserUseCase,
+  BanBlogUseCase,
 ];
 
 const usersUseCases = [

@@ -1,3 +1,5 @@
+import { IsBoolean } from 'class-validator';
+
 export class UpdateBlogDbType {
   constructor(
     public id: string,
@@ -18,6 +20,7 @@ export class UpdateBlogOnNewUserRepo {
   userLogin: string;
 }
 
-export class BanBlogsInputModel {
+export class BanBlogsInputModelType {
+  @IsBoolean()
   isBanned: boolean;
 }

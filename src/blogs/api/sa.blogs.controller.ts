@@ -15,7 +15,7 @@ import { pagination } from '../../helpers/middleware/queryValidation';
 import { PostsService } from '../../posts/application/posts.service';
 import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
 import { CommandBus } from '@nestjs/cqrs';
-import { BanBlogsInputModel } from '../domain/dto/updateBlogDbType';
+import { BanBlogsInputModelType } from '../domain/dto/updateBlogDbType';
 import { IdModelType } from '../domain/dto/updateBlogsBindType';
 import { BanBlogCommand } from '../application/use-cases/ban-blog-use-case';
 import { UpdateBlogForNewUserCommand } from '../application/use-cases/update-blog-for-newUser-use-case';
@@ -56,7 +56,7 @@ export class BlogsSaController {
   @HttpCode(204)
   updateBanBlogs(
     @Param('id') id: string,
-    @Body() inputModel: BanBlogsInputModel,
+    @Body() inputModel: BanBlogsInputModelType,
   ) {
     const banBlogUseCaseDto = {
       blogId: id,
