@@ -109,6 +109,10 @@ export class BlogsQueryRepository {
           userId: b.blogOwnerInfo.userId,
           userLogin: b.blogOwnerInfo.userLogin,
         },
+        banInfo: {
+          isBanned: b.banInfo.isBanned,
+          banDate: b.banInfo.banDate,
+        },
       })),
     );
 
