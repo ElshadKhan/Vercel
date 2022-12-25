@@ -18,7 +18,6 @@ export class BanBlogUseCase implements ICommandHandler<BanBlogCommand> {
   ) {}
 
   async execute(command: BanBlogCommand) {
-    console.log();
     const banBlogDto = new BanBlogsFactory(
       command.banBlogUseCaseDto.blogId,
       command.banBlogUseCaseDto.isBanned,
