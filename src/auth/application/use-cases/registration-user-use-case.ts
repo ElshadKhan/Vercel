@@ -1,4 +1,3 @@
-import { UsersService } from '../../../users/application/users.service';
 import { EmailManagers } from '../../../helpers/managers/emailManagers';
 import { CreateUserDto } from '../../../users/api/dto/create-user.dto';
 import { CommandHandler } from '@nestjs/cqrs';
@@ -13,7 +12,6 @@ export class RegistrationUserCommand {
 export class RegistrationUserUseCase {
   constructor(
     private commandBus: CommandBus,
-    private usersService: UsersService,
     private emailManager: EmailManagers,
   ) {}
 
