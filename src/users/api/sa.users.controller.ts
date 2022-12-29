@@ -25,10 +25,11 @@ import {
   BanUserInputUseCaseType,
 } from './dto/update-user-banStatus-dto';
 import { UpdateUserCommand } from '../application/use-cases/update-user-use-case';
+import {BanUsersBusinessType} from "./dto/create.user.buisnes.type";
 
 @UseGuards(BasicAuthGuard)
 @Controller('sa/users')
-export class UsersSaController {
+export class SaUsersController {
   constructor(
     private commandBus: CommandBus,
     private usersService: UsersService,
@@ -42,20 +43,21 @@ export class UsersSaController {
 
   @Post()
   async createUser(@Body() inputModel: CreateUserDto) {
-    const newUser = await this.commandBus.execute(
+    const user = await this.commandBus.execute(
       new CreateUserCommand(inputModel),
     );
-    return {
-      id: newUser.id,
-      login: newUser.accountData.login,
-      email: newUser.accountData.email,
-      createdAt: newUser.accountData.createdAt,
-      banInfo: {
-        isBanned: newUser.banInfo.isBanned,
-        banDate: newUser.banInfo.banDate,
-        banReason: newUser.banInfo.banReason,
-      },
-    };
+    const newUser = new BanUsersBusinessType (
+        user.id,
+        user.accountData.login,
+        user.accountData.email,
+        user.accountData.createdAt,
+        {
+          isBanned: user.banInfo.isBanned,
+          banDate: user.banInfo.banDate,
+          banReason: user.banInfo.banReason,
+        }
+    )
+    return newUser;
   }
 
   @Put(':id/ban')

@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { UsersController } from './users/api/users.controller';
 import { UsersService } from './users/application/users.service';
 import { UsersRepository } from './users/infrastructure/users.repository';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -80,7 +79,7 @@ import { CreatePostUseCase } from './posts/application/use-cases/create-post-use
 import { UpdatePostUseCase } from './posts/application/use-cases/update-post-use-case';
 import { DeletePostUseCase } from './posts/application/use-cases/delete-post-use-case';
 import { DeleteAllPostsUseCase } from './posts/application/use-cases/delete-all-posts-use-case';
-import { UsersSaController } from './users/api/sa.users.controller';
+import { SaUsersController } from './users/api/sa.users.controller';
 import { UpdateUserUseCase } from './users/application/use-cases/update-user-use-case';
 import { DeleteAllUserSessionsUseCase } from './sessions/application/use-cases/delete-all-user-sessions-use-case';
 import { BloggersController } from './blogs/api/blogger.controller';
@@ -171,8 +170,7 @@ const likesUseCases = [UpdateLikesUseCase, DeleteAllLikesUseCase];
   ],
   controllers: [
     BloggerUsersController,
-    UsersSaController,
-    UsersController,
+    SaUsersController,
     BlogsSaController,
     BlogsController,
     BloggersController,
