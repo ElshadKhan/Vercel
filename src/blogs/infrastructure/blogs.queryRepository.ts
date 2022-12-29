@@ -77,7 +77,7 @@ export class BlogsQueryRepository {
     pageSize,
     sortBy,
     sortDirection,
-  }: QueryValidationType): Promise<BlogsBusinessType> {
+  }: QueryValidationType): Promise<SaBlogsBusinessType> {
     const blogs = await this.blogModel
       .find({
         name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' },
@@ -115,7 +115,6 @@ export class BlogsQueryRepository {
         },
       })),
     );
-
     return blogDto;
   }
 
