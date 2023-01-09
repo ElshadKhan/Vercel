@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { add } from 'date-fns';
 import { UsersRepository } from '../../infrastructure/users.repository';
 import { PasswordService } from '../../../helpers/password/password.service';
+import { SqlUsersRepository } from '../../infrastructure/sql.users.repository';
 
 export class CreateUserCommand {
   constructor(public inputModel: CreateUserDto) {}
@@ -14,6 +15,7 @@ export class CreateUserCommand {
 export class CreateUserUseCase implements ICommandHandler<CreateUserCommand> {
   constructor(
     private usersRepository: UsersRepository,
+    private sqlUsersRepository: SqlUsersRepository,
     private passwordService: PasswordService,
   ) {}
 
@@ -45,6 +47,6 @@ export class CreateUserUseCase implements ICommandHandler<CreateUserCommand> {
         banReason: null,
       },
     );
-    return await this.usersRepository.create(newUser);
+    return await this.sqlUsersRepository.create(newUser);
   }
 }

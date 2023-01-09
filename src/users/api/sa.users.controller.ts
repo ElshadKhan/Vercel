@@ -25,7 +25,8 @@ import {
   BanUserInputUseCaseType,
 } from './dto/update-user-banStatus-dto';
 import { UpdateUserCommand } from '../application/use-cases/update-user-use-case';
-import {BanUsersBusinessType} from "./dto/create.user.buisnes.type";
+import { BanUsersBusinessType } from './dto/create.user.buisnes.type';
+import { SqlUsersQueryRepository } from '../infrastructure/sql.users.queryRepository';
 
 @UseGuards(BasicAuthGuard)
 @Controller('sa/users')
@@ -34,6 +35,7 @@ export class SaUsersController {
     private commandBus: CommandBus,
     private usersService: UsersService,
     private usersQueryRepository: UsersQueryRepository,
+    private sqlUsersQueryRepository: SqlUsersQueryRepository,
   ) {}
 
   @Get()
@@ -41,22 +43,29 @@ export class SaUsersController {
     return this.usersQueryRepository.getUsersForSa(pagination(query));
   }
 
+  // @Get()
+  // getUsers() {
+  //   console.log('2');
+  //   return this.sqlUsersQueryRepository.getUsersForSa();
+  // }
+
   @Post()
   async createUser(@Body() inputModel: CreateUserDto) {
     const user = await this.commandBus.execute(
       new CreateUserCommand(inputModel),
     );
-    const newUser = new BanUsersBusinessType (
-        user.id,
-        user.accountData.login,
-        user.accountData.email,
-        user.accountData.createdAt,
-        {
-          isBanned: user.banInfo.isBanned,
-          banDate: user.banInfo.banDate,
-          banReason: user.banInfo.banReason,
-        }
-    )
+    const newUser = new BanUsersBusinessType(
+      user.id,
+      user.accountData.login,
+      user.accountData.email,
+      user.accountData.createdAt,
+      {
+        isBanned: user.banInfo.isBanned,
+        banDate: user.banInfo.banDate,
+        banReason: user.banInfo.banReason,
+      },
+    );
+
     return newUser;
   }
 

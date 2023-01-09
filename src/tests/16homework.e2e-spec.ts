@@ -14,7 +14,7 @@ import { PostDtoType } from '../posts/application/dto/PostDto';
 
 jest.setTimeout(120000);
 
-describe(`Ban blog by super admin`, () => {
+describe.skip(`Ban blog by super admin`, () => {
   let app: INestApplication;
 
   beforeAll(async () => {

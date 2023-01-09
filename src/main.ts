@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { createApp } from './helpers/createApp';
 
-console.log();
 async function bootstrap() {
   const rawApp = await NestFactory.create(AppModule);
   const app = createApp(rawApp);
@@ -13,5 +12,4 @@ async function bootstrap() {
     console.log(`Server started on port: ${port}`);
   });
 }
-
 bootstrap();

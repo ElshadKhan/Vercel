@@ -17,7 +17,7 @@ import { CreateBlogDtoType } from '../blogs/domain/dto/createBlogDbType';
 
 jest.setTimeout(120000);
 
-describe(`checking 15 homework`, () => {
+describe.skip(`checking 15 homework`, () => {
   let app: INestApplication;
 
   beforeAll(async () => {

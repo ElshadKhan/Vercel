@@ -89,6 +89,9 @@ import { UpdateBlogForNewUserUseCase } from './blogs/application/use-cases/updat
 import { BanBlogUseCase } from './blogs/application/use-cases/ban-blog-use-case';
 import { UpdateBanBloggerUserUseCase } from './users/application/use-cases/update-banBlogerUser-use-case';
 import { BloggerUsersController } from './users/api/blogger.users.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { SqlUsersRepository } from './users/infrastructure/sql.users.repository';
+import { SqlUsersQueryRepository } from './users/infrastructure/sql.users.queryRepository';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -154,6 +157,17 @@ const likesUseCases = [UpdateLikesUseCase, DeleteAllLikesUseCase];
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'nodejs',
+      password: 'password',
+      database: 'ItIncubatorNest',
+      autoLoadEntities: false,
+      synchronize: false,
+    }),
+    // TypeOrmModule.forFeature(),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -188,6 +202,8 @@ const likesUseCases = [UpdateLikesUseCase, DeleteAllLikesUseCase];
     UsersService,
     UsersRepository,
     UsersQueryRepository,
+    SqlUsersRepository,
+    SqlUsersQueryRepository,
     BlogsService,
     BlogsRepository,
     BlogsQueryRepository,
