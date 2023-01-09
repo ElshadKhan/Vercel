@@ -34,20 +34,13 @@ export class SaUsersController {
   constructor(
     private commandBus: CommandBus,
     private usersService: UsersService,
-    private usersQueryRepository: UsersQueryRepository,
-    private sqlUsersQueryRepository: SqlUsersQueryRepository,
+    private usersQueryRepository: SqlUsersQueryRepository,
   ) {}
 
   @Get()
   getUsers(@Query() query: any) {
     return this.usersQueryRepository.getUsersForSa(pagination(query));
   }
-
-  // @Get()
-  // getUsers() {
-  //   console.log('2');
-  //   return this.sqlUsersQueryRepository.getUsersForSa();
-  // }
 
   @Post()
   async createUser(@Body() inputModel: CreateUserDto) {

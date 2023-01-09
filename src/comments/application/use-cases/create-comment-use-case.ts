@@ -22,7 +22,7 @@ export class CreateCommentUseCase
   ) {}
 
   async execute(command: CreateCommentCommand): Promise<CommentDtoType | null> {
-    const user = await this.usersQueryRepository.getUser(
+    const user = await this.usersQueryRepository.findUserById(
       command.inputModel.userId,
     );
 

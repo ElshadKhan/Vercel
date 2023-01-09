@@ -23,7 +23,7 @@ export class UpdateLikesUseCase implements ICommandHandler<UpdateLikesCommand> {
       command.useCaseDto.parentId,
       command.useCaseDto.userId,
     );
-    const user = await this.usersQueryRepository.getUser(
+    const user = await this.usersQueryRepository.findUserById(
       command.useCaseDto.userId,
     );
     if (!likeDislikeStatus) {

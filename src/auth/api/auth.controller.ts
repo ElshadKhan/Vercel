@@ -47,7 +47,7 @@ export class AuthController {
   @Get('/me')
   @UseGuards(BearerAuthGuard)
   async findAuthUser(@CurrentUserId() currentUserId: string) {
-    const user = await this.usersQueryRepository.getUser(currentUserId);
+    const user = await this.usersQueryRepository.findUserById(currentUserId);
     return {
       email: user.accountData.email,
       login: user.accountData.login,

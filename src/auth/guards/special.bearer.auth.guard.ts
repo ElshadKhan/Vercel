@@ -17,7 +17,7 @@ export class SpecialBearerAuthGuard implements CanActivate {
     const token = req.headers.authorization.split(' ')[1];
     const userId = await this.jwtService.getUserIdByAccessToken(token);
     if (userId) {
-      req.user = await this.userQueryRepository.getUser(userId);
+      req.user = await this.userQueryRepository.findUserById(userId);
       return true;
     }
     return true;

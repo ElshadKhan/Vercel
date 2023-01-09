@@ -14,8 +14,7 @@ export class CreateUserCommand {
 @CommandHandler(CreateUserCommand)
 export class CreateUserUseCase implements ICommandHandler<CreateUserCommand> {
   constructor(
-    private usersRepository: UsersRepository,
-    private sqlUsersRepository: SqlUsersRepository,
+    private usersRepository: SqlUsersRepository,
     private passwordService: PasswordService,
   ) {}
 
@@ -47,6 +46,6 @@ export class CreateUserUseCase implements ICommandHandler<CreateUserCommand> {
         banReason: null,
       },
     );
-    return await this.sqlUsersRepository.create(newUser);
+    return await this.usersRepository.create(newUser);
   }
 }

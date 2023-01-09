@@ -11,7 +11,7 @@ import { UsersQueryRepository } from '../../users/infrastructure/users.queryRepo
 export class UserExistsRule implements ValidatorConstraintInterface {
   constructor(public usersQueryRepository: UsersQueryRepository) {}
   async validate(value: string) {
-    const result = await this.usersQueryRepository.getUser(value);
+    const result = await this.usersQueryRepository.findUserById(value);
     if (!result) return false;
     return true;
   }
