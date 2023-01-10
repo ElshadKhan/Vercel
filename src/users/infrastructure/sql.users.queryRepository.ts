@@ -77,30 +77,163 @@ export class SqlUsersQueryRepository {
   async findUserByLoginOrEmail(
     loginOrEmail: string | LoginUserDto,
   ): Promise<UserAccountDBType | null> {
-    return this.userModel
-      .findOne({
-        $or: [
-          { 'accountData.login': loginOrEmail },
-          { 'accountData.email': loginOrEmail },
-        ],
-      })
-      .lean();
+    const user = await this.dataSource.query(
+      `SELECT 
+    u.*,
+    p."confirmationCode" AS passwordConfirmationCode,
+    p."expirationDate" AS passwordExpirationDate,
+    p."isConfirmed" AS passwordIsConfirmed,
+    e."confirmationCode" AS emailConfirmationCode,
+    e."expirationDate" AS emailExpirationDate,
+    e."isConfirmed" AS emailIsConfirmed,
+    b."isBanned",
+    b."banReason",
+    b."banDate" 
+    FROM "Users" AS u
+    LEFT JOIN "EmailConfirmation" AS e
+    ON e."userId" = u."id"
+    LEFT JOIN "PasswordConfirmation" AS p
+    ON p."userId" = u."id"
+    LEFT JOIN "BanInfo" AS b
+    ON b."userId" = u."id"
+    WHERE "login" = '%${loginOrEmail}%'
+    OR "email" = '%${loginOrEmail}%'`,
+    );
+    const newUser = new UserAccountDBType(
+      user.id,
+      {
+        login: user.login,
+        email: user.email,
+        passwordHash: user.passwordHash,
+        createdAt: user.createdAt,
+      },
+      {
+        confirmationCode: user.emailconfirmationcode,
+        expirationDate: user.emailexpirationdate,
+        isConfirmed: user.emailisconfirmed,
+      },
+      {
+        confirmationCode: user.passwordconfirmationcode,
+        expirationDate: user.passwordexpirationdate,
+        isConfirmed: user.passwordisconfirmed,
+      },
+      {
+        isBanned: user.isBanned,
+        banDate: user.banReason,
+        banReason: user.banDate,
+      },
+    );
+    return newUser;
   }
 
   async findUserByEmailConfirmationCode(
     code: string,
   ): Promise<UserAccountDBType | null> {
-    return this.userModel
-      .findOne({ 'emailConfirmation.confirmationCode': code })
-      .lean();
+    const user = await this.dataSource.query(
+      `SELECT 
+    u.*,
+    p."confirmationCode" AS passwordConfirmationCode,
+    p."expirationDate" AS passwordExpirationDate,
+    p."isConfirmed" AS passwordIsConfirmed,
+    e."confirmationCode" AS emailConfirmationCode,
+    e."expirationDate" AS emailExpirationDate,
+    e."isConfirmed" AS emailIsConfirmed,
+    b."isBanned",
+    b."banReason",
+    b."banDate" 
+    FROM "Users" AS u
+    LEFT JOIN "EmailConfirmation" AS e
+    ON e."userId" = u."id"
+    LEFT JOIN "PasswordConfirmation" AS p
+    ON p."userId" = u."id"
+    LEFT JOIN "BanInfo" AS b
+    ON b."userId" = u."id"
+    WHERE e."confirmationCode" = '${code}'`,
+    );
+
+    if (!user) return user;
+
+    const newUser = new UserAccountDBType(
+      user.id,
+      {
+        login: user.login,
+        email: user.email,
+        passwordHash: user.passwordHash,
+        createdAt: user.createdAt,
+      },
+      {
+        confirmationCode: user.emailconfirmationcode,
+        expirationDate: user.emailexpirationdate,
+        isConfirmed: user.emailisconfirmed,
+      },
+      {
+        confirmationCode: user.passwordconfirmationcode,
+        expirationDate: user.passwordexpirationdate,
+        isConfirmed: user.passwordisconfirmed,
+      },
+      {
+        isBanned: user.isBanned,
+        banDate: user.banReason,
+        banReason: user.banDate,
+      },
+    );
+
+    return newUser;
   }
 
   async findUserByPasswordConfirmationCode(
     code: string,
   ): Promise<UserAccountDBType | null> {
-    return this.userModel
-      .findOne({ 'passwordConfirmation.confirmationCode': code })
-      .lean();
+    const user = await this.dataSource.query(
+      `SELECT 
+    u.*,
+    p."confirmationCode" AS passwordConfirmationCode,
+    p."expirationDate" AS passwordExpirationDate,
+    p."isConfirmed" AS passwordIsConfirmed,
+    e."confirmationCode" AS emailConfirmationCode,
+    e."expirationDate" AS emailExpirationDate,
+    e."isConfirmed" AS emailIsConfirmed,
+    b."isBanned",
+    b."banReason",
+    b."banDate" 
+    FROM "Users" AS u
+    LEFT JOIN "EmailConfirmation" AS e
+    ON e."userId" = u."id"
+    LEFT JOIN "PasswordConfirmation" AS p
+    ON p."userId" = u."id"
+    LEFT JOIN "BanInfo" AS b
+    ON b."userId" = u."id"
+    WHERE p."confirmationCode" = '${code}'`,
+    );
+
+    if (!user) return user;
+
+    const newUser = new UserAccountDBType(
+      user.id,
+      {
+        login: user.login,
+        email: user.email,
+        passwordHash: user.passwordHash,
+        createdAt: user.createdAt,
+      },
+      {
+        confirmationCode: user.emailconfirmationcode,
+        expirationDate: user.emailexpirationdate,
+        isConfirmed: user.emailisconfirmed,
+      },
+      {
+        confirmationCode: user.passwordconfirmationcode,
+        expirationDate: user.passwordexpirationdate,
+        isConfirmed: user.passwordisconfirmed,
+      },
+      {
+        isBanned: user.isBanned,
+        banDate: user.banReason,
+        banReason: user.banDate,
+      },
+    );
+
+    return newUser;
   }
 
   async getBanUserForBlog(
