@@ -121,45 +121,29 @@ export class UsersQueryRepository {
     sortBy,
     sortDirection,
   }: QueryValidationType): Promise<UsersBusinessType> {
+    const filter = {
+      $or: [
+        {
+          'accountData.login': {
+            $regex: searchLoginTerm,
+            $options: '(?i)a(?-i)cme',
+          },
+        },
+        {
+          'accountData.email': {
+            $regex: searchEmailTerm,
+            $options: '(?i)a(?-i)cme',
+          },
+        },
+      ],
+    };
     const users = await this.userModel
-      .find({
-        $or: [
-          {
-            'accountData.login': {
-              $regex: searchLoginTerm,
-              $options: '(?i)a(?-i)cme',
-            },
-          },
-          {
-            'accountData.email': {
-              $regex: searchEmailTerm,
-              $options: '(?i)a(?-i)cme',
-            },
-          },
-        ],
-      })
+      .find(filter)
       .sort([[`accountData.${sortBy}`, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
-    const totalCountUsers = await this.userModel
-      .find({
-        $or: [
-          {
-            'accountData.login': {
-              $regex: searchLoginTerm,
-              $options: '(?i)a(?-i)cme',
-            },
-          },
-          {
-            'accountData.email': {
-              $regex: searchEmailTerm,
-              $options: '(?i)a(?-i)cme',
-            },
-          },
-        ],
-      })
-      .count();
+    const totalCountUsers = await this.userModel.find(filter).count();
     const items = users.map((user) => ({
       id: user.id,
       login: user.accountData.login,

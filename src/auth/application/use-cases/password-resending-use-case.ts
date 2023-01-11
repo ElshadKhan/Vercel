@@ -3,6 +3,7 @@ import { randomUUID } from 'crypto';
 import { UsersRepository } from '../../../users/infrastructure/users.repository';
 import { PasswordManagers } from '../../../helpers/managers/passwordManagers';
 import { CommandHandler } from '@nestjs/cqrs';
+import { SqlUsersQueryRepository } from '../../../users/infrastructure/sql.users.queryRepository';
 
 export class PasswordResendingCommand {
   constructor(public email: string) {}
@@ -11,7 +12,7 @@ export class PasswordResendingCommand {
 @CommandHandler(PasswordResendingCommand)
 export class PasswordResendingUseCase {
   constructor(
-    private usersQueryRepository: UsersQueryRepository,
+    private usersQueryRepository: SqlUsersQueryRepository,
     private usersRepository: UsersRepository,
     private passwordManager: PasswordManagers,
   ) {}

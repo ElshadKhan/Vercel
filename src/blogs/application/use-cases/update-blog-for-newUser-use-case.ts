@@ -4,6 +4,7 @@ import { IdModelType } from '../../domain/dto/updateBlogsBindType';
 import { UsersQueryRepository } from '../../../users/infrastructure/users.queryRepository';
 import { UpdateBlogOnNewUserRepo } from '../../domain/dto/updateBlogDbType';
 import { BlogsQueryRepository } from '../../infrastructure/blogs.queryRepository';
+import { SqlUsersQueryRepository } from '../../../users/infrastructure/sql.users.queryRepository';
 
 export class UpdateBlogForNewUserCommand {
   constructor(public inputModel: IdModelType) {}
@@ -15,7 +16,7 @@ export class UpdateBlogForNewUserUseCase
 {
   constructor(
     private blogsRepository: BlogsRepository,
-    private usersQueryRepository: UsersQueryRepository,
+    private usersQueryRepository: SqlUsersQueryRepository,
   ) {}
 
   async execute(command: UpdateBlogForNewUserCommand) {

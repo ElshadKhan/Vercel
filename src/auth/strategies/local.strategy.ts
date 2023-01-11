@@ -3,10 +3,11 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 import * as bcrypt from 'bcrypt';
 import { UsersQueryRepository } from '../../users/infrastructure/users.queryRepository';
+import { SqlUsersQueryRepository } from '../../users/infrastructure/sql.users.queryRepository';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private usersQueryRepository: UsersQueryRepository) {
+  constructor(private usersQueryRepository: SqlUsersQueryRepository) {
     super({ usernameField: 'loginOrEmail' });
   }
 

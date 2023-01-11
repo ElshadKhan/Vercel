@@ -4,6 +4,7 @@ import { LikesQueryRepository } from '../../infrastructure/likes.queryRepository
 import { UsersQueryRepository } from '../../../users/infrastructure/users.queryRepository';
 import { LikesRepository } from '../../infrastructure/likes.repository';
 import { LikesUseCasesDtoType } from '../../domain/dto/likesUseCasesDtoType';
+import { SqlUsersQueryRepository } from '../../../users/infrastructure/sql.users.queryRepository';
 
 export class UpdateLikesCommand {
   constructor(public useCaseDto: LikesUseCasesDtoType) {}
@@ -13,7 +14,7 @@ export class UpdateLikesCommand {
 export class UpdateLikesUseCase implements ICommandHandler<UpdateLikesCommand> {
   constructor(
     private likesQueryRepository: LikesQueryRepository,
-    private usersQueryRepository: UsersQueryRepository,
+    private usersQueryRepository: SqlUsersQueryRepository,
     private likesRepository: LikesRepository,
   ) {}
 

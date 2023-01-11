@@ -33,6 +33,7 @@ import { PasswordConfirmationCommand } from '../application/use-cases/password-c
 import { CreateSessionCommand } from '../../sessions/application/use-cases/create-session-use-case';
 import { CreateSessionUseCaseDtoType } from '../../sessions/domain/dto/createSessionUseCaseDtoType';
 import { UpdateSessionCommand } from '../../sessions/application/use-cases/update-session-use-case';
+import { SqlUsersQueryRepository } from '../../users/infrastructure/sql.users.queryRepository';
 
 @Controller('auth')
 export class AuthController {
@@ -40,7 +41,7 @@ export class AuthController {
     private commandBus: CommandBus,
     private sessionsService: SessionsService,
     private sessionsRepository: SessionsRepository,
-    private usersQueryRepository: UsersQueryRepository,
+    private usersQueryRepository: SqlUsersQueryRepository,
     private jwtService: JwtService,
   ) {}
 

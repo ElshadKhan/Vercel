@@ -201,7 +201,7 @@ const likesUseCases = [UpdateLikesUseCase, DeleteAllLikesUseCase];
     JwtService,
     UsersService,
     UsersRepository,
-    UsersQueryRepository,
+    SqlUsersQueryRepository,
     SqlUsersRepository,
     SqlUsersQueryRepository,
     BlogsService,

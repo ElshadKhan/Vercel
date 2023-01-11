@@ -30,6 +30,7 @@ import { CommentCreateUseCaseDtoType } from '../../comments/application/dto/comm
 import { UpdateLikesCommand } from '../../likes/application/use-cases/update-likes-use-case';
 import { LikesUseCasesDtoType } from '../../likes/domain/dto/likesUseCasesDtoType';
 import { UsersQueryRepository } from '../../users/infrastructure/users.queryRepository';
+import { SqlUsersQueryRepository } from '../../users/infrastructure/sql.users.queryRepository';
 
 @Controller('posts')
 export class PostsController {
@@ -39,7 +40,7 @@ export class PostsController {
     private postsQueryRepository: PostsQueryRepository,
     private commentsService: CommentsService,
     private commentsQueryRepository: CommentsQueryRepository,
-    private usersQueryRepository: UsersQueryRepository,
+    private usersQueryRepository: SqlUsersQueryRepository,
   ) {}
 
   @Post(':postId/comments')

@@ -5,6 +5,7 @@ import {
 } from '../../api/dto/ban-bloger-users-input-dto';
 import { UsersRepository } from '../../infrastructure/users.repository';
 import { UsersQueryRepository } from '../../infrastructure/users.queryRepository';
+import { SqlUsersQueryRepository } from '../../infrastructure/sql.users.queryRepository';
 
 export class UpdateBanBloggerUserCommand {
   constructor(public useCaseDto: BanUsersUseCaseType) {}
@@ -15,7 +16,7 @@ export class UpdateBanBloggerUserUseCase
   implements ICommandHandler<UpdateBanBloggerUserCommand>
 {
   constructor(
-    private usersQueryRepository: UsersQueryRepository,
+    private usersQueryRepository: SqlUsersQueryRepository,
     private usersRepository: UsersRepository,
   ) {}
 

@@ -8,11 +8,12 @@ import { Request } from 'express';
 import { UsersQueryRepository } from '../../users/infrastructure/users.queryRepository';
 import { JwtService } from '../application/jwt-service';
 import { SessionsQueryRepository } from '../../sessions/infrastructure/sessionsQueryRepository';
+import { SqlUsersQueryRepository } from '../../users/infrastructure/sql.users.queryRepository';
 
 @Injectable()
 export class RefreshTokenGuard implements CanActivate {
   constructor(
-    private userQueryRepository: UsersQueryRepository,
+    private userQueryRepository: SqlUsersQueryRepository,
     private sessionsQueryRepository: SessionsQueryRepository,
     private jwtService: JwtService,
   ) {}

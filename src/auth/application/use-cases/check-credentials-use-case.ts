@@ -2,6 +2,7 @@ import * as bcrypt from 'bcrypt';
 import { LoginUserDto } from '../../domain/dto/login.dto';
 import { UsersQueryRepository } from '../../../users/infrastructure/users.queryRepository';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { SqlUsersQueryRepository } from '../../../users/infrastructure/sql.users.queryRepository';
 
 export class CheckCredentialsCommand {
   constructor(public inputModel: LoginUserDto) {}
@@ -11,7 +12,7 @@ export class CheckCredentialsCommand {
 export class CheckCredentialsUseCase
   implements ICommandHandler<CheckCredentialsCommand>
 {
-  constructor(private usersQueryRepository: UsersQueryRepository) {}
+  constructor(private usersQueryRepository: SqlUsersQueryRepository) {}
 
   async execute(command: CheckCredentialsCommand) {
     const user = await this.usersQueryRepository.findUserByLoginOrEmail(

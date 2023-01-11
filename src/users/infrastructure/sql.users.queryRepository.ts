@@ -13,8 +13,6 @@ import {
   BloggerUsersBan,
   BloggerUsersBanDocument,
 } from '../domain/entities/blogger.users.blogs.ban.entity';
-import { v4 as uuidv4 } from 'uuid';
-import { add } from 'date-fns';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class SqlUsersQueryRepository {
@@ -41,7 +39,7 @@ export class SqlUsersQueryRepository {
     ON e."userId" = u."id"
     LEFT JOIN "PasswordConfirmation" AS p
     ON p."userId" = u."id"
-    LEFT JOIN "BanInfo" AS b
+    LEFT JOIN "UsersBanInfo" AS b
     ON b."userId" = u."id"
     WHERE "id" = '${id}' 
     AND "isBanned" = false
@@ -94,7 +92,7 @@ export class SqlUsersQueryRepository {
     ON e."userId" = u."id"
     LEFT JOIN "PasswordConfirmation" AS p
     ON p."userId" = u."id"
-    LEFT JOIN "BanInfo" AS b
+    LEFT JOIN "UsersBanInfo" AS b
     ON b."userId" = u."id"
     WHERE "login" = '%${loginOrEmail}%'
     OR "email" = '%${loginOrEmail}%'`,
@@ -146,7 +144,7 @@ export class SqlUsersQueryRepository {
     ON e."userId" = u."id"
     LEFT JOIN "PasswordConfirmation" AS p
     ON p."userId" = u."id"
-    LEFT JOIN "BanInfo" AS b
+    LEFT JOIN "UsersBanInfo" AS b
     ON b."userId" = u."id"
     WHERE e."confirmationCode" = '${code}'`,
     );
@@ -201,7 +199,7 @@ export class SqlUsersQueryRepository {
     ON e."userId" = u."id"
     LEFT JOIN "PasswordConfirmation" AS p
     ON p."userId" = u."id"
-    LEFT JOIN "BanInfo" AS b
+    LEFT JOIN "UsersBanInfo" AS b
     ON b."userId" = u."id"
     WHERE p."confirmationCode" = '${code}'`,
     );
@@ -237,16 +235,19 @@ export class SqlUsersQueryRepository {
   }
 
   async getBanUserForBlog(
-    bloggerId: string,
+    banUserId: string,
     blogId: string,
   ): Promise<UserAccountDBType | null> {
-    return await this.bloggerUsersBanModel.findOne({
-      $and: [
-        { blogId: blogId },
-        { banUserId: bloggerId },
-        { 'banInfo.isBanned': true },
-      ],
-    });
+    return await this.dataSource.query(
+      `SELECT blogger.*, blogs."userId" AS blogowner, users."login" AS banuserlogin
+    FROM "BloggerBanUsersInfo" AS blogger
+    LEFT JOIN "Blogs" AS blogs
+    ON blogs."id" = blogger."blogId"
+    LEFT JOIN "Users" AS users
+    ON users."id" = blogger."banUserId"
+    WHERE blogger."blogId" = '${blogId}'
+    AND blogger."banUserId" = '${banUserId}'`,
+    );
   }
 
   async getBanUsersForBlog(
@@ -260,25 +261,29 @@ export class SqlUsersQueryRepository {
       sortDirection,
     }: QueryValidationType,
   ): Promise<UsersBusinessType> {
-    const filter = {
-      $and: [
-        {
-          login: {
-            $regex: searchLoginTerm,
-            $options: '(?i)a(?-i)cme',
-          },
-        },
-        { blogId: blogId },
-        { 'banInfo.isBanned': true },
-      ],
-    };
-    const users = await this.bloggerUsersBanModel
-      .find(filter, { _id: false, __v: 0 })
-      .sort([[sortBy, sortDirection]])
-      .skip(getSkipNumber(pageNumber, pageSize))
-      .limit(pageSize)
-      .lean();
-    const totalCount = await this.bloggerUsersBanModel.countDocuments(filter);
+    const skip = getSkipNumber(pageNumber, pageSize);
+    const users = await this.dataSource.query(
+      `SELECT blogger.*, blogs."userId" AS blogowner, users."login" AS banuserlogin
+    FROM "BloggerBanUsersInfo" AS blogger
+    LEFT JOIN "Blogs" AS blogs
+    ON blogs."id" = blogger."blogId"
+    LEFT JOIN "Users" AS users
+    ON users."id" = blogger."banUserId"
+    WHERE blogger."blogId" = '${blogId}'
+    AND users."login" = '${searchLoginTerm}'
+    ORDER BY "${sortBy}" ${sortDirection}
+    LIMIT ${pageSize} OFFSET ${skip}`,
+    );
+    const totalCount = await this.dataSource.query(
+      `SELECT blogger.*, blogs."userId" AS blogowner, users."login" AS banuserlogin
+    FROM "BloggerBanUsersInfo" AS blogger
+    LEFT JOIN "Blogs" AS blogs
+    ON blogs."id" = blogger."blogId"
+    LEFT JOIN "Users" AS users
+    ON users."id" = blogger."banUserId"
+    WHERE blogger."blogId" = '${blogId}'
+    AND users."login" = '${searchLoginTerm}'`,
+    );
     const items = users.map((u) => ({
       id: u.banUserId,
       login: u.login,
@@ -306,14 +311,14 @@ export class SqlUsersQueryRepository {
     sortBy,
     sortDirection,
   }: QueryValidationType): Promise<UsersBusinessType> {
+    const skip = getSkipNumber(pageNumber, pageSize);
     const users = await this.dataSource.query(
-      `SELECT u.*, b."isBanned", b."banReason", b."banDate" 
-    FROM "Users" AS u
-    LEFT JOIN "BanInfo" as b
-    ON b."userId" = u."id"
+      `SELECT * 
+    FROM "Users"
     WHERE "login" LIKE '%${searchLoginTerm}%'
     OR "email" LIKE '%${searchEmailTerm}%'
-    ORDER BY "${sortBy}" ${sortDirection}`,
+    ORDER BY "${sortBy}" ${sortDirection}
+    LIMIT ${pageSize} OFFSET ${skip}`,
     );
     const totalCountUsers = await this.dataSource.query(
       `SELECT count(*) 

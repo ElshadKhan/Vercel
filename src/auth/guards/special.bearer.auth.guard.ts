@@ -2,11 +2,12 @@ import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Request } from 'express';
 import { UsersQueryRepository } from '../../users/infrastructure/users.queryRepository';
 import { JwtService } from '../application/jwt-service';
+import { SqlUsersQueryRepository } from '../../users/infrastructure/sql.users.queryRepository';
 
 @Injectable()
 export class SpecialBearerAuthGuard implements CanActivate {
   constructor(
-    private userQueryRepository: UsersQueryRepository,
+    private userQueryRepository: SqlUsersQueryRepository,
     private jwtService: JwtService,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {

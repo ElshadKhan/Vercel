@@ -1,6 +1,7 @@
 import { UsersRepository } from '../../../users/infrastructure/users.repository';
 import { UsersQueryRepository } from '../../../users/infrastructure/users.queryRepository';
 import { CommandHandler } from '@nestjs/cqrs';
+import { SqlUsersQueryRepository } from '../../../users/infrastructure/sql.users.queryRepository';
 
 export class EmailConfirmationCommand {
   constructor(public code: string) {}
@@ -9,7 +10,7 @@ export class EmailConfirmationCommand {
 @CommandHandler(EmailConfirmationCommand)
 export class EmailConfirmationUseCase {
   constructor(
-    private usersQueryRepository: UsersQueryRepository,
+    private usersQueryRepository: SqlUsersQueryRepository,
     private usersRepository: UsersRepository,
   ) {}
 

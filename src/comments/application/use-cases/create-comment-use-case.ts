@@ -6,6 +6,7 @@ import { UsersQueryRepository } from '../../../users/infrastructure/users.queryR
 import { CommentsRepository } from '../../infrastructure/comments.repository';
 import { PostsQueryRepository } from '../../../posts/infrastructure/posts.queryRepository';
 import { CommentCreateUseCaseDtoType } from '../dto/commentCreateUseCaseDtoType';
+import { SqlUsersQueryRepository } from '../../../users/infrastructure/sql.users.queryRepository';
 
 export class CreateCommentCommand {
   constructor(public inputModel: CommentCreateUseCaseDtoType) {}
@@ -16,7 +17,7 @@ export class CreateCommentUseCase
   implements ICommandHandler<CreateCommentCommand>
 {
   constructor(
-    private usersQueryRepository: UsersQueryRepository,
+    private usersQueryRepository: SqlUsersQueryRepository,
     private postsQueryRepository: PostsQueryRepository,
     private commentsRepository: CommentsRepository,
   ) {}
