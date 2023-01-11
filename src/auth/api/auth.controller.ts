@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 import { LoginUserDto } from '../domain/dto/login.dto';
 import { CreateUserDto } from '../../users/api/dto/create-user.dto';
-import { SessionsService } from '../../sessions/application/sessions.service';
 import { JwtService } from '../application/jwt-service';
 import { SessionsRepository } from '../../sessions/infrastructure/sessionsRepository';
 import { ResendingDto } from '../domain/dto/resending.dto';
@@ -39,7 +38,6 @@ import { SqlUsersQueryRepository } from '../../users/infrastructure/sql.users.qu
 export class AuthController {
   constructor(
     private commandBus: CommandBus,
-    private sessionsService: SessionsService,
     private sessionsRepository: SessionsRepository,
     private usersQueryRepository: SqlUsersQueryRepository,
     private jwtService: JwtService,

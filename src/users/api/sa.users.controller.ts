@@ -12,7 +12,6 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { UsersService } from '../application/users.service';
 import { UsersQueryRepository } from '../infrastructure/users.queryRepository';
 import { pagination } from '../../helpers/middleware/queryValidation';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -33,7 +32,6 @@ import { SqlUsersQueryRepository } from '../infrastructure/sql.users.queryReposi
 export class SaUsersController {
   constructor(
     private commandBus: CommandBus,
-    private usersService: UsersService,
     private usersQueryRepository: SqlUsersQueryRepository,
   ) {}
 

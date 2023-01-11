@@ -8,7 +8,6 @@ import {
   HttpException,
   HttpCode,
 } from '@nestjs/common';
-import { SessionsService } from '../application/sessions.service';
 import { SessionsQueryRepository } from '../infrastructure/sessionsQueryRepository';
 import { JwtService } from '../../auth/application/jwt-service';
 import { RefreshTokenGuard } from '../../auth/guards/refresh.token.guard';
@@ -22,7 +21,6 @@ import { DeleteAllSessionsExceptOneCommand } from '../application/use-cases/dele
 export class SessionsController {
   constructor(
     private commandBus: CommandBus,
-    private readonly sessionsService: SessionsService,
     private sessionsQueryRepository: SessionsQueryRepository,
     private jwtService: JwtService,
   ) {}

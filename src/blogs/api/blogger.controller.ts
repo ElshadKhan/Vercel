@@ -11,10 +11,8 @@ import {
   HttpException,
   UseGuards,
 } from '@nestjs/common';
-import { BlogsService } from '../application/blogs.service';
 import { BlogsQueryRepository } from '../infrastructure/blogs.queryRepository';
 import { pagination } from '../../helpers/middleware/queryValidation';
-import { PostsService } from '../../posts/application/posts.service';
 import { CreatePostDto } from '../../posts/api/dto/createPostDto';
 import {
   CreateBlogDto,
@@ -41,8 +39,6 @@ import { CommentsQueryRepository } from '../../comments/infrastructure/comments.
 export class BloggersController {
   constructor(
     private commandBus: CommandBus,
-    private blogsService: BlogsService,
-    private postsService: PostsService,
     private blogsQueryRepository: BlogsQueryRepository,
     private commentsQueryRepository: CommentsQueryRepository,
   ) {}

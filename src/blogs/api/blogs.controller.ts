@@ -6,10 +6,8 @@ import {
   HttpException,
   UseGuards,
 } from '@nestjs/common';
-import { BlogsService } from '../application/blogs.service';
 import { BlogsQueryRepository } from '../infrastructure/blogs.queryRepository';
 import { pagination } from '../../helpers/middleware/queryValidation';
-import { PostsService } from '../../posts/application/posts.service';
 import { PostsQueryRepository } from '../../posts/infrastructure/posts.queryRepository';
 import { SpecialBearerAuthGuard } from '../../auth/guards/special.bearer.auth.guard';
 import { CurrentUserId } from '../../auth/current-user-id.param.decorator';
@@ -19,8 +17,6 @@ import { CommandBus } from '@nestjs/cqrs';
 export class BlogsController {
   constructor(
     private commandBus: CommandBus,
-    private blogsService: BlogsService,
-    private postsService: PostsService,
     private blogsQueryRepository: BlogsQueryRepository,
     private postsQueryRepository: PostsQueryRepository,
   ) {}

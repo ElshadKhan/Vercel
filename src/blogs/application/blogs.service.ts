@@ -28,11 +28,11 @@ export class BlogsService {
   //   );
   // }
 
-  delete(id: string) {
-    return this.blogsRepository.delete(id);
-  }
-
-  deleteAll() {
-    return this.blogsRepository.deleteAll();
-  }
+  // delete(id: string) {
+  //   return this.blogsRepository.delete(id);
+  // }
+  //
+  // deleteAll() {
+  //   return this.blogsRepository.deleteAll();
+  // }
 }

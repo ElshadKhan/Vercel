@@ -9,10 +9,8 @@ import {
   UseGuards,
   BadRequestException,
 } from '@nestjs/common';
-import { BlogsService } from '../application/blogs.service';
 import { BlogsQueryRepository } from '../infrastructure/blogs.queryRepository';
 import { pagination } from '../../helpers/middleware/queryValidation';
-import { PostsService } from '../../posts/application/posts.service';
 import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
 import { CommandBus } from '@nestjs/cqrs';
 import { BanBlogsInputModelType } from '../domain/dto/updateBlogDbType';
@@ -25,8 +23,6 @@ import { UpdateBlogForNewUserCommand } from '../application/use-cases/update-blo
 export class BlogsSaController {
   constructor(
     private commandBus: CommandBus,
-    private blogsService: BlogsService,
-    private postsService: PostsService,
     private blogsQueryRepository: BlogsQueryRepository,
   ) {}
 

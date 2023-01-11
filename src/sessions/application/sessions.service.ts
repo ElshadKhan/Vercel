@@ -14,27 +14,27 @@ export class SessionsService {
     private jwtService: JwtService,
   ) {}
 
-  async createSession(userId: string, ip: string, deviceName: string) {
-    const deviceId = randomUUID();
-    const tokens = await this.jwtService.createJWTTokens(userId, deviceId);
-    const payload = await this.jwtService.getUserIdByRefreshToken(
-      tokens.refreshToken,
-    );
-
-    const session: SessionDBType = {
-      ip: ip,
-      title: deviceName,
-      lastActiveDate: new Date(payload.iat * 1000).toISOString(),
-      expiredDate: new Date(payload.exp * 1000).toISOString(),
-      deviceId: deviceId,
-      userId: userId,
-    };
-    await this.sessionsRepository.createSession(session);
-    return {
-      accessToken: tokens.accessToken,
-      refreshToken: tokens.refreshToken,
-    };
-  }
+  // async createSession(userId: string, ip: string, deviceName: string) {
+  //   const deviceId = randomUUID();
+  //   const tokens = await this.jwtService.createJWTTokens(userId, deviceId);
+  //   const payload = await this.jwtService.getUserIdByRefreshToken(
+  //     tokens.refreshToken,
+  //   );
+  //
+  //   const session: SessionDBType = {
+  //     ip: ip,
+  //     title: deviceName,
+  //     lastActiveDate: new Date(payload.iat * 1000).toISOString(),
+  //     expiredDate: new Date(payload.exp * 1000).toISOString(),
+  //     deviceId: deviceId,
+  //     userId: userId,
+  //   };
+  //   await this.sessionsRepository.createSession(session);
+  //   return {
+  //     accessToken: tokens.accessToken,
+  //     refreshToken: tokens.refreshToken,
+  //   };
+  // }
 
   // async updateSession(
   //   userId: string,
@@ -52,17 +52,17 @@ export class SessionsService {
   //   return await this.sessionsRepository.deleteAll();
   // }
 
-  async deleteSessionsByDeviceId(userId: string, deviceId: string) {
-    return await this.sessionsRepository.deleteSessionsByDeviceId(
-      userId,
-      deviceId,
-    );
-  }
-
-  async deleteAllSessionsExceptOne(userId: string, deviceId: string) {
-    return await this.sessionsRepository.deleteAllSessionsExceptOne(
-      userId,
-      deviceId,
-    );
-  }
+  // async deleteSessionsByDeviceId(userId: string, deviceId: string) {
+  //   return await this.sessionsRepository.deleteSessionsByDeviceId(
+  //     userId,
+  //     deviceId,
+  //   );
+  // }
+  //
+  // async deleteAllSessionsExceptOne(userId: string, deviceId: string) {
+  //   return await this.sessionsRepository.deleteAllSessionsExceptOne(
+  //     userId,
+  //     deviceId,
+  //   );
+  // }
 }

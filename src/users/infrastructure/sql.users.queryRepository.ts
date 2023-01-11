@@ -1,6 +1,3 @@
-import { User, UserDbTypeWithId } from '../domain/entities/users.entity';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { Injectable, Scope } from '@nestjs/common';
 import { getPagesCounts, getSkipNumber } from '../../helpers/helpFunctions';
 import { DataSource } from 'typeorm';
@@ -9,17 +6,10 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { UserAccountDBType } from '../domain/dto/user.account.dto';
 import { QueryValidationType } from '../../helpers/middleware/queryValidation';
 import { LoginUserDto } from '../../auth/domain/dto/login.dto';
-import {
-  BloggerUsersBan,
-  BloggerUsersBanDocument,
-} from '../domain/entities/blogger.users.blogs.ban.entity';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class SqlUsersQueryRepository {
   constructor(@InjectDataSource() protected dataSource: DataSource) {}
-  @InjectModel(User.name) private userModel: Model<UserDbTypeWithId>;
-  @InjectModel(BloggerUsersBan.name)
-  private bloggerUsersBanModel: Model<BloggerUsersBanDocument>;
 
   async findUserById(id: string): Promise<UserAccountDBType | null> {
     const user = await await this.dataSource.query(
@@ -286,11 +276,11 @@ export class SqlUsersQueryRepository {
     );
     const items = users.map((u) => ({
       id: u.banUserId,
-      login: u.login,
+      login: u.banuserlogin,
       banInfo: {
-        isBanned: u.banInfo.isBanned,
-        banDate: u.banInfo.banDate,
-        banReason: u.banInfo.banReason,
+        isBanned: u.isBanned,
+        banDate: u.banDate,
+        banReason: u.banReason,
       },
     }));
     const userDto = new UsersBusinessType(

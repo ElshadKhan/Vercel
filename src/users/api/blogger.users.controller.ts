@@ -9,7 +9,6 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { UsersService } from '../application/users.service';
 import { UsersQueryRepository } from '../infrastructure/users.queryRepository';
 import { pagination } from '../../helpers/middleware/queryValidation';
 import { CommandBus } from '@nestjs/cqrs';
@@ -28,7 +27,6 @@ import { SqlUsersQueryRepository } from '../infrastructure/sql.users.queryReposi
 export class BloggerUsersController {
   constructor(
     private commandBus: CommandBus,
-    private usersService: UsersService,
     private usersQueryRepository: SqlUsersQueryRepository,
     private blogsQueryRepository: BlogsQueryRepository,
   ) {}

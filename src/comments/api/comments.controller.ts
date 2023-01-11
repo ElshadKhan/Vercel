@@ -10,9 +10,7 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
-import { CommentsService } from '../application/comments.service';
 import { CommentsQueryRepository } from '../infrastructure/comments.queryRepository';
-import { LikesService } from '../../likes/application/likes.service';
 import { LikesDto } from '../../likes/domain/dto/like-enam.dto';
 import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
 import { SpecialBearerAuthGuard } from '../../auth/guards/special.bearer.auth.guard';
@@ -30,9 +28,7 @@ import { LikesUseCasesDtoType } from '../../likes/domain/dto/likesUseCasesDtoTyp
 export class CommentsController {
   constructor(
     private commandBus: CommandBus,
-    private commentsService: CommentsService,
     private commentsQueryRepository: CommentsQueryRepository,
-    private likesService: LikesService,
   ) {}
 
   @UseGuards(SpecialBearerAuthGuard)

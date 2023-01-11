@@ -11,13 +11,11 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { PostsService } from '../application/posts.service';
 import { PostsQueryRepository } from '../infrastructure/posts.queryRepository';
 import {
   pagination,
   QueryValidationType,
 } from '../../helpers/middleware/queryValidation';
-import { CommentsService } from '../../comments/application/comments.service';
 import { CommentsQueryRepository } from '../../comments/infrastructure/comments.queryRepository';
 import { LikesDto } from '../../likes/domain/dto/like-enam.dto';
 import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
@@ -26,7 +24,6 @@ import { CreateCommentType } from '../../comments/api/dto/createCommentDto';
 import { CurrentUserId } from '../../auth/current-user-id.param.decorator';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateCommentCommand } from '../../comments/application/use-cases/create-comment-use-case';
-import { CommentCreateUseCaseDtoType } from '../../comments/application/dto/commentCreateUseCaseDtoType';
 import { UpdateLikesCommand } from '../../likes/application/use-cases/update-likes-use-case';
 import { LikesUseCasesDtoType } from '../../likes/domain/dto/likesUseCasesDtoType';
 import { UsersQueryRepository } from '../../users/infrastructure/users.queryRepository';
@@ -36,9 +33,7 @@ import { SqlUsersQueryRepository } from '../../users/infrastructure/sql.users.qu
 export class PostsController {
   constructor(
     private commandBus: CommandBus,
-    private postsService: PostsService,
     private postsQueryRepository: PostsQueryRepository,
-    private commentsService: CommentsService,
     private commentsQueryRepository: CommentsQueryRepository,
     private usersQueryRepository: SqlUsersQueryRepository,
   ) {}
