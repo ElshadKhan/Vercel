@@ -19,6 +19,9 @@ export class SqlSessionsQueryRepository {
       `SELECT * FROM "Sessions" WHERE "deviceId" = '${deviceId}'`,
     );
     console.log('Return special ActiveSessions', sessions);
+
+    if (!sessions[0]) return null;
+
     return {
       ip: sessions[0].ip,
       title: sessions[0].title,
@@ -34,6 +37,9 @@ export class SqlSessionsQueryRepository {
       `SELECT * FROM "Sessions" WHERE "userId" = '${userId}'`,
     );
     console.log('Return AllActiveSessions', sessions);
+
+    if (!sessions[0]) return null;
+
     return sessions.map((ses) => ({
       ip: ses.ip,
       title: ses.title,
