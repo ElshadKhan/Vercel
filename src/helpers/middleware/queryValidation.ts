@@ -33,6 +33,7 @@ export const pagination = (query: any): QueryValidationType => {
     pageSize = defaultPageSize;
   }
   pageSize = parseInt(pageSize, 10);
+
   let banStatus = query.banStatus;
   if (!banStatus || banStatus === 'all') {
     banStatus = defaultBanStatus;
