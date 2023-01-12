@@ -324,7 +324,7 @@ export class SqlUsersQueryRepository {
     );
     const totalCountUsers = await this.dataSource.query(
       `SELECT count(*) 
-    FROM "Users"
+    FROM "Users" AS u
     LEFT JOIN "UsersBanInfo" AS b
     ON u."id" = b."userId"
     WHERE (UPPER ("login") LIKE UPPER ('%${searchLoginTerm}%')
