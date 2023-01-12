@@ -44,7 +44,7 @@ VALUES ('${session.userId}', '${session.deviceId}', '${session.ip}', '${session.
 
   async deleteSessionsByDeviceId(userId: string, deviceId: string) {
     const result = await this.dataSource.query(`DELETE FROM "Sessions"
-WHERE "userId" = '${userId}
+WHERE "userId" = '${userId}'
 AND "deviceId" = '${deviceId}`);
     console.log('Delete AllSessions special deviceId result', result);
     return true;
