@@ -45,7 +45,7 @@ VALUES ('${session.userId}', '${session.deviceId}', '${session.ip}', '${session.
   async deleteSessionsByDeviceId(userId: string, deviceId: string) {
     const result = await this.dataSource.query(`DELETE FROM "Sessions"
 WHERE "userId" = '${userId}'
-AND "deviceId" = '${deviceId}`);
+AND "deviceId" = '${deviceId}'`);
     console.log('Delete AllSessions special deviceId result', result);
     return true;
   }
@@ -53,7 +53,7 @@ AND "deviceId" = '${deviceId}`);
   async deleteAllSessionsExceptOne(userId: string, deviceId: string) {
     const result = await this.dataSource.query(`DELETE FROM "Sessions"
 WHERE "userId" = '${userId}'
-AND NOT"deviceId" = '${deviceId}'`);
+AND NOT "deviceId" = '${deviceId}'`);
     console.log('Delete AllSessionsResult by Id except 1 result', result);
     return true;
   }
