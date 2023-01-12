@@ -12,11 +12,13 @@ export class QueryValidationType {
     public searchNameTerm: string,
     public searchLoginTerm: string,
     public searchEmailTerm: string,
+    public banStatus: boolean,
   ) {}
 }
 
 const defaultPageSize = 10;
 const defaultPageNumber = 1;
+const defaultBanStatus = 'NOT NULL';
 
 export const pagination = (query: any): QueryValidationType => {
   let pageNumber = query.pageNumber;
@@ -31,6 +33,17 @@ export const pagination = (query: any): QueryValidationType => {
     pageSize = defaultPageSize;
   }
   pageSize = parseInt(pageSize, 10);
+  let banStatus = query.banStatus;
+  if (!banStatus || banStatus === 'all') {
+    banStatus = defaultBanStatus;
+  } else {
+    if (banStatus === 'banned') {
+      banStatus = true;
+    }
+    if (banStatus === 'notBanned') {
+      banStatus = false;
+    }
+  }
 
   const sortBy = typeof query.sortBy === 'string' ? query.sortBy : 'createdAt';
   const sortDirection =
@@ -55,5 +68,6 @@ export const pagination = (query: any): QueryValidationType => {
     searchNameTerm,
     searchLoginTerm,
     searchEmailTerm,
+    banStatus,
   };
 };
