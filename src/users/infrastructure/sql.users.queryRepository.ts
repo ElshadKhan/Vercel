@@ -315,16 +315,16 @@ export class SqlUsersQueryRepository {
     FROM "Users" AS u
     LEFT JOIN "UsersBanInfo" AS b
     ON u."id" = b."userId"
-    WHERE "login" LIKE '%${searchLoginTerm}%'
-    OR "email" LIKE '%${searchEmailTerm}%'
+    WHERE UPPER ("login") LIKE UPPER ('%${searchLoginTerm}%')
+    OR UPPER ("email") LIKE UPPER ('%${searchEmailTerm}%')
     ORDER BY "${sortBy}" ${sortDirection}
     LIMIT ${pageSize} OFFSET ${skip}`,
     );
     const totalCountUsers = await this.dataSource.query(
       `SELECT count(*) 
     FROM "Users"
-    WHERE "login" LIKE '%${searchLoginTerm}%'
-    OR "email" LIKE '%${searchEmailTerm}%'`,
+    WHERE UPPER ("login") LIKE UPPER ('%${searchLoginTerm}%')
+    OR UPPER ("email") LIKE UPPER ('%${searchEmailTerm}%')`,
     );
     const totalCount = +totalCountUsers[0].count;
     const items = users.map((user) => ({
