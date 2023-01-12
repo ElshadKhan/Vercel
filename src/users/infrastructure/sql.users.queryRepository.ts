@@ -325,8 +325,9 @@ export class SqlUsersQueryRepository {
     const totalCountUsers = await this.dataSource.query(
       `SELECT count(*) 
     FROM "Users"
-    WHERE UPPER ("login") LIKE UPPER ('%${searchLoginTerm}%')
-    OR UPPER ("email") LIKE UPPER ('%${searchEmailTerm}%')`,
+    WHERE (UPPER ("login") LIKE UPPER ('%${searchLoginTerm}%')
+    OR UPPER ("email") LIKE UPPER ('%${searchEmailTerm}%'))
+    AND "isBanned" IS ${banStatus}`,
     );
     const totalCount = +totalCountUsers[0].count;
     const items = users.map((user) => ({
