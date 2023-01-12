@@ -155,8 +155,6 @@ const sessionsUseCases = [
   DeleteAllUserSessionsUseCase,
 ];
 
-console.log();
-
 const likesUseCases = [UpdateLikesUseCase, DeleteAllLikesUseCase];
 
 @Module({
