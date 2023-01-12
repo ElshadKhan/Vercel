@@ -311,8 +311,10 @@ export class SqlUsersQueryRepository {
   }: QueryValidationType): Promise<UsersBusinessType> {
     const skip = getSkipNumber(pageNumber, pageSize);
     const users = await this.dataSource.query(
-      `SELECT * 
-    FROM "Users"
+      `SELECT u.*, b."isBanned", b."banReason", b."banDate" 
+    FROM "Users" AS u
+    LEFT JOIN "UsersBanInfo" AS b
+    ON u."id" = b."userId"
     WHERE "login" LIKE '%${searchLoginTerm}%'
     OR "email" LIKE '%${searchEmailTerm}%'
     ORDER BY "${sortBy}" ${sortDirection}
