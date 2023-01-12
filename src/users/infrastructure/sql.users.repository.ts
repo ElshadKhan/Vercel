@@ -48,7 +48,7 @@ export class SqlUsersRepository {
   }
   async updateEmailResendingCode(id: string, code: string) {
     const result = await this.dataSource.query(`UPDATE "EmailConfirmation"
-    SET "confirmationCode" = '${code}
+    SET "confirmationCode" = '${code}'
     WHERE "userId" = '${id}'`);
     console.log('UPDATE emailConfirmationCode', result);
     return true;
