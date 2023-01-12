@@ -2,6 +2,7 @@ import { UsersRepository } from '../../../users/infrastructure/users.repository'
 import { UsersQueryRepository } from '../../../users/infrastructure/users.queryRepository';
 import { CommandHandler } from '@nestjs/cqrs';
 import { SqlUsersQueryRepository } from '../../../users/infrastructure/sql.users.queryRepository';
+import { SqlUsersRepository } from '../../../users/infrastructure/sql.users.repository';
 
 export class EmailConfirmationCommand {
   constructor(public code: string) {}
@@ -11,7 +12,7 @@ export class EmailConfirmationCommand {
 export class EmailConfirmationUseCase {
   constructor(
     private usersQueryRepository: SqlUsersQueryRepository,
-    private usersRepository: UsersRepository,
+    private usersRepository: SqlUsersRepository,
   ) {}
 
   async execute(command: EmailConfirmationCommand): Promise<boolean> {
