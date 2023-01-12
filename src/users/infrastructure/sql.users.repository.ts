@@ -34,8 +34,8 @@ export class SqlUsersRepository {
 
   async updateEmailConfirmation(id: string) {
     const result = await this.dataSource.query(`UPDATE "EmailConfirmation"
-\t  SET "isConfirmed" = true
-\t  WHERE "userId"= '${id}'`);
+    SET "isConfirmed" = true
+    WHERE "userId"= '${id}'`);
     console.log('UPDATE emailIsConfirmed', result);
     return true;
   }
@@ -95,10 +95,12 @@ export class SqlUsersRepository {
   }
 
   async delete(id: string) {
+    console.log('id', id);
     const result = await this.dataSource.query(
-      `DELETE FROM "Users" WHERE "id" = '${id}'`,
+      `DELETE FROM "Users"
+	WHERE "id" = '${id}'`,
     );
-    console.log('Delete User with id result', result);
+    if (!result[1]) return false;
     return true;
   }
 
