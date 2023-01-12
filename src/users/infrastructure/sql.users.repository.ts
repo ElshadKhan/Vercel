@@ -27,7 +27,7 @@ export class SqlUsersRepository {
     VALUES ('${user.id}', '${user.passwordConfirmation.confirmationCode}', '${user.passwordConfirmation.expirationDate}', '${user.passwordConfirmation.isConfirmed}')`);
     await this.dataSource.query(`INSERT INTO public."UsersBanInfo"(
     "userId", "isBanned", "banReason", "banDate")
-    VALUES ('${user.id}', '${user.banInfo.isBanned}', '${user.banInfo.banReason}', '${user.banInfo.banDate}')`);
+    VALUES ('${user.id}', '${user.banInfo.isBanned}', ${user.banInfo.banReason}, ${user.banInfo.banDate})`);
     console.log('Create userResults', result);
     return user;
   }
@@ -87,11 +87,19 @@ export class SqlUsersRepository {
   }
 
   async updateUsers(model: BanUsersFactory) {
-    const result = await this.dataSource.query(`UPDATE "UsersBanInfo"
+    if (model.isBanned) {
+      const result = await this.dataSource.query(`UPDATE "UsersBanInfo"
     SET "isBanned" = '${model.isBanned}', "banReason" = '${model.banReason}', "banDate" = '${model.banDate}'
     WHERE "userId" = '${model.id}'`);
-    console.log('Update UserBanInfoResult', result);
-    return true;
+      console.log('Update UserBanInfoResult', result);
+      return true;
+    } else {
+      const result = await this.dataSource.query(`UPDATE "UsersBanInfo"
+    SET "isBanned" = '${model.isBanned}', "banReason" = ${model.banReason}, "banDate" = ${model.banDate}
+    WHERE "userId" = '${model.id}'`);
+      console.log('Update UserBanInfoResult', result);
+      return true;
+    }
   }
 
   async delete(id: string) {

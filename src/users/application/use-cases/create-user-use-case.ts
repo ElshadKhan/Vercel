@@ -42,8 +42,8 @@ export class CreateUserUseCase implements ICommandHandler<CreateUserCommand> {
       },
       {
         isBanned: false,
-        banDate: 'null',
-        banReason: 'null',
+        banDate: null,
+        banReason: null,
       },
     );
     return await this.usersRepository.create(newUser);
