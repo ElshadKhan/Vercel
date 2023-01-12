@@ -147,7 +147,7 @@ export class SqlUsersQueryRepository {
     WHERE e."confirmationCode" = '${code}'`,
     );
 
-    if (!user) return null;
+    if (!user[0]) return null;
 
     const newUser = new UserAccountDBType(
       user[0].id,
@@ -202,7 +202,7 @@ export class SqlUsersQueryRepository {
     WHERE p."confirmationCode" = '${code}'`,
     );
 
-    if (!user) return null;
+    if (!user[0]) return null;
 
     const newUser = new UserAccountDBType(
       user[0].id,
