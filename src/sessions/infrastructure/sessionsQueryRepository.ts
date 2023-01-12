@@ -11,8 +11,8 @@ import { Model } from 'mongoose';
 export class SessionsQueryRepository {
   @InjectModel(Session.name) private sessionModel: Model<SessionDbTypeWithId>;
 
-  async getSession(id: string): Promise<SessionDBType | null> {
-    return await this.sessionModel.findOne({ deviceId: id });
+  async getSession(deviceId: string): Promise<SessionDBType | null> {
+    return await this.sessionModel.findOne({ deviceId: deviceId });
   }
 
   async getAllActiveSessions(userId: string): Promise<SessionDBType[]> {

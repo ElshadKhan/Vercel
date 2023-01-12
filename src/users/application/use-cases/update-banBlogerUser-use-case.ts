@@ -42,7 +42,7 @@ export class UpdateBanBloggerUserUseCase
     } else {
       await this.usersRepository.unbanBloggerUsers(
         command.useCaseDto.banUserId,
-        command.useCaseDto.bloggerId,
+        command.useCaseDto.blogId,
       );
       return true;
     }

@@ -24,7 +24,7 @@ export class EmailResendingUseCase {
     if (
       !user ||
       user.emailConfirmation.isConfirmed ||
-      user.emailConfirmation.expirationDate < new Date()
+      user.emailConfirmation.expirationDate < new Date().toISOString()
     )
       return false;
     const code = randomUUID();

@@ -8,6 +8,7 @@ import {
   BloggerUsersBanDocument,
 } from '../domain/entities/blogger.users.blogs.ban.entity';
 import { BanUsersFactory } from '../api/dto/update-user-banStatus-dto';
+import { BanBloggerUsersModel } from '../api/dto/ban-bloger-users-input-dto';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class UsersRepository {
@@ -55,15 +56,15 @@ export class UsersRepository {
     return result.modifiedCount === 1;
   }
 
-  async banBloggerUsers(user: any) {
+  async banBloggerUsers(user: BanBloggerUsersModel) {
     const banUsers = await new this.bloggerUsersBanModel(user);
     return banUsers.save();
   }
 
-  async unbanBloggerUsers(banUserId: string, bloggerId: string) {
+  async unbanBloggerUsers(banUserId: string, blogId: string) {
     const result = await this.bloggerUsersBanModel.deleteOne({
       banUserId,
-      bloggerId,
+      blogId,
     });
     return result.deletedCount === 1;
   }

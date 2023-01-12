@@ -16,12 +16,13 @@ import { CommandBus } from '@nestjs/cqrs';
 import { DeleteSessionsByDeviceIdCommand } from '../application/use-cases/delete-sessions-byDeviceId-use-case';
 import { DeleteSessionUseCaseDtoType } from '../domain/dto/deleteSessionUseCaseDtoType';
 import { DeleteAllSessionsExceptOneCommand } from '../application/use-cases/delete-all-sessions-exceptOne-use-case';
+import { SqlSessionsQueryRepository } from '../infrastructure/sqlSessionsQueryRepository';
 
 @Controller('/security/devices')
 export class SessionsController {
   constructor(
     private commandBus: CommandBus,
-    private sessionsQueryRepository: SessionsQueryRepository,
+    private sessionsQueryRepository: SqlSessionsQueryRepository,
     private jwtService: JwtService,
   ) {}
 

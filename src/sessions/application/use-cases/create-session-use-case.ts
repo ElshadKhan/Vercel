@@ -4,6 +4,7 @@ import { SessionDBType } from '../../domain/dto/sessionDbTypeDto';
 import { SessionsRepository } from '../../infrastructure/sessionsRepository';
 import { CreateSessionUseCaseDtoType } from '../../domain/dto/createSessionUseCaseDtoType';
 import { JwtService } from '../../../auth/application/jwt-service';
+import { SqlSessionsRepository } from '../../infrastructure/sqlSessionsRepository';
 
 export class CreateSessionCommand {
   constructor(public useCaseDto: CreateSessionUseCaseDtoType) {}
@@ -15,7 +16,7 @@ export class CreateSessionUseCase
 {
   constructor(
     private jwtService: JwtService,
-    private sessionsRepository: SessionsRepository,
+    private sessionsRepository: SqlSessionsRepository,
   ) {}
 
   async execute(command: CreateSessionCommand) {

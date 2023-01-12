@@ -14,81 +14,95 @@ import { BanUsersFactory } from '../api/dto/update-user-banStatus-dto';
 @Injectable({ scope: Scope.DEFAULT })
 export class SqlUsersRepository {
   constructor(@InjectDataSource() protected dataSource: DataSource) {}
-  @InjectModel(User.name) private userModel: Model<UserDbTypeWithId>;
-  @InjectModel(BloggerUsersBan.name)
-  private bloggerUsersBanModel: Model<BloggerUsersBanDocument>;
 
   async create(user: UserAccountDBType) {
-    return this.userModel.create(user);
+    const result = await this.dataSource.query(`INSERT INTO "Users"(
+    "id", "login", "email", "passwordHash", "createdAt")
+    VALUES ('${user.id}', '${user.accountData.login}', '${user.accountData.email}', '${user.accountData.passwordHash}', '${user.accountData.createdAt}')`);
+    await this.dataSource.query(`INSERT INTO public."EmailConfirmation"(
+    "userId", "confirmationCode", "expirationDate", "isConfirmed")
+    VALUES ('${user.id}', '${user.emailConfirmation.confirmationCode}', '${user.emailConfirmation.expirationDate}', '${user.emailConfirmation.isConfirmed}')`);
+    await this.dataSource.query(`INSERT INTO public."PasswordConfirmation"(
+    "userId", "confirmationCode", "expirationDate", "isConfirmed")
+    VALUES ('${user.id}', '${user.passwordConfirmation.confirmationCode}', '${user.passwordConfirmation.expirationDate}', '${user.passwordConfirmation.isConfirmed}')`);
+    await this.dataSource.query(`INSERT INTO public."UsersBanInfo"(
+    "userId", "isBanned", "banReason", "banDate")
+    VALUES ('${user.id}', '${user.banInfo.isBanned}', '${user.banInfo.banReason}', '${user.banInfo.banDate}')`);
+    console.log('Create userResults', result);
+    return user;
   }
 
   async updateEmailConfirmation(id: string) {
-    const result = await this.userModel.updateOne(
-      { id: id },
-      { $set: { 'emailConfirmation.isConfirmed': true } },
-    );
-    return result.modifiedCount === 1;
+    const result = await this.dataSource.query(`UPDATE "EmailConfirmation"
+\t  SET "isConfirmed" = true
+\t  WHERE "userId"= '${id}'`);
+    console.log('UPDATE emailIsConfirmed', result);
+    return true;
   }
   async updatePasswordConfirmation(id: string) {
-    const result = await this.userModel.updateOne(
-      { id: id },
-      { $set: { 'passwordConfirmation.isConfirmed': true } },
-    );
-    return result.modifiedCount === 1;
+    const result = await this.dataSource.query(`UPDATE "PasswordConfirmation"
+    SET "isConfirmed" = true
+    WHERE "userId" = '${id}'`);
+    console.log('UPDATE passwordIsConfirmed', result);
+    return true;
   }
   async updateEmailResendingCode(id: string, code: string) {
-    const result = await this.userModel.updateOne(
-      { id: id },
-      { $set: { 'emailConfirmation.confirmationCode': code } },
-    );
-    return result.modifiedCount === 1;
+    const result = await this.dataSource.query(`UPDATE "EmailConfirmation"
+    SET "confirmationCode" = '${code}
+    WHERE "userId" = '${id}'`);
+    console.log('UPDATE emailConfirmationCode', result);
+    return true;
   }
   async updatePasswordResendingCode(id: string, code: string) {
-    const result = await this.userModel.updateOne(
-      { id: id },
-      { $set: { 'passwordConfirmation.confirmationCode': code } },
-    );
-    return result.modifiedCount === 1;
+    const result = await this.dataSource.query(`UPDATE "PasswordConfirmation"
+    SET "confirmationCode" = '${code}'
+    WHERE "userId" = '${id}'`);
+    console.log('UPDATE passwordConfirmationCode', result);
+    return true;
   }
   async updatePassword(id: string, passwordHash: string) {
-    const result = await this.userModel.updateOne(
-      { id: id },
-      { $set: { 'accountData.passwordHash': passwordHash } },
-    );
-    return result.modifiedCount === 1;
+    const result = await this.dataSource.query(`UPDATE "Users"
+    SET "passwordHash" = '${passwordHash}'
+    WHERE "id" = '${id}'`);
+    console.log('Update passwordHashResults', result);
+    return true;
   }
 
   async banBloggerUsers(user: any) {
-    const banUsers = await new this.bloggerUsersBanModel(user);
-    return banUsers.save();
+    const result = await this.dataSource.query(
+      `INSERT INTO "BloggerBanUsersInfo"("isBanned", "banDate", "banReason", "blogId", "banUserId")
+    VALUES ('${user.isBanned}', '${user.banDate}', '${user.banReason}', '${user.blogId}', '${user.banUserId}')`,
+    );
+    console.log('BloggerBanUser result', result);
+    return true;
   }
 
-  async unbanBloggerUsers(banUserId: string, bloggerId: string) {
-    const result = await this.bloggerUsersBanModel.deleteOne({
-      banUserId,
-      bloggerId,
-    });
-    return result.deletedCount === 1;
+  async unbanBloggerUsers(banUserId: string, blogId: string) {
+    const result = await this.dataSource
+      .query(`DELETE FROM "BloggerBanUsersInfo"
+    WHERE "blogId" = '${blogId}'
+    AND "banUserId" = '${banUserId}'`);
+    console.log('Delete unbanned userResult', result);
+    return true;
   }
 
   async updateUsers(model: BanUsersFactory) {
-    const result = await this.userModel.updateOne(
-      { id: model.id },
-      {
-        'banInfo.isBanned': model.isBanned,
-        'banInfo.banDate': model.banDate,
-        'banInfo.banReason': model.banReason,
-      },
-    );
-    return result.matchedCount === 1;
+    const result = await this.dataSource.query(`UPDATE "UsersBanInfo"
+    SET "isBanned" = '${model.isBanned}', "banReason" = '${model.banReason}', "banDate" = '${model.banDate}'
+    WHERE "userId" = '${model.id}'`);
+    console.log('Update UserBanInfoResult', result);
+    return true;
   }
 
   async delete(id: string) {
-    const result = await this.userModel.deleteOne({ id });
-    return result.deletedCount === 1;
+    const result = await this.dataSource.query(
+      `DELETE FROM "Users" WHERE "id" = '${id}'`,
+    );
+    console.log('Delete User with id result', result);
+    return true;
   }
 
   async deleteAll() {
-    return await this.userModel.deleteMany({});
+    return await this.dataSource.query(`DELETE FROM "Users"`);
   }
 }

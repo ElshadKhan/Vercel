@@ -92,6 +92,9 @@ import { BloggerUsersController } from './users/api/blogger.users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SqlUsersRepository } from './users/infrastructure/sql.users.repository';
 import { SqlUsersQueryRepository } from './users/infrastructure/sql.users.queryRepository';
+import { SqlSessionsQueryRepository } from './sessions/infrastructure/sqlSessionsQueryRepository';
+import { SqlSessionsRepository } from './sessions/infrastructure/sqlSessionsRepository';
+import process from 'process';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -159,13 +162,14 @@ const likesUseCases = [UpdateLikesUseCase, DeleteAllLikesUseCase];
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
+      host: process.env.PG_HOST || 'localhost',
       port: 5432,
-      username: 'nodejs',
-      password: 'password',
-      database: 'ItIncubatorNest',
+      username: process.env.PG_USERNAME || 'nodejs',
+      password: process.env.PG_PASSWORD || 'password',
+      database: process.env.PG_DATABASE || 'ItIncubatorNest',
       autoLoadEntities: false,
       synchronize: false,
+      ssl: true,
     }),
     // TypeOrmModule.forFeature(),
     MongooseModule.forRootAsync({
@@ -217,7 +221,9 @@ const likesUseCases = [UpdateLikesUseCase, DeleteAllLikesUseCase];
     LikesQueryRepository,
     // SessionsService,
     SessionsRepository,
+    SqlSessionsRepository,
     SessionsQueryRepository,
+    SqlSessionsQueryRepository,
     EmailManagers,
     EmailAdapter,
     PasswordManagers,

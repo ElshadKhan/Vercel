@@ -18,6 +18,7 @@ export class CheckCredentialsUseCase
     const user = await this.usersQueryRepository.findUserByLoginOrEmail(
       command.inputModel.loginOrEmail,
     );
+    console.log('user', user);
     if (!user) return false;
     const isValid = await bcrypt.compare(
       command.inputModel.password,

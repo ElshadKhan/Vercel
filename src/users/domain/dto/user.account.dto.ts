@@ -20,7 +20,7 @@ export class UsersAccountDataType {
 export class EmailConfirmationType {
   constructor(
     public confirmationCode: string,
-    public expirationDate: Date,
+    public expirationDate: string,
     public isConfirmed: boolean,
   ) {}
 }
@@ -28,7 +28,7 @@ export class EmailConfirmationType {
 export class PasswordConfirmationType {
   constructor(
     public confirmationCode: string,
-    public expirationDate: Date,
+    public expirationDate: string,
     public isConfirmed: boolean,
   ) {}
 }

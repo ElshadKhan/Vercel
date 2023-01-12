@@ -33,12 +33,13 @@ import { CreateSessionCommand } from '../../sessions/application/use-cases/creat
 import { CreateSessionUseCaseDtoType } from '../../sessions/domain/dto/createSessionUseCaseDtoType';
 import { UpdateSessionCommand } from '../../sessions/application/use-cases/update-session-use-case';
 import { SqlUsersQueryRepository } from '../../users/infrastructure/sql.users.queryRepository';
+import { SqlSessionsRepository } from '../../sessions/infrastructure/sqlSessionsRepository';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private commandBus: CommandBus,
-    private sessionsRepository: SessionsRepository,
+    private sessionsRepository: SqlSessionsRepository,
     private usersQueryRepository: SqlUsersQueryRepository,
     private jwtService: JwtService,
   ) {}

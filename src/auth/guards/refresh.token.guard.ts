@@ -9,12 +9,13 @@ import { UsersQueryRepository } from '../../users/infrastructure/users.queryRepo
 import { JwtService } from '../application/jwt-service';
 import { SessionsQueryRepository } from '../../sessions/infrastructure/sessionsQueryRepository';
 import { SqlUsersQueryRepository } from '../../users/infrastructure/sql.users.queryRepository';
+import { SqlSessionsQueryRepository } from '../../sessions/infrastructure/sqlSessionsQueryRepository';
 
 @Injectable()
 export class RefreshTokenGuard implements CanActivate {
   constructor(
     private userQueryRepository: SqlUsersQueryRepository,
-    private sessionsQueryRepository: SessionsQueryRepository,
+    private sessionsQueryRepository: SqlSessionsQueryRepository,
     private jwtService: JwtService,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {

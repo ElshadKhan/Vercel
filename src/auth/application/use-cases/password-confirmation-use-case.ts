@@ -24,7 +24,8 @@ export class PasswordConfirmationUseCase {
       );
     if (!user) return false;
     if (user.passwordConfirmation.isConfirmed) return false;
-    if (user.passwordConfirmation.expirationDate < new Date()) return false;
+    if (user.passwordConfirmation.expirationDate < new Date().toISOString())
+      return false;
 
     const passwordHash = await this.passwordService.generateSaltAndHash(
       command.inputModel.newPassword,

@@ -21,7 +21,8 @@ export class EmailConfirmationUseCase {
       );
     if (!user) return false;
     if (user.emailConfirmation.isConfirmed) return false;
-    if (user.emailConfirmation.expirationDate < new Date()) return false;
+    if (user.emailConfirmation.expirationDate < new Date().toISOString())
+      return false;
 
     const result = await this.usersRepository.updateEmailConfirmation(user.id);
     return result;

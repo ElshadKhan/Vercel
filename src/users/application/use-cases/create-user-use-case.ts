@@ -32,12 +32,12 @@ export class CreateUserUseCase implements ICommandHandler<CreateUserCommand> {
       },
       {
         confirmationCode: uuidv4(),
-        expirationDate: add(new Date(), { hours: 1, minutes: 1 }),
+        expirationDate: add(new Date(), { hours: 1, minutes: 1 }).toISOString(),
         isConfirmed: false,
       },
       {
         confirmationCode: uuidv4(),
-        expirationDate: add(new Date(), { hours: 2, minutes: 2 }),
+        expirationDate: add(new Date(), { hours: 2, minutes: 2 }).toISOString(),
         isConfirmed: false,
       },
       {

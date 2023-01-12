@@ -35,28 +35,31 @@ export class SqlUsersQueryRepository {
     AND "isBanned" = false
     `,
     );
+
+    if (!user[0]) return null;
+
     const newUser = new UserAccountDBType(
-      user.id,
+      user[0].id,
       {
-        login: user.login,
-        email: user.email,
-        passwordHash: user.passwordHash,
-        createdAt: user.createdAt,
+        login: user[0].login,
+        email: user[0].email,
+        passwordHash: user[0].passwordHash,
+        createdAt: user[0].createdAt,
       },
       {
-        confirmationCode: user.emailconfirmationcode,
-        expirationDate: user.emailexpirationdate,
-        isConfirmed: user.emailisconfirmed,
+        confirmationCode: user[0].emailconfirmationcode,
+        expirationDate: user[0].emailexpirationdate,
+        isConfirmed: user[0].emailisconfirmed,
       },
       {
-        confirmationCode: user.passwordconfirmationcode,
-        expirationDate: user.passwordexpirationdate,
-        isConfirmed: user.passwordisconfirmed,
+        confirmationCode: user[0].passwordconfirmationcode,
+        expirationDate: user[0].passwordexpirationdate,
+        isConfirmed: user[0].passwordisconfirmed,
       },
       {
-        isBanned: user.isBanned,
-        banDate: user.banReason,
-        banReason: user.banDate,
+        isBanned: user[0].isBanned,
+        banDate: user[0].banReason,
+        banReason: user[0].banDate,
       },
     );
     return newUser;
@@ -84,31 +87,36 @@ export class SqlUsersQueryRepository {
     ON p."userId" = u."id"
     LEFT JOIN "UsersBanInfo" AS b
     ON b."userId" = u."id"
-    WHERE "login" = '%${loginOrEmail}%'
-    OR "email" = '%${loginOrEmail}%'`,
+    WHERE "login" = '${loginOrEmail}'
+    OR "email" = '${loginOrEmail}'`,
     );
+
+    if (!user[0]) return null;
+
+    console.log('user', user);
+
     const newUser = new UserAccountDBType(
-      user.id,
+      user[0].id,
       {
-        login: user.login,
-        email: user.email,
-        passwordHash: user.passwordHash,
-        createdAt: user.createdAt,
+        login: user[0].login,
+        email: user[0].email,
+        passwordHash: user[0].passwordHash,
+        createdAt: user[0].createdAt,
       },
       {
-        confirmationCode: user.emailconfirmationcode,
-        expirationDate: user.emailexpirationdate,
-        isConfirmed: user.emailisconfirmed,
+        confirmationCode: user[0].emailconfirmationcode,
+        expirationDate: user[0].emailexpirationdate,
+        isConfirmed: user[0].emailisconfirmed,
       },
       {
-        confirmationCode: user.passwordconfirmationcode,
-        expirationDate: user.passwordexpirationdate,
-        isConfirmed: user.passwordisconfirmed,
+        confirmationCode: user[0].passwordconfirmationcode,
+        expirationDate: user[0].passwordexpirationdate,
+        isConfirmed: user[0].passwordisconfirmed,
       },
       {
-        isBanned: user.isBanned,
-        banDate: user.banReason,
-        banReason: user.banDate,
+        isBanned: user[0].isBanned,
+        banDate: user[0].banReason,
+        banReason: user[0].banDate,
       },
     );
     return newUser;
@@ -139,30 +147,30 @@ export class SqlUsersQueryRepository {
     WHERE e."confirmationCode" = '${code}'`,
     );
 
-    if (!user) return user;
+    if (!user) return null;
 
     const newUser = new UserAccountDBType(
-      user.id,
+      user[0].id,
       {
-        login: user.login,
-        email: user.email,
-        passwordHash: user.passwordHash,
-        createdAt: user.createdAt,
+        login: user[0].login,
+        email: user[0].email,
+        passwordHash: user[0].passwordHash,
+        createdAt: user[0].createdAt,
       },
       {
-        confirmationCode: user.emailconfirmationcode,
-        expirationDate: user.emailexpirationdate,
-        isConfirmed: user.emailisconfirmed,
+        confirmationCode: user[0].emailconfirmationcode,
+        expirationDate: user[0].emailexpirationdate,
+        isConfirmed: user[0].emailisconfirmed,
       },
       {
-        confirmationCode: user.passwordconfirmationcode,
-        expirationDate: user.passwordexpirationdate,
-        isConfirmed: user.passwordisconfirmed,
+        confirmationCode: user[0].passwordconfirmationcode,
+        expirationDate: user[0].passwordexpirationdate,
+        isConfirmed: user[0].passwordisconfirmed,
       },
       {
-        isBanned: user.isBanned,
-        banDate: user.banReason,
-        banReason: user.banDate,
+        isBanned: user[0].isBanned,
+        banDate: user[0].banReason,
+        banReason: user[0].banDate,
       },
     );
 
@@ -194,30 +202,30 @@ export class SqlUsersQueryRepository {
     WHERE p."confirmationCode" = '${code}'`,
     );
 
-    if (!user) return user;
+    if (!user) return null;
 
     const newUser = new UserAccountDBType(
-      user.id,
+      user[0].id,
       {
-        login: user.login,
-        email: user.email,
-        passwordHash: user.passwordHash,
-        createdAt: user.createdAt,
+        login: user[0].login,
+        email: user[0].email,
+        passwordHash: user[0].passwordHash,
+        createdAt: user[0].createdAt,
       },
       {
-        confirmationCode: user.emailconfirmationcode,
-        expirationDate: user.emailexpirationdate,
-        isConfirmed: user.emailisconfirmed,
+        confirmationCode: user[0].emailconfirmationcode,
+        expirationDate: user[0].emailexpirationdate,
+        isConfirmed: user[0].emailisconfirmed,
       },
       {
-        confirmationCode: user.passwordconfirmationcode,
-        expirationDate: user.passwordexpirationdate,
-        isConfirmed: user.passwordisconfirmed,
+        confirmationCode: user[0].passwordconfirmationcode,
+        expirationDate: user[0].passwordexpirationdate,
+        isConfirmed: user[0].passwordisconfirmed,
       },
       {
-        isBanned: user.isBanned,
-        banDate: user.banReason,
-        banReason: user.banDate,
+        isBanned: user[0].isBanned,
+        banDate: user[0].banReason,
+        banReason: user[0].banDate,
       },
     );
 

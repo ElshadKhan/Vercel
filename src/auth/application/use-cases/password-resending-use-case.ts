@@ -24,7 +24,7 @@ export class PasswordResendingUseCase {
     if (
       !user ||
       user.passwordConfirmation.isConfirmed ||
-      user.passwordConfirmation.expirationDate < new Date()
+      user.passwordConfirmation.expirationDate < new Date().toISOString()
     )
       return null;
     const code = randomUUID();
