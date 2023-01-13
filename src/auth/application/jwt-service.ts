@@ -11,7 +11,7 @@ export class JwtService {
       { userId: userId },
       this.configService.get<string>('ACCESS_JWT_SECRET'),
       {
-        expiresIn: '10sec',
+        expiresIn: '400sec',
       },
     );
     const refreshToken = jwt.sign(
@@ -20,7 +20,7 @@ export class JwtService {
         deviceId: deviceId,
       },
       this.configService.get<string>('REFRESH_JWT_SECRET'),
-      { expiresIn: '20sec' },
+      { expiresIn: '600sec' },
     );
     return {
       accessToken: accessToken,

@@ -40,21 +40,22 @@ export class PostsQueryRepository {
         let myStatus = LikeStatusEnam.None;
 
         if (userId) {
-          const result = await this.likesQueryRepository.getLikeStatus(
+          const result = await this.likesQueryRepository.getPostLikesStatus(
             post.id,
             userId,
           );
           myStatus = result?.type || LikeStatusEnam.None;
         }
-        const likesCount = await this.likesQueryRepository.getLikesCount(
+        const likesCount = await this.likesQueryRepository.getPostLikesCount(
           post.id,
           LikeStatusEnam.Like,
         );
-        const dislikesCount = await this.likesQueryRepository.getDislikesCount(
-          post.id,
-          LikeStatusEnam.Dislike,
-        );
-        const lastLikes = await this.likesQueryRepository.getLastLikes(
+        const dislikesCount =
+          await this.likesQueryRepository.getPostDislikesCount(
+            post.id,
+            LikeStatusEnam.Dislike,
+          );
+        const lastLikes = await this.likesQueryRepository.getPostLastLikes(
           post.id,
           LikeStatusEnam.Like,
         );
@@ -111,21 +112,22 @@ export class PostsQueryRepository {
         let myStatus = LikeStatusEnam.None;
 
         if (userId) {
-          const result = await this.likesQueryRepository.getLikeStatus(
+          const result = await this.likesQueryRepository.getPostLikesStatus(
             post.id,
             userId,
           );
           myStatus = result?.type || LikeStatusEnam.None;
         }
-        const likesCount = await this.likesQueryRepository.getLikesCount(
+        const likesCount = await this.likesQueryRepository.getPostLikesCount(
           post.id,
           LikeStatusEnam.Like,
         );
-        const dislikesCount = await this.likesQueryRepository.getDislikesCount(
-          post.id,
-          LikeStatusEnam.Dislike,
-        );
-        const lastLikes = await this.likesQueryRepository.getLastLikes(
+        const dislikesCount =
+          await this.likesQueryRepository.getPostDislikesCount(
+            post.id,
+            LikeStatusEnam.Dislike,
+          );
+        const lastLikes = await this.likesQueryRepository.getPostLastLikes(
           post.id,
           LikeStatusEnam.Like,
         );
@@ -174,21 +176,22 @@ export class PostsQueryRepository {
       let myStatus = LikeStatusEnam.None;
 
       if (userId) {
-        const result = await this.likesQueryRepository.getLikeStatus(
+        const result = await this.likesQueryRepository.getPostLikesStatus(
           post.id,
           userId,
         );
         myStatus = result?.type || LikeStatusEnam.None;
       }
-      const likesCount = await this.likesQueryRepository.getLikesCount(
+      const likesCount = await this.likesQueryRepository.getPostLikesCount(
         post.id,
         LikeStatusEnam.Like,
       );
-      const dislikesCount = await this.likesQueryRepository.getDislikesCount(
-        post.id,
-        LikeStatusEnam.Dislike,
-      );
-      const lastLikes = await this.likesQueryRepository.getLastLikes(
+      const dislikesCount =
+        await this.likesQueryRepository.getPostDislikesCount(
+          post.id,
+          LikeStatusEnam.Dislike,
+        );
+      const lastLikes = await this.likesQueryRepository.getPostLastLikes(
         post.id,
         LikeStatusEnam.Like,
       );

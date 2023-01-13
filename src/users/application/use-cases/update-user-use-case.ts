@@ -53,7 +53,11 @@ export class UpdateUserUseCase implements ICommandHandler<UpdateUserCommand> {
         banInfo.id,
         command.inputModel.isBanned,
       );
-      await this.likesRepository.banUsers(
+      await this.likesRepository.banPostUsers(
+        banInfo.id,
+        command.inputModel.isBanned,
+      );
+      await this.likesRepository.banCommentUsers(
         banInfo.id,
         command.inputModel.isBanned,
       );
@@ -82,7 +86,11 @@ export class UpdateUserUseCase implements ICommandHandler<UpdateUserCommand> {
         banInfo.id,
         command.inputModel.isBanned,
       );
-      await this.likesRepository.banUsers(
+      await this.likesRepository.banPostUsers(
+        banInfo.id,
+        command.inputModel.isBanned,
+      );
+      await this.likesRepository.banCommentUsers(
         banInfo.id,
         command.inputModel.isBanned,
       );

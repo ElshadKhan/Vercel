@@ -34,15 +34,18 @@ export class CommentsQueryRepository {
     let myStatus = LikeStatusEnam.None;
 
     if (userId) {
-      const result = await this.likesRepository.getLikeStatus(id, userId);
+      const result = await this.likesRepository.getCommentLikesStatus(
+        id,
+        userId,
+      );
       myStatus = result?.type || LikeStatusEnam.None;
     }
 
-    const likesCount = await this.likesRepository.getLikesCount(
+    const likesCount = await this.likesRepository.getCommentLikesCount(
       id,
       LikeStatusEnam.Like,
     );
-    const dislikesCount = await this.likesRepository.getDislikesCount(
+    const dislikesCount = await this.likesRepository.getCommentDislikesCount(
       id,
       LikeStatusEnam.Dislike,
     );
@@ -69,14 +72,17 @@ export class CommentsQueryRepository {
     if (!comment) return null;
     let myStatus = LikeStatusEnam.None;
     if (userId) {
-      const result = await this.likesRepository.getLikeStatus(id, userId);
+      const result = await this.likesRepository.getCommentLikesStatus(
+        id,
+        userId,
+      );
       myStatus = result?.type || LikeStatusEnam.None;
     }
-    const likesCount = await this.likesRepository.getLikesCount(
+    const likesCount = await this.likesRepository.getCommentLikesCount(
       id,
       LikeStatusEnam.Like,
     );
-    const dislikesCount = await this.likesRepository.getDislikesCount(
+    const dislikesCount = await this.likesRepository.getCommentDislikesCount(
       id,
       LikeStatusEnam.Dislike,
     );
@@ -117,17 +123,21 @@ export class CommentsQueryRepository {
         let myStatus = LikeStatusEnam.None;
 
         if (userId) {
-          const result = await this.likesRepository.getLikeStatus(c.id, userId);
+          const result = await this.likesRepository.getCommentLikesStatus(
+            c.id,
+            userId,
+          );
           myStatus = result?.type || LikeStatusEnam.None;
         }
-        const likesCount = await this.likesRepository.getLikesCount(
+        const likesCount = await this.likesRepository.getCommentLikesCount(
           c.id,
           LikeStatusEnam.Like,
         );
-        const dislikesCount = await this.likesRepository.getDislikesCount(
-          c.id,
-          LikeStatusEnam.Dislike,
-        );
+        const dislikesCount =
+          await this.likesRepository.getCommentDislikesCount(
+            c.id,
+            LikeStatusEnam.Dislike,
+          );
         return {
           id: c.id,
           content: c.content,
@@ -185,17 +195,21 @@ export class CommentsQueryRepository {
         let myStatus = LikeStatusEnam.None;
 
         if (userId) {
-          const result = await this.likesRepository.getLikeStatus(c.id, userId);
+          const result = await this.likesRepository.getCommentLikesStatus(
+            c.id,
+            userId,
+          );
           myStatus = result?.type || LikeStatusEnam.None;
         }
-        const likesCount = await this.likesRepository.getLikesCount(
+        const likesCount = await this.likesRepository.getCommentLikesCount(
           c.id,
           LikeStatusEnam.Like,
         );
-        const dislikesCount = await this.likesRepository.getDislikesCount(
-          c.id,
-          LikeStatusEnam.Dislike,
-        );
+        const dislikesCount =
+          await this.likesRepository.getCommentDislikesCount(
+            c.id,
+            LikeStatusEnam.Dislike,
+          );
         return {
           id: c.id,
           content: c.content,

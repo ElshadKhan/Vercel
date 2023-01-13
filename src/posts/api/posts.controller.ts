@@ -24,10 +24,10 @@ import { CreateCommentType } from '../../comments/api/dto/createCommentDto';
 import { CurrentUserId } from '../../auth/current-user-id.param.decorator';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateCommentCommand } from '../../comments/application/use-cases/create-comment-use-case';
-import { UpdateLikesCommand } from '../../likes/application/use-cases/update-likes-use-case';
-import { LikesUseCasesDtoType } from '../../likes/domain/dto/likesUseCasesDtoType';
+import { PostLikesUseCasesDtoType } from '../../likes/domain/dto/commentLikesUseCasesDtoType';
 import { UsersQueryRepository } from '../../users/infrastructure/users.queryRepository';
 import { SqlUsersQueryRepository } from '../../users/infrastructure/sql.users.queryRepository';
+import { UpdatePostLikesCommand } from '../../likes/application/use-cases/update-post-likes-use-case';
 
 @Controller('posts')
 export class PostsController {
@@ -126,12 +126,12 @@ export class PostsController {
   ) {
     const post = await this.postsQueryRepository.findOne(postId, currentUserId);
     if (post) {
-      const useCaseDto: LikesUseCasesDtoType = {
+      const useCaseDto: PostLikesUseCasesDtoType = {
         likesStatus: likesStatus.likeStatus,
-        parentId: postId,
+        postId: postId,
         userId: currentUserId,
       };
-      return this.commandBus.execute(new UpdateLikesCommand(useCaseDto));
+      return this.commandBus.execute(new UpdatePostLikesCommand(useCaseDto));
     } else {
       throw new HttpException({}, 404);
     }

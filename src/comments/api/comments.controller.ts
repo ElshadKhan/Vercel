@@ -21,8 +21,8 @@ import { CommandBus } from '@nestjs/cqrs';
 import { UpdateCommentCommand } from '../application/use-cases/update-comment-use-case';
 import { DeleteCommentCommand } from '../application/use-cases/delete-comment-use-case';
 import { DeleteAllCommentsCommand } from '../application/use-cases/delete-all-comments-use-case';
-import { UpdateLikesCommand } from '../../likes/application/use-cases/update-likes-use-case';
-import { LikesUseCasesDtoType } from '../../likes/domain/dto/likesUseCasesDtoType';
+import { UpdateCommentLikesCommand } from '../../likes/application/use-cases/update-comment-likes-use-case';
+import { CommentLikesUseCasesDtoType } from '../../likes/domain/dto/commentLikesUseCasesDtoType';
 
 @Controller('comments')
 export class CommentsController {
@@ -76,9 +76,9 @@ export class CommentsController {
     @Body() likesStatus: LikesDto,
     @CurrentUserId() currentUserId: string,
   ) {
-    const useCaseDto: LikesUseCasesDtoType = {
+    const useCaseDto: CommentLikesUseCasesDtoType = {
       likesStatus: likesStatus.likeStatus,
-      parentId: commentId,
+      commentId: commentId,
       userId: currentUserId,
     };
     const comment =
@@ -87,7 +87,7 @@ export class CommentsController {
         currentUserId,
       );
     if (comment) {
-      return this.commandBus.execute(new UpdateLikesCommand(useCaseDto));
+      return this.commandBus.execute(new UpdateCommentLikesCommand(useCaseDto));
     } else {
       throw new HttpException({}, 404);
     }

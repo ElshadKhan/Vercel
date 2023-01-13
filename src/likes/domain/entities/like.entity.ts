@@ -1,16 +1,16 @@
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-export type LikeDbTypeWithId = HydratedDocument<Like>;
+export type PostLikeDbTypeWithId = HydratedDocument<PostLike>;
 
 @Schema()
-export class Like {
+export class PostLike {
   @Prop()
   type: string;
   @Prop()
   userId: string;
   @Prop()
-  parentId: string;
+  postId: string;
   @Prop()
   login: string;
   @Prop()
@@ -19,4 +19,24 @@ export class Like {
   isBanned: boolean;
 }
 
-export const LikeSchema = SchemaFactory.createForClass(Like);
+export const PostLikeSchema = SchemaFactory.createForClass(PostLike);
+
+export type CommentLikeDbTypeWithId = HydratedDocument<CommentLike>;
+
+@Schema()
+export class CommentLike {
+  @Prop()
+  type: string;
+  @Prop()
+  userId: string;
+  @Prop()
+  commentId: string;
+  @Prop()
+  login: string;
+  @Prop()
+  createdAt: string;
+  @Prop()
+  isBanned: boolean;
+}
+
+export const CommentLikeSchema = SchemaFactory.createForClass(CommentLike);

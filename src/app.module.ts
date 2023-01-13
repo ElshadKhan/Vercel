@@ -27,7 +27,12 @@ import { CommentsRepository } from './comments/infrastructure/comments.repositor
 import { LikesService } from './likes/application/likes.service';
 import { LikesRepository } from './likes/infrastructure/likes.repository';
 import { LikesQueryRepository } from './likes/infrastructure/likes.queryRepository';
-import { Like, LikeSchema } from './likes/domain/entities/like.entity';
+import {
+  CommentLike,
+  CommentLikeSchema,
+  PostLike,
+  PostLikeSchema,
+} from './likes/domain/entities/like.entity';
 import {
   Session,
   SessionSchema,
@@ -65,8 +70,8 @@ import { CreateCommentUseCase } from './comments/application/use-cases/create-co
 import { UpdateCommentUseCase } from './comments/application/use-cases/update-comment-use-case';
 import { DeleteCommentUseCase } from './comments/application/use-cases/delete-comment-use-case';
 import { DeleteAllCommentsUseCase } from './comments/application/use-cases/delete-all-comments-use-case';
-import { UpdateLikesUseCase } from './likes/application/use-cases/update-likes-use-case';
-import { DeleteAllLikesUseCase } from './likes/application/use-cases/delete-all-likes-use-case';
+import { UpdateCommentLikesUseCase } from './likes/application/use-cases/update-comment-likes-use-case';
+import { DeleteAllPostLikesUseCase } from './likes/application/use-cases/delete-all-Post-likes-use-case';
 import { CreateSessionUseCase } from './sessions/application/use-cases/create-session-use-case';
 import { UpdateSessionUseCase } from './sessions/application/use-cases/update-session-use-case';
 import { DeleteSessionsByDeviceIdUseCase } from './sessions/application/use-cases/delete-sessions-byDeviceId-use-case';
@@ -95,13 +100,16 @@ import { SqlUsersQueryRepository } from './users/infrastructure/sql.users.queryR
 import { SqlSessionsQueryRepository } from './sessions/infrastructure/sqlSessionsQueryRepository';
 import { SqlSessionsRepository } from './sessions/infrastructure/sqlSessionsRepository';
 import process from 'process';
+import { UpdatePostLikesUseCase } from './likes/application/use-cases/update-post-likes-use-case';
+import { DeleteAllCommentLikesUseCase } from './likes/application/use-cases/delete-all-Comment-likes-use-case';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
   { name: Blog.name, schema: BlogSchema },
   { name: Post.name, schema: PostSchema },
   { name: Comment.name, schema: CommentSchema },
-  { name: Like.name, schema: LikeSchema },
+  { name: CommentLike.name, schema: CommentLikeSchema },
+  { name: PostLike.name, schema: PostLikeSchema },
   { name: Session.name, schema: SessionSchema },
   { name: BloggerUsersBan.name, schema: BloggerUsersBanSchema },
 ];
@@ -155,7 +163,12 @@ const sessionsUseCases = [
   DeleteAllUserSessionsUseCase,
 ];
 
-const likesUseCases = [UpdateLikesUseCase, DeleteAllLikesUseCase];
+const likesUseCases = [
+  UpdatePostLikesUseCase,
+  UpdateCommentLikesUseCase,
+  DeleteAllPostLikesUseCase,
+  DeleteAllCommentLikesUseCase,
+];
 
 @Module({
   imports: [
