@@ -16,7 +16,7 @@ export class SqlUsersRepository {
   constructor(@InjectDataSource() protected dataSource: DataSource) {}
 
   async create(user: UserAccountDBType) {
-    const result = await this.dataSource.query(`INSERT INTO "Users"(
+    await this.dataSource.query(`INSERT INTO "Users"(
     "id", "login", "email", "passwordHash", "createdAt")
     VALUES ('${user.id}', '${user.accountData.login}', '${user.accountData.email}', '${user.accountData.passwordHash}', '${user.accountData.createdAt}')`);
     await this.dataSource.query(`INSERT INTO public."EmailConfirmation"(
@@ -28,7 +28,6 @@ export class SqlUsersRepository {
     await this.dataSource.query(`INSERT INTO public."UsersBanInfo"(
     "userId", "isBanned", "banReason", "banDate")
     VALUES ('${user.id}', '${user.banInfo.isBanned}', ${user.banInfo.banReason}, ${user.banInfo.banDate})`);
-    console.log('Create userResults', result);
     return user;
   }
 
@@ -36,36 +35,36 @@ export class SqlUsersRepository {
     const result = await this.dataSource.query(`UPDATE "EmailConfirmation"
     SET "isConfirmed" = true
     WHERE "userId"= '${id}'`);
-    console.log('UPDATE emailIsConfirmed', result);
-    return true;
+    console.log('UPDATE emailIsConfirmed', result[1] === 1);
+    return result[1] === 1;
   }
   async updatePasswordConfirmation(id: string) {
     const result = await this.dataSource.query(`UPDATE "PasswordConfirmation"
     SET "isConfirmed" = true
     WHERE "userId" = '${id}'`);
-    console.log('UPDATE passwordIsConfirmed', result);
-    return true;
+    console.log('UPDATE passwordIsConfirmed', result[1] === 1);
+    return result[1] === 1;
   }
   async updateEmailResendingCode(id: string, code: string) {
     const result = await this.dataSource.query(`UPDATE "EmailConfirmation"
     SET "confirmationCode" = '${code}'
     WHERE "userId" = '${id}'`);
-    console.log('UPDATE emailConfirmationCode', result);
-    return true;
+    console.log('UPDATE emailConfirmationCode', result[1] === 1);
+    return result[1] === 1;
   }
   async updatePasswordResendingCode(id: string, code: string) {
     const result = await this.dataSource.query(`UPDATE "PasswordConfirmation"
     SET "confirmationCode" = '${code}'
     WHERE "userId" = '${id}'`);
-    console.log('UPDATE passwordConfirmationCode', result);
-    return true;
+    console.log('UPDATE passwordConfirmationCode', result[1] === 1);
+    return result[1] === 1;
   }
   async updatePassword(id: string, passwordHash: string) {
     const result = await this.dataSource.query(`UPDATE "Users"
     SET "passwordHash" = '${passwordHash}'
     WHERE "id" = '${id}'`);
-    console.log('Update passwordHashResults', result);
-    return true;
+    console.log('Update passwordHashResults', result[1] === 1);
+    return result[1] === 1;
   }
 
   async banBloggerUsers(user: any) {
@@ -73,8 +72,8 @@ export class SqlUsersRepository {
       `INSERT INTO "BloggerBanUsersInfo"("isBanned", "banDate", "banReason", "blogId", "banUserId")
     VALUES ('${user.isBanned}', '${user.banDate}', '${user.banReason}', '${user.blogId}', '${user.banUserId}')`,
     );
-    console.log('BloggerBanUser result', result);
-    return true;
+    console.log('Create BloggerBanUser result', result);
+    return user;
   }
 
   async unbanBloggerUsers(banUserId: string, blogId: string) {
@@ -82,8 +81,8 @@ export class SqlUsersRepository {
       .query(`DELETE FROM "BloggerBanUsersInfo"
     WHERE "blogId" = '${blogId}'
     AND "banUserId" = '${banUserId}'`);
-    console.log('Delete unbanned userResult', result);
-    return true;
+    console.log('Delete unbanned userResult', result[1] === 1);
+    return result[1] === 1;
   }
 
   async updateUsers(model: BanUsersFactory) {
@@ -91,14 +90,14 @@ export class SqlUsersRepository {
       const result = await this.dataSource.query(`UPDATE "UsersBanInfo"
     SET "isBanned" = '${model.isBanned}', "banReason" = '${model.banReason}', "banDate" = '${model.banDate}'
     WHERE "userId" = '${model.id}'`);
-      console.log('Update UserBanInfoResult', result);
-      return true;
+      console.log('Update UserBanInfoResult', result[1] === 1);
+      return result[1] === 1;
     } else {
       const result = await this.dataSource.query(`UPDATE "UsersBanInfo"
     SET "isBanned" = '${model.isBanned}', "banReason" = ${model.banReason}, "banDate" = ${model.banDate}
     WHERE "userId" = '${model.id}'`);
-      console.log('Update UserBanInfoResult', result);
-      return true;
+      console.log('Update UserBanInfoResult', result[1] === 1);
+      return result[1] === 1;
     }
   }
 
@@ -108,8 +107,7 @@ export class SqlUsersRepository {
       `DELETE FROM "Users"
 	WHERE "id" = '${id}'`,
     );
-    if (!result[1]) return false;
-    return true;
+    return result[1] === 1;
   }
 
   async deleteAll() {

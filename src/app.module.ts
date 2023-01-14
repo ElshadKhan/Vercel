@@ -102,6 +102,14 @@ import { SqlSessionsRepository } from './sessions/infrastructure/sqlSessionsRepo
 import process from 'process';
 import { UpdatePostLikesUseCase } from './likes/application/use-cases/update-post-likes-use-case';
 import { DeleteAllCommentLikesUseCase } from './likes/application/use-cases/delete-all-Comment-likes-use-case';
+import { SqlLikesRepository } from './likes/infrastructure/sql.likes.repository';
+import { SqlLikesQueryRepository } from './likes/infrastructure/sql.likes.queryRepository';
+import { SqlPostsRepository } from './posts/infrastructure/sql.posts.repository';
+import { SqlPostsQueryRepository } from './posts/infrastructure/sql.posts.queryRepository';
+import { SqlCommentsRepository } from './comments/infrastructure/sql.comments.repository';
+import { SqlCommentsQueryRepository } from './comments/infrastructure/sql.comments.queryRepository';
+import { SqlBlogsRepository } from './blogs/infrastructure/sql.blogs.repository';
+import { SqlBlogsQueryRepository } from './blogs/infrastructure/sql.blogs.queryRepository';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -219,19 +227,28 @@ const likesUseCases = [
     // UsersService,
     UsersRepository,
     SqlUsersRepository,
+    UsersQueryRepository,
     SqlUsersQueryRepository,
     // BlogsService,
     BlogsRepository,
+    SqlBlogsRepository,
     BlogsQueryRepository,
+    SqlBlogsQueryRepository,
     // PostsService,
     PostsRepository,
+    SqlPostsRepository,
     PostsQueryRepository,
+    SqlPostsQueryRepository,
     // CommentsService,
     CommentsRepository,
+    SqlCommentsRepository,
     CommentsQueryRepository,
+    SqlCommentsQueryRepository,
     // LikesService,
     LikesRepository,
+    SqlLikesRepository,
     LikesQueryRepository,
+    SqlLikesQueryRepository,
     // SessionsService,
     SessionsRepository,
     SqlSessionsRepository,

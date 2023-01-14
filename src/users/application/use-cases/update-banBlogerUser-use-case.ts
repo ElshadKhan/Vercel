@@ -6,6 +6,7 @@ import {
 import { UsersRepository } from '../../infrastructure/users.repository';
 import { UsersQueryRepository } from '../../infrastructure/users.queryRepository';
 import { SqlUsersQueryRepository } from '../../infrastructure/sql.users.queryRepository';
+import { SqlUsersRepository } from '../../infrastructure/sql.users.repository';
 
 export class UpdateBanBloggerUserCommand {
   constructor(public useCaseDto: BanUsersUseCaseType) {}
@@ -17,7 +18,7 @@ export class UpdateBanBloggerUserUseCase
 {
   constructor(
     private usersQueryRepository: SqlUsersQueryRepository,
-    private usersRepository: UsersRepository,
+    private usersRepository: SqlUsersRepository,
   ) {}
 
   async execute(command: UpdateBanBloggerUserCommand) {

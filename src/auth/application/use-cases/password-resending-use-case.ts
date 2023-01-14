@@ -4,6 +4,7 @@ import { UsersRepository } from '../../../users/infrastructure/users.repository'
 import { PasswordManagers } from '../../../helpers/managers/passwordManagers';
 import { CommandHandler } from '@nestjs/cqrs';
 import { SqlUsersQueryRepository } from '../../../users/infrastructure/sql.users.queryRepository';
+import { SqlUsersRepository } from '../../../users/infrastructure/sql.users.repository';
 
 export class PasswordResendingCommand {
   constructor(public email: string) {}
@@ -13,7 +14,7 @@ export class PasswordResendingCommand {
 export class PasswordResendingUseCase {
   constructor(
     private usersQueryRepository: SqlUsersQueryRepository,
-    private usersRepository: UsersRepository,
+    private usersRepository: SqlUsersRepository,
     private passwordManager: PasswordManagers,
   ) {}
 

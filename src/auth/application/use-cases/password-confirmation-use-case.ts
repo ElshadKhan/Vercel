@@ -4,6 +4,7 @@ import { PasswordService } from '../../../helpers/password/password.service';
 import { PasswordConfirmationCodeDto } from '../../domain/dto/password.confirmation.code.dto';
 import { CommandHandler } from '@nestjs/cqrs';
 import { SqlUsersQueryRepository } from '../../../users/infrastructure/sql.users.queryRepository';
+import { SqlUsersRepository } from '../../../users/infrastructure/sql.users.repository';
 
 export class PasswordConfirmationCommand {
   constructor(public inputModel: PasswordConfirmationCodeDto) {}
@@ -13,7 +14,7 @@ export class PasswordConfirmationCommand {
 export class PasswordConfirmationUseCase {
   constructor(
     private usersQueryRepository: SqlUsersQueryRepository,
-    private usersRepository: UsersRepository,
+    private usersRepository: SqlUsersRepository,
     private passwordService: PasswordService,
   ) {}
 

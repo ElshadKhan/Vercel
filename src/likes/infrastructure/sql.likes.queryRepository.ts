@@ -1,9 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { PostLikeDbTypeWithId } from '../domain/entities/like.entity';
+import {
+  CommentLike,
+  CommentLikeDbTypeWithId,
+  PostLike,
+  PostLikeDbTypeWithId,
+} from '../domain/entities/like.entity';
 import { PostsLikeDbType, CommentsLikeDbType } from '../domain/dto/likeDbType';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class SqlLikesQueryRepository {
+  @InjectModel(CommentLike.name)
+  private commentLikeModel: Model<CommentLikeDbTypeWithId>;
+  @InjectModel(PostLike.name)
+  private postLikeModel: Model<PostLikeDbTypeWithId>;
   async getCommentLikesStatus(
     commentId: string,
     userId: string,

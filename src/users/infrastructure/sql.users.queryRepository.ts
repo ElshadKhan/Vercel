@@ -268,7 +268,7 @@ export class SqlUsersQueryRepository {
     LEFT JOIN "Users" AS users
     ON users."id" = blogger."banUserId"
     WHERE blogger."blogId" = '${blogId}'
-    AND users."login" = '${searchLoginTerm}'
+    AND UPPER users."login" LIKE UPPER '${searchLoginTerm}'
     ORDER BY "${sortBy}" ${sortDirection}
     LIMIT ${pageSize} OFFSET ${skip}`,
     );
@@ -280,7 +280,7 @@ export class SqlUsersQueryRepository {
     LEFT JOIN "Users" AS users
     ON users."id" = blogger."banUserId"
     WHERE blogger."blogId" = '${blogId}'
-    AND users."login" = '${searchLoginTerm}'`,
+    AND UPPER users."login" LIKE UPPER '${searchLoginTerm}'`,
     );
     const items = users.map((u) => ({
       id: u.banUserId,
