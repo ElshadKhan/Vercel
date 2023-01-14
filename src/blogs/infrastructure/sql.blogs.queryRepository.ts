@@ -25,46 +25,22 @@ export class SqlBlogsQueryRepository {
     sortDirection,
   }: QueryValidationType): Promise<BlogsBusinessType> {
     const skip = getSkipNumber(pageNumber, pageSize);
-    const result = this.dataSource.query(`SELECT * FROM "Blogs" AS blogs
+    const blogs = await this.dataSource
+      .query(`SELECT blogs.*, ban."isBanned" FROM "Blogs" AS blogs
  LEFT JOIN "BlogsBanInfo" AS ban
  ON blogs."id" = ban."blogId"
  WHERE UPPER blogs."name" LIKE UPPER '${searchNameTerm}'
  AND ban."isBanned" = false
  ORDER BY "${sortBy}" '${sortDirection}'
  LIMIT ${pageSize} OFFSET ${skip}`);
-    const blogs = await this.blogModel
-      .find(
-        {
-          $and: [
-            {
-              name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' },
-            },
-            {
-              'banInfo.isBanned': false,
-            },
-          ],
-        },
-        { _id: false, __v: 0, 'banInfo.isBanned': 0 },
-      )
-      .sort([[sortBy, sortDirection]])
-      .skip(getSkipNumber(pageNumber, pageSize))
-      .limit(pageSize)
-      .lean();
-    const totalCountBlogs = await this.blogModel
-      .find(
-        {
-          $and: [
-            {
-              name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' },
-            },
-            {
-              'banInfo.isBanned': false,
-            },
-          ],
-        },
-        { _id: false, __v: 0, 'banInfo.isBanned': 0 },
-      )
-      .count();
+    const totalCountBlogs = await this.dataSource
+      .query(`SELECT count(*) FROM "Blogs" AS blogs
+ LEFT JOIN "BlogsBanInfo" AS ban
+ ON blogs."id" = ban."blogId"
+ WHERE UPPER blogs."name" LIKE UPPER '${searchNameTerm}'
+ AND ban."isBanned" = false
+ ORDER BY "${sortBy}" '${sortDirection}'
+ LIMIT ${pageSize} OFFSET ${skip}`);
     const blogDto = new BlogsBusinessType(
       getPagesCounts(totalCountBlogs, pageSize),
       pageNumber,
