@@ -5,6 +5,7 @@ import { UsersQueryRepository } from '../../../users/infrastructure/users.queryR
 import { UpdateBlogOnNewUserRepo } from '../../domain/dto/updateBlogDbType';
 import { BlogsQueryRepository } from '../../infrastructure/blogs.queryRepository';
 import { SqlUsersQueryRepository } from '../../../users/infrastructure/sql.users.queryRepository';
+import { SqlBlogsRepository } from '../../infrastructure/sql.blogs.repository';
 
 export class UpdateBlogForNewUserCommand {
   constructor(public inputModel: IdModelType) {}
@@ -15,7 +16,7 @@ export class UpdateBlogForNewUserUseCase
   implements ICommandHandler<UpdateBlogForNewUserCommand>
 {
   constructor(
-    private blogsRepository: BlogsRepository,
+    private blogsRepository: SqlBlogsRepository,
     private usersQueryRepository: SqlUsersQueryRepository,
   ) {}
 

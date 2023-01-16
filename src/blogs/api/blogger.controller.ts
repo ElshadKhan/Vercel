@@ -33,13 +33,14 @@ import {
 import { UpdatePostCommand } from '../../posts/application/use-cases/update-post-use-case';
 import { DeletePostCommand } from '../../posts/application/use-cases/delete-post-use-case';
 import { CommentsQueryRepository } from '../../comments/infrastructure/comments.queryRepository';
+import { SqlBlogsQueryRepository } from '../infrastructure/sql.blogs.queryRepository';
 
 @UseGuards(BearerAuthGuard)
 @Controller('blogger/blogs')
 export class BloggersController {
   constructor(
     private commandBus: CommandBus,
-    private blogsQueryRepository: BlogsQueryRepository,
+    private blogsQueryRepository: SqlBlogsQueryRepository,
     private commentsQueryRepository: CommentsQueryRepository,
   ) {}
 
@@ -88,11 +89,11 @@ export class BloggersController {
     @Body() createPostDto: CreatePostDto,
     @CurrentUserId() currentUserId,
   ) {
-    const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
-    if (!resultFound) {
+    const blog = await this.blogsQueryRepository.findBlogById(blogId);
+    if (!blog) {
       throw new HttpException('invalid blog', 404);
     }
-    if (resultFound.blogOwnerInfo.userId !== currentUserId) {
+    if (blog.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
     const useCaseDto: CreatePostUseCaseDto = {

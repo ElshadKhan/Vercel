@@ -12,12 +12,13 @@ import { PostsQueryRepository } from '../../posts/infrastructure/posts.queryRepo
 import { SpecialBearerAuthGuard } from '../../auth/guards/special.bearer.auth.guard';
 import { CurrentUserId } from '../../auth/current-user-id.param.decorator';
 import { CommandBus } from '@nestjs/cqrs';
+import { SqlBlogsQueryRepository } from '../infrastructure/sql.blogs.queryRepository';
 
 @Controller('blogs')
 export class BlogsController {
   constructor(
     private commandBus: CommandBus,
-    private blogsQueryRepository: BlogsQueryRepository,
+    private blogsQueryRepository: SqlBlogsQueryRepository,
     private postsQueryRepository: PostsQueryRepository,
   ) {}
 

@@ -6,6 +6,7 @@ import { BlogsQueryRepository } from '../../../blogs/infrastructure/blogs.queryR
 import { PostsRepository } from '../../infrastructure/posts.repository';
 import { LikesQueryRepository } from '../../../likes/infrastructure/likes.queryRepository';
 import { CreatePostUseCaseDto } from '../dto/createPostUseCaseDto';
+import { SqlBlogsQueryRepository } from '../../../blogs/infrastructure/sql.blogs.queryRepository';
 
 export class CreatePostCommand {
   constructor(public createPostDto: CreatePostUseCaseDto) {}
@@ -15,7 +16,7 @@ export class CreatePostCommand {
 export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
   constructor(
     private postsRepository: PostsRepository,
-    private blogQueryRepository: BlogsQueryRepository,
+    private blogQueryRepository: SqlBlogsQueryRepository,
     private likesQueryRepository: LikesQueryRepository,
   ) {}
 

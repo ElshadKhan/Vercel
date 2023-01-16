@@ -21,6 +21,7 @@ import { CurrentUserId } from '../../auth/current-user-id.param.decorator';
 import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
 import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.queryRepository';
 import { SqlUsersQueryRepository } from '../infrastructure/sql.users.queryRepository';
+import { SqlBlogsQueryRepository } from '../../blogs/infrastructure/sql.blogs.queryRepository';
 
 @UseGuards(BearerAuthGuard)
 @Controller('blogger/users')
@@ -28,7 +29,7 @@ export class BloggerUsersController {
   constructor(
     private commandBus: CommandBus,
     private usersQueryRepository: SqlUsersQueryRepository,
-    private blogsQueryRepository: BlogsQueryRepository,
+    private blogsQueryRepository: SqlBlogsQueryRepository,
   ) {}
 
   @Get('blog/:id')

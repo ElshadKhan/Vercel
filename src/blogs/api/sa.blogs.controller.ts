@@ -17,13 +17,14 @@ import { BanBlogsInputModelType } from '../domain/dto/updateBlogDbType';
 import { IdModelType } from '../domain/dto/updateBlogsBindType';
 import { BanBlogCommand } from '../application/use-cases/ban-blog-use-case';
 import { UpdateBlogForNewUserCommand } from '../application/use-cases/update-blog-for-newUser-use-case';
+import { SqlBlogsQueryRepository } from '../infrastructure/sql.blogs.queryRepository';
 
 @UseGuards(BasicAuthGuard)
 @Controller('sa/blogs')
 export class BlogsSaController {
   constructor(
     private commandBus: CommandBus,
-    private blogsQueryRepository: BlogsQueryRepository,
+    private blogsQueryRepository: SqlBlogsQueryRepository,
   ) {}
 
   @Get()

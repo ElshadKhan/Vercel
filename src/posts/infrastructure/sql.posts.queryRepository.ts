@@ -13,11 +13,12 @@ import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.queryRepo
 import { LikesQueryRepository } from '../../likes/infrastructure/likes.queryRepository';
 import { UserAccountDBType } from '../../users/domain/dto/user.account.dto';
 import { PostDbType, PostDtoType } from '../application/dto/PostDto';
+import { SqlBlogsQueryRepository } from '../../blogs/infrastructure/sql.blogs.queryRepository';
 
 @Injectable()
 export class SqlPostsQueryRepository {
   constructor(
-    private blogsQueryRepository: BlogsQueryRepository,
+    private blogsQueryRepository: SqlBlogsQueryRepository,
     private likesQueryRepository: LikesQueryRepository,
   ) {}
   @InjectModel(Post.name) private postModel: Model<PostDbTypeWithId>;

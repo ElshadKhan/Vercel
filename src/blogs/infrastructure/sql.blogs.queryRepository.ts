@@ -29,16 +29,16 @@ export class SqlBlogsQueryRepository {
       .query(`SELECT blogs.*, ban."isBanned" FROM "Blogs" AS blogs
  LEFT JOIN "BlogsBanInfo" AS ban
  ON blogs."id" = ban."blogId"
- WHERE UPPER blogs."name" LIKE UPPER '${searchNameTerm}'
- AND ban."isBanned" = false
+ WHERE LOWER (blogs."name") LIKE LOWER ('${searchNameTerm}')
+ AND ban."isBanned" IS false
  ORDER BY "${sortBy}" '${sortDirection}'
  LIMIT ${pageSize} OFFSET ${skip}`);
     const totalCountBlogs = await this.dataSource
       .query(`SELECT count(*) FROM "Blogs" AS blogs
  LEFT JOIN "BlogsBanInfo" AS ban
  ON blogs."id" = ban."blogId"
- WHERE UPPER blogs."name" LIKE UPPER '${searchNameTerm}'
- AND ban."isBanned" = false
+ WHERE LOWER (blogs."name") LIKE LOWER ('${searchNameTerm}')
+ AND ban."isBanned" IS false
  ORDER BY "${sortBy}" '${sortDirection}'
  LIMIT ${pageSize} OFFSET ${skip}`);
     const blogDto = new BlogsBusinessType(
@@ -65,22 +65,23 @@ export class SqlBlogsQueryRepository {
     sortBy,
     sortDirection,
   }: QueryValidationType): Promise<SaBlogsBusinessType> {
-    const blogs = await this.blogModel
-      .find({
-        name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' },
-      })
-      .sort([[sortBy, sortDirection]])
-      .skip(getSkipNumber(pageNumber, pageSize))
-      .limit(pageSize)
-      .lean();
-    const totalCountBlogs = await this.blogModel
-      .find({
-        name: {
-          $regex: searchNameTerm,
-          $options: '(?i)a(?-i)cme',
-        },
-      })
-      .count();
+    const skip = getSkipNumber(pageNumber, pageSize);
+    const blogs = await this.dataSource.query(
+      `SELECT blogs.*,  users."login", ban."isBanned", ban."banDate" FROM "Blogs" AS blogs
+    LEFT JOIN "BlogsBanInfo" AS ban
+    ON blogs."id" = ban."blogId"
+    LEFT JOIN "Users" AS users
+    ON blogs."userId" = users."id"
+    WHERE LOWER (blogs."name") LIKE LOWER ('%${searchNameTerm}%')
+    ORDER BY "${sortBy}" '${sortDirection}'
+    LIMIT ${pageSize} OFFSET ${skip}`,
+    );
+    const totalCountBlogs = await this.dataSource.query(
+      `SELECT count(*) FROM "Blogs"
+    WHERE LOWER ("name") LIKE LOWER ('%${searchNameTerm}%')
+    ORDER BY "${sortBy}" '${sortDirection}'
+    LIMIT ${pageSize} OFFSET ${skip}`,
+    );
     const blogDto = new SaBlogsBusinessType(
       getPagesCounts(totalCountBlogs, pageSize),
       pageNumber,
@@ -93,12 +94,12 @@ export class SqlBlogsQueryRepository {
         websiteUrl: b.websiteUrl,
         createdAt: b.createdAt,
         blogOwnerInfo: {
-          userId: b.blogOwnerInfo.userId,
-          userLogin: b.blogOwnerInfo.userLogin,
+          userId: b.userId,
+          userLogin: b.login,
         },
         banInfo: {
-          isBanned: b.banInfo.isBanned,
-          banDate: b.banInfo.banDate,
+          isBanned: b.isBanned,
+          banDate: b.banDate,
         },
       })),
     );
@@ -115,31 +116,25 @@ export class SqlBlogsQueryRepository {
     }: QueryValidationType,
     currentUserId: string,
   ): Promise<BlogsBusinessType> {
-    const blogs = await this.blogModel
-      .find({
-        $and: [
-          { name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' } },
-          { 'blogOwnerInfo.userId': currentUserId },
-          {
-            'banInfo.isBanned': false,
-          },
-        ],
-      })
-      .sort([[sortBy, sortDirection]])
-      .skip(getSkipNumber(pageNumber, pageSize))
-      .limit(pageSize)
-      .lean();
-    const totalCountBlogs = await this.blogModel
-      .find({
-        $and: [
-          { name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' } },
-          { 'blogOwnerInfo.userId': currentUserId },
-          {
-            'banInfo.isBanned': false,
-          },
-        ],
-      })
-      .count();
+    const skip = getSkipNumber(pageNumber, pageSize);
+    const blogs = await this.dataSource.query(
+      `SELECT blogs.*, ban."isBanned" 
+    FROM "Blogs" AS blogs
+    LEFT JOIN "BlogsBanInfo" AS ban
+    ON blogs."id" = ban."blogId"
+    WHERE LOWER (blogs."name") LIKE LOWER ('%${searchNameTerm}%')
+    AND blogs."userId" = '${currentUserId}'
+    AND ban."isBanned" IS false
+    ORDER BY "${sortBy}" '${sortDirection}'
+    LIMIT ${pageSize} OFFSET ${skip}`,
+    );
+    const totalCountBlogs = await this.dataSource
+      .query(`SELECT count(*) FROM "Blogs" AS blogs
+    LEFT JOIN "BlogsBanInfo" AS ban
+    ON blogs."id" = ban."blogId" 
+    WHERE LOWER ("name") LIKE LOWER ('%${searchNameTerm}%')
+    AND "userId" = '${currentUserId}'
+    AND ban."isBanned" IS false`);
     const blogDto = new BlogsBusinessType(
       getPagesCounts(totalCountBlogs, pageSize),
       pageNumber,
@@ -158,10 +153,13 @@ export class SqlBlogsQueryRepository {
   }
 
   async findOne(id: string): Promise<CreateBlogDtoType | null> {
-    const findBlog = await this.blogModel.findOne({
-      id,
-      'banInfo.isBanned': false,
-    });
+    const findBlog = await this.dataSource.query(
+      `SELECT blogs.*, ban."isBanned" FROM "Blogs" AS blogs
+    LEFT JOIN "BlogsBanInfo" AS ban
+    ON blogs."id" = ban."blogId"
+    WHERE blogs."id" = '${id}'
+    AND ban."isBanned" IS false`,
+    );
     if (findBlog) {
       const blog = new CreateBlogDtoType(
         findBlog.id,
@@ -176,13 +174,29 @@ export class SqlBlogsQueryRepository {
   }
 
   async findBlogById(id: string): Promise<Blog> {
-    return this.blogModel.findOne({ id, 'banInfo.isBanned': false });
-  }
-
-  async findBlogByUserId(id: string): Promise<Blog> {
-    return this.blogModel.findOne(
-      { 'blogOwnerInfo.userId': id, isBanned: false },
-      { _id: false, __v: 0, banInfo: 0 },
+    const blog = await this.dataSource.query(
+      `SELECT blogs.*,  users."login", ban."isBanned", ban."banDate" FROM "Blogs" AS blogs
+    LEFT JOIN "BlogsBanInfo" AS ban
+    ON blogs."id" = ban."blogId"
+    LEFT JOIN "Users" AS users
+    ON blogs."userId" = users."id"
+    WHERE blogs."id" = '${id}'
+    AND ban."isBanned" IS false`,
     );
+    return {
+      id: blog.id,
+      name: blog.name,
+      description: blog.description,
+      websiteUrl: blog.websiteUrl,
+      createdAt: blog.createdAt,
+      blogOwnerInfo: {
+        userId: blog.userId,
+        userLogin: blog.login,
+      },
+      banInfo: {
+        isBanned: blog.isBanned,
+        banDate: blog.banDate,
+      },
+    };
   }
 }

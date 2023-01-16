@@ -4,6 +4,7 @@ import { CreateBlogDbType } from '../../domain/dto/createBlogDbType';
 import { BlogsRepository } from '../../infrastructure/blogs.repository';
 import { UsersQueryRepository } from '../../../users/infrastructure/users.queryRepository';
 import { SqlUsersQueryRepository } from '../../../users/infrastructure/sql.users.queryRepository';
+import { SqlBlogsRepository } from '../../infrastructure/sql.blogs.repository';
 
 export class CreateBlogCommand {
   constructor(public createUseCaseDto: CreateBlogUseCaseDto) {}
@@ -12,7 +13,7 @@ export class CreateBlogCommand {
 @CommandHandler(CreateBlogCommand)
 export class CreateBlogUseCase implements ICommandHandler<CreateBlogCommand> {
   constructor(
-    private blogsRepository: BlogsRepository,
+    private blogsRepository: SqlBlogsRepository,
     private usersQueryRepository: SqlUsersQueryRepository,
   ) {}
 

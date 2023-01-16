@@ -5,6 +5,7 @@ import {
   BanBlogUseCaseDto,
 } from '../../domain/dto/updateBlogsBindType';
 import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
+import { SqlBlogsRepository } from '../../infrastructure/sql.blogs.repository';
 
 export class BanBlogCommand {
   constructor(public banBlogUseCaseDto: BanBlogUseCaseDto) {}
@@ -13,7 +14,7 @@ export class BanBlogCommand {
 @CommandHandler(BanBlogCommand)
 export class BanBlogUseCase implements ICommandHandler<BanBlogCommand> {
   constructor(
-    private blogsRepository: BlogsRepository,
+    private blogsRepository: SqlBlogsRepository,
     private postsRepository: PostsRepository,
   ) {}
 

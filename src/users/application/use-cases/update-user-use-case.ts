@@ -10,6 +10,7 @@ import { LikesRepository } from '../../../likes/infrastructure/likes.repository'
 import { CommentsRepository } from '../../../comments/infrastructure/comments.repository';
 import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository';
 import { SqlUsersRepository } from '../../infrastructure/sql.users.repository';
+import { SqlBlogsRepository } from '../../../blogs/infrastructure/sql.blogs.repository';
 
 export class UpdateUserCommand {
   constructor(public inputModel: BanUserInputUseCaseType) {}
@@ -20,7 +21,7 @@ export class UpdateUserUseCase implements ICommandHandler<UpdateUserCommand> {
   constructor(
     private commandBus: CommandBus,
     private userRepository: SqlUsersRepository,
-    private blogsRepository: BlogsRepository,
+    private blogsRepository: SqlBlogsRepository,
     private postsRepository: PostsRepository,
     private commentsRepository: CommentsRepository,
     private likesRepository: LikesRepository,
