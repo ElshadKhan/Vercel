@@ -198,7 +198,7 @@ ON p."blogId" = b."id"
     WHERE p."id" = '${id}'
     AND "isBanned" IS false`,
     );
-    if (post) {
+    if (post[0]) {
       // let myStatus = LikeStatusEnam.None;
       //
       // if (userId) {
@@ -222,13 +222,13 @@ ON p."blogId" = b."id"
       //   LikeStatusEnam.Like,
       // );
       return {
-        id: post.id,
-        title: post.title,
-        shortDescription: post.shortDescription,
-        content: post.content,
-        blogId: post.blogId,
-        blogName: post.blogname,
-        createdAt: post.createdAt,
+        id: post[0].id,
+        title: post[0].title,
+        shortDescription: post[0].shortDescription,
+        content: post[0].content,
+        blogId: post[0].blogId,
+        blogName: post[0].blogname,
+        createdAt: post[0].createdAt,
         extendedLikesInfo: {
           likesCount: 0,
           dislikesCount: 0,
