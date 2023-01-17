@@ -29,17 +29,17 @@ export class SqlBlogsQueryRepository {
       .query(`SELECT blogs.*, ban."isBanned" FROM "Blogs" AS blogs
  LEFT JOIN "BlogsBanInfo" AS ban
  ON blogs."id" = ban."blogId"
- WHERE LOWER (blogs."name") LIKE LOWER ('${searchNameTerm}')
+ WHERE LOWER (blogs."name") LIKE LOWER ('%${searchNameTerm}%')
  AND ban."isBanned" IS false
- ORDER BY "${sortBy}" '${sortDirection}'
+ ORDER BY "${sortBy}" ${sortDirection}
  LIMIT ${pageSize} OFFSET ${skip}`);
     const totalCountBlogs = await this.dataSource
       .query(`SELECT count(*) FROM "Blogs" AS blogs
  LEFT JOIN "BlogsBanInfo" AS ban
  ON blogs."id" = ban."blogId"
- WHERE LOWER (blogs."name") LIKE LOWER ('${searchNameTerm}')
+ WHERE LOWER (blogs."name") LIKE LOWER ('%${searchNameTerm}%')
  AND ban."isBanned" IS false
- ORDER BY "${sortBy}" '${sortDirection}'
+ ORDER BY "${sortBy}" ${sortDirection}
  LIMIT ${pageSize} OFFSET ${skip}`);
     const blogDto = new BlogsBusinessType(
       getPagesCounts(totalCountBlogs, pageSize),
@@ -73,13 +73,13 @@ export class SqlBlogsQueryRepository {
     LEFT JOIN "Users" AS users
     ON blogs."userId" = users."id"
     WHERE LOWER (blogs."name") LIKE LOWER ('%${searchNameTerm}%')
-    ORDER BY "${sortBy}" '${sortDirection}'
+    ORDER BY "${sortBy}" ${sortDirection}
     LIMIT ${pageSize} OFFSET ${skip}`,
     );
     const totalCountBlogs = await this.dataSource.query(
       `SELECT count(*) FROM "Blogs"
     WHERE LOWER ("name") LIKE LOWER ('%${searchNameTerm}%')
-    ORDER BY "${sortBy}" '${sortDirection}'
+    ORDER BY "${sortBy}" ${sortDirection}
     LIMIT ${pageSize} OFFSET ${skip}`,
     );
     const blogDto = new SaBlogsBusinessType(
@@ -125,7 +125,7 @@ export class SqlBlogsQueryRepository {
     WHERE LOWER (blogs."name") LIKE LOWER ('%${searchNameTerm}%')
     AND blogs."userId" = '${currentUserId}'
     AND ban."isBanned" IS false
-    ORDER BY "${sortBy}" '${sortDirection}'
+    ORDER BY "${sortBy}" ${sortDirection}
     LIMIT ${pageSize} OFFSET ${skip}`,
     );
     const totalCountBlogs = await this.dataSource

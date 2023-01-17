@@ -7,6 +7,7 @@ import { CommentsRepository } from '../../infrastructure/comments.repository';
 import { PostsQueryRepository } from '../../../posts/infrastructure/posts.queryRepository';
 import { CommentCreateUseCaseDtoType } from '../dto/commentCreateUseCaseDtoType';
 import { SqlUsersQueryRepository } from '../../../users/infrastructure/sql.users.queryRepository';
+import { SqlPostsQueryRepository } from '../../../posts/infrastructure/sql.posts.queryRepository';
 
 export class CreateCommentCommand {
   constructor(public inputModel: CommentCreateUseCaseDtoType) {}
@@ -18,7 +19,7 @@ export class CreateCommentUseCase
 {
   constructor(
     private usersQueryRepository: SqlUsersQueryRepository,
-    private postsQueryRepository: PostsQueryRepository,
+    private postsQueryRepository: SqlPostsQueryRepository,
     private commentsRepository: CommentsRepository,
   ) {}
 

@@ -1,6 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PostsRepository } from '../../infrastructure/posts.repository';
 import { UpdatePostUseCaseDto } from '../dto/createPostUseCaseDto';
+import { SqlPostsRepository } from '../../infrastructure/sql.posts.repository';
 
 export class UpdatePostCommand {
   constructor(public useCaseDto: UpdatePostUseCaseDto) {}
@@ -8,7 +9,7 @@ export class UpdatePostCommand {
 
 @CommandHandler(UpdatePostCommand)
 export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
-  constructor(private postsRepository: PostsRepository) {}
+  constructor(private postsRepository: SqlPostsRepository) {}
 
   async execute(command: UpdatePostCommand) {
     return await this.postsRepository.update(

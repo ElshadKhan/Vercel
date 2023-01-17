@@ -9,18 +9,13 @@ import {
 import { Post, PostDbTypeWithId } from '../domain/entities/post.entity';
 import { QueryValidationType } from '../../helpers/middleware/queryValidation';
 import { PostsBusinessType } from './dto/postBusinessType';
-import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.queryRepository';
 import { LikesQueryRepository } from '../../likes/infrastructure/likes.queryRepository';
-import { UserAccountDBType } from '../../users/domain/dto/user.account.dto';
 import { PostDbType, PostDtoType } from '../application/dto/PostDto';
-import { SqlBlogsQueryRepository } from '../../blogs/infrastructure/sql.blogs.queryRepository';
+import { CreatePostBlogIdDto } from '../api/dto/createPostDto';
 
 @Injectable()
 export class PostsQueryRepository {
-  constructor(
-    private blogsQueryRepository: SqlBlogsQueryRepository,
-    private likesQueryRepository: LikesQueryRepository,
-  ) {}
+  constructor(private likesQueryRepository: LikesQueryRepository) {}
   @InjectModel(Post.name) private postModel: Model<PostDbTypeWithId>;
 
   async findAll(
@@ -93,11 +88,10 @@ export class PostsQueryRepository {
   }
 
   async findOneByBlogId(
-    blogId: string,
+    blogId: CreatePostBlogIdDto,
     { pageNumber, pageSize, sortBy, sortDirection }: QueryValidationType,
     userId?: string,
   ): Promise<PostsBusinessType> {
-    const blog = await this.blogsQueryRepository.findOne(blogId);
     const findPosts = await this.postModel
       .find({ blogId, isBanned: false }, { _id: false, __v: 0, isBanned: 0 })
       .sort([[sortBy, sortDirection]])
@@ -108,60 +102,57 @@ export class PostsQueryRepository {
       .find({ blogId, isBanned: false })
       .sort([[sortBy, sortDirection]])
       .count();
-    if (blog) {
-      const promise = findPosts.map(async (post: PostDbTypeWithId) => {
-        let myStatus = LikeStatusEnam.None;
+    const promise = findPosts.map(async (post: PostDbTypeWithId) => {
+      let myStatus = LikeStatusEnam.None;
 
-        if (userId) {
-          const result = await this.likesQueryRepository.getPostLikesStatus(
-            post.id,
-            userId,
-          );
-          myStatus = result?.type || LikeStatusEnam.None;
-        }
-        const likesCount = await this.likesQueryRepository.getPostLikesCount(
+      if (userId) {
+        const result = await this.likesQueryRepository.getPostLikesStatus(
           post.id,
-          LikeStatusEnam.Like,
+          userId,
         );
-        const dislikesCount =
-          await this.likesQueryRepository.getPostDislikesCount(
-            post.id,
-            LikeStatusEnam.Dislike,
-          );
-        const lastLikes = await this.likesQueryRepository.getPostLastLikes(
+        myStatus = result?.type || LikeStatusEnam.None;
+      }
+      const likesCount = await this.likesQueryRepository.getPostLikesCount(
+        post.id,
+        LikeStatusEnam.Like,
+      );
+      const dislikesCount =
+        await this.likesQueryRepository.getPostDislikesCount(
           post.id,
-          LikeStatusEnam.Like,
+          LikeStatusEnam.Dislike,
         );
-        return {
-          id: post.id,
-          title: post.title,
-          shortDescription: post.shortDescription,
-          content: post.content,
-          blogId: post.blogId,
-          blogName: post.blogName,
-          createdAt: post.createdAt,
-          extendedLikesInfo: {
-            likesCount: likesCount,
-            dislikesCount: dislikesCount,
-            myStatus: myStatus,
-            newestLikes: lastLikes.slice(0, 3).map((p) => ({
-              addedAt: p.createdAt,
-              userId: p.userId,
-              login: p.login,
-            })),
-          },
-        };
-      });
-      const items = await Promise.all(promise);
+      const lastLikes = await this.likesQueryRepository.getPostLastLikes(
+        post.id,
+        LikeStatusEnam.Like,
+      );
       return {
-        pagesCount: getPagesCounts(totalCountPosts, pageSize),
-        page: pageNumber,
-        pageSize: pageSize,
-        totalCount: totalCountPosts,
-        items: items,
+        id: post.id,
+        title: post.title,
+        shortDescription: post.shortDescription,
+        content: post.content,
+        blogId: post.blogId,
+        blogName: post.blogName,
+        createdAt: post.createdAt,
+        extendedLikesInfo: {
+          likesCount: likesCount,
+          dislikesCount: dislikesCount,
+          myStatus: myStatus,
+          newestLikes: lastLikes.slice(0, 3).map((p) => ({
+            addedAt: p.createdAt,
+            userId: p.userId,
+            login: p.login,
+          })),
+        },
       };
-    }
-    return null;
+    });
+    const items = await Promise.all(promise);
+    return {
+      pagesCount: getPagesCounts(totalCountPosts, pageSize),
+      page: pageNumber,
+      pageSize: pageSize,
+      totalCount: totalCountPosts,
+      items: items,
+    };
   }
 
   async findPostById(id: string): Promise<PostDbType> {

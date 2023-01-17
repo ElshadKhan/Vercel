@@ -28,12 +28,13 @@ import { PostLikesUseCasesDtoType } from '../../likes/domain/dto/commentLikesUse
 import { UsersQueryRepository } from '../../users/infrastructure/users.queryRepository';
 import { SqlUsersQueryRepository } from '../../users/infrastructure/sql.users.queryRepository';
 import { UpdatePostLikesCommand } from '../../likes/application/use-cases/update-post-likes-use-case';
+import { SqlPostsQueryRepository } from '../infrastructure/sql.posts.queryRepository';
 
 @Controller('posts')
 export class PostsController {
   constructor(
     private commandBus: CommandBus,
-    private postsQueryRepository: PostsQueryRepository,
+    private postsQueryRepository: SqlPostsQueryRepository,
     private commentsQueryRepository: CommentsQueryRepository,
     private usersQueryRepository: SqlUsersQueryRepository,
   ) {}

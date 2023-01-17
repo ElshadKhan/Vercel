@@ -8,7 +8,6 @@ export class PostDbType {
     public blogName: string | null,
     public createdAt: string,
     public userId: string,
-    public extendedLikesInfo: ExtendedLikesInfoType,
   ) {}
 }
 

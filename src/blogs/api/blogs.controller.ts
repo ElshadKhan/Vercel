@@ -13,13 +13,15 @@ import { SpecialBearerAuthGuard } from '../../auth/guards/special.bearer.auth.gu
 import { CurrentUserId } from '../../auth/current-user-id.param.decorator';
 import { CommandBus } from '@nestjs/cqrs';
 import { SqlBlogsQueryRepository } from '../infrastructure/sql.blogs.queryRepository';
+import { CreatePostBlogIdDto } from '../../posts/api/dto/createPostDto';
+import { SqlPostsQueryRepository } from '../../posts/infrastructure/sql.posts.queryRepository';
 
 @Controller('blogs')
 export class BlogsController {
   constructor(
     private commandBus: CommandBus,
     private blogsQueryRepository: SqlBlogsQueryRepository,
-    private postsQueryRepository: PostsQueryRepository,
+    private postsQueryRepository: SqlPostsQueryRepository,
   ) {}
 
   @Get()
@@ -39,7 +41,7 @@ export class BlogsController {
   @UseGuards(SpecialBearerAuthGuard)
   @Get(':blogId/posts')
   async findOneByBlogId(
-    @Param('blogId') blogId: string,
+    @Param('blogId') blogId: CreatePostBlogIdDto,
     @Query() query: any,
     @CurrentUserId() currentUserId: string,
   ) {
