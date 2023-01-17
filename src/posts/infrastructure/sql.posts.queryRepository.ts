@@ -177,14 +177,14 @@ ON p."blogId" = b."id"
     WHERE "id" = '${id}'`,
     );
     return {
-      id: post.id,
-      title: post.title,
-      shortDescription: post.shortDescription,
-      content: post.content,
-      blogId: post.blogId,
-      blogName: post.blogname,
-      createdAt: post.createdAt,
-      userId: post.userId,
+      id: post[0].id,
+      title: post[0].title,
+      shortDescription: post[0].shortDescription,
+      content: post[0].content,
+      blogId: post[0].blogId,
+      blogName: post[0].blogname,
+      createdAt: post[0].createdAt,
+      userId: post[0].userId,
     };
   }
 

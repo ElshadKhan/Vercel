@@ -160,17 +160,14 @@ export class SqlBlogsQueryRepository {
     WHERE blogs."id" = '${id}'
     AND ban."isBanned" IS false`,
     );
-    if (findBlog) {
-      const blog = new CreateBlogDtoType(
-        findBlog.id,
-        findBlog.name,
-        findBlog.description,
-        findBlog.websiteUrl,
-        findBlog.createdAt,
-      );
-      return blog;
-    }
-    return findBlog;
+    if (!findBlog[0]) return null;
+    return new CreateBlogDtoType(
+      findBlog[0].id,
+      findBlog[0].name,
+      findBlog[0].description,
+      findBlog[0].websiteUrl,
+      findBlog[0].createdAt,
+    );
   }
 
   async findBlogById(id: string): Promise<Blog> {
@@ -184,18 +181,18 @@ export class SqlBlogsQueryRepository {
     AND ban."isBanned" IS false`,
     );
     return {
-      id: blog.id,
-      name: blog.name,
-      description: blog.description,
-      websiteUrl: blog.websiteUrl,
-      createdAt: blog.createdAt,
+      id: blog[0].id,
+      name: blog[0].name,
+      description: blog[0].description,
+      websiteUrl: blog[0].websiteUrl,
+      createdAt: blog[0].createdAt,
       blogOwnerInfo: {
-        userId: blog.userId,
-        userLogin: blog.login,
+        userId: blog[0].userId,
+        userLogin: blog[0].login,
       },
       banInfo: {
-        isBanned: blog.isBanned,
-        banDate: blog.banDate,
+        isBanned: blog[0].isBanned,
+        banDate: blog[0].banDate,
       },
     };
   }
