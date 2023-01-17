@@ -38,9 +38,7 @@ export class SqlBlogsQueryRepository {
  LEFT JOIN "BlogsBanInfo" AS ban
  ON blogs."id" = ban."blogId"
  WHERE LOWER (blogs."name") LIKE LOWER ('%${searchNameTerm}%')
- AND ban."isBanned" IS false
- ORDER BY "${sortBy}" ${sortDirection}
- LIMIT ${pageSize} OFFSET ${skip}`);
+ AND ban."isBanned" IS false`);
     const totalCount = +totalCountSql[0].count;
     const blogDto = new BlogsBusinessType(
       getPagesCounts(totalCount, pageSize),
