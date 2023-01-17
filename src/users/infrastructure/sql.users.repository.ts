@@ -10,6 +10,7 @@ import {
   BloggerUsersBanDocument,
 } from '../domain/entities/blogger.users.blogs.ban.entity';
 import { BanUsersFactory } from '../api/dto/update-user-banStatus-dto';
+import { BanBloggerUsersModel } from '../api/dto/ban-bloger-users-input-dto';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class SqlUsersRepository {
@@ -67,10 +68,10 @@ export class SqlUsersRepository {
     return result[1] === 1;
   }
 
-  async banBloggerUsers(user: any) {
+  async banBloggerUsers(user: BanBloggerUsersModel) {
     const result = await this.dataSource.query(
       `INSERT INTO "BloggerBanUsersInfo"("isBanned", "banDate", "banReason", "blogId", "banUserId")
-    VALUES ('${user.isBanned}', '${user.banDate}', '${user.banReason}', '${user.blogId}', '${user.banUserId}')`,
+    VALUES ('${user.banInfo.isBanned}', '${user.banInfo.banDate}', '${user.banInfo.banReason}', '${user.blogId}', '${user.banUserId}')`,
     );
     console.log('Create BloggerBanUser result', result);
     return user;
