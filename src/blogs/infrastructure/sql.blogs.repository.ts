@@ -15,7 +15,7 @@ export class SqlBlogsRepository {
 VALUES('${blog.id}', '${blog.name}', '${blog.description}', '${blog.websiteUrl}', '${blog.createdAt}', '${blog.blogOwnerInfo.userId}')`);
     await this.dataSource
       .query(`INSERT INTO "BlogsBanInfo"("blogId", "isBanned", "banDate")
-VALUES('${blog.id}', '${blog.banInfo.isBanned}', '${blog.banInfo.banDate}')`);
+VALUES('${blog.id}', '${blog.banInfo.isBanned}', ${blog.banInfo.banDate})`);
     return blog;
   }
 
