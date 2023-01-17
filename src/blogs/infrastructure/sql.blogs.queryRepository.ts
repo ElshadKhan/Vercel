@@ -135,7 +135,7 @@ export class SqlBlogsQueryRepository {
     LEFT JOIN "BlogsBanInfo" AS ban
     ON blogs."id" = ban."blogId" 
     WHERE LOWER ("name") LIKE LOWER ('%${searchNameTerm}%')
-    AND "userId" = '${currentUserId}'
+    AND blogs."userId" = '${currentUserId}'
     AND ban."isBanned" IS false`);
     const totalCount = +totalCountSql[0].count;
     const blogDto = new BlogsBusinessType(
@@ -183,6 +183,7 @@ export class SqlBlogsQueryRepository {
     WHERE blogs."id" = '${id}'
     AND ban."isBanned" IS false`,
     );
+    if (!blog[0]) return null;
     return {
       id: blog[0].id,
       name: blog[0].name,

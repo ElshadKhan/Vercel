@@ -195,7 +195,7 @@ ON p."blogId" = b."id"
       `SELECT p.*, b."name" AS blogname FROM "Posts" AS p
     LEFT JOIN "Blogs" AS b
     ON p."blogId" = b."id"
-    WHERE "id" = '${id}'
+    WHERE p."id" = '${id}'
     AND "isBanned" IS false`,
     );
     if (post) {
