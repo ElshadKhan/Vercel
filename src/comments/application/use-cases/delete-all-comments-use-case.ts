@@ -1,5 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CommentsRepository } from '../../infrastructure/comments.repository';
+import { SqlCommentsRepository } from '../../infrastructure/sql.comments.repository';
 
 export class DeleteAllCommentsCommand {}
 
@@ -7,7 +8,7 @@ export class DeleteAllCommentsCommand {}
 export class DeleteAllCommentsUseCase
   implements ICommandHandler<DeleteAllCommentsCommand>
 {
-  constructor(private commentsRepository: CommentsRepository) {}
+  constructor(private commentsRepository: SqlCommentsRepository) {}
 
   async execute() {
     return await this.commentsRepository.deleteAll();

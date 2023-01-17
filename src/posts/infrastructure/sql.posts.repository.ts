@@ -14,7 +14,6 @@ export class SqlPostsRepository {
     );
     return post;
   }
-
   async update(
     postId: string,
     title: string,

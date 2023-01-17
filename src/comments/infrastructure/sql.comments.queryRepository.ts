@@ -18,11 +18,16 @@ import {
   CommentsBusinessDtoType,
   CommentsBusinessType,
 } from './dto/commentBusinessType';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class SqlCommentsQueryRepository {
   @InjectModel(Comment.name) private commentModel: Model<CommentDbTypeWithId>;
-  constructor(private likesRepository: LikesQueryRepository) {}
+  constructor(
+    @InjectDataSource() protected dataSource: DataSource,
+    private likesRepository: LikesQueryRepository,
+  ) {}
 
   async findCommentByUserIdAndCommentId(
     id: string,
@@ -68,6 +73,13 @@ export class SqlCommentsQueryRepository {
     id: string,
     userId?: string,
   ): Promise<CommentDtoType | null> {
+    const result = await this.dataSource.query(
+      `SELECT c.*, u."login" FROM "Comments" AS c
+    LEFT JOIN "Users" AS u
+    ON c."userId" = u."id"
+    WHERE c."id" = '${id}'
+    AND c."isBanned" IS false`,
+    );
     const comment = await this.commentModel.findOne({ id, isBanned: false });
     if (!comment) return null;
     let myStatus = LikeStatusEnam.None;

@@ -93,8 +93,6 @@ export class SqlUsersQueryRepository {
 
     if (!user[0]) return null;
 
-    console.log('user', user);
-
     const newUser = new UserAccountDBType(
       user[0].id,
       {
@@ -235,8 +233,8 @@ export class SqlUsersQueryRepository {
   async getBanUserForBlog(
     banUserId: string,
     blogId: string,
-  ): Promise<UserAccountDBType | null> {
-    return await this.dataSource.query(
+  ): Promise<UserAccountDBType | boolean> {
+    const result = await this.dataSource.query(
       `SELECT blogger.*, blogs."userId" AS blogowner, users."login" AS banuserlogin
     FROM "BloggerBanUsersInfo" AS blogger
     LEFT JOIN "Blogs" AS blogs
@@ -246,6 +244,7 @@ export class SqlUsersQueryRepository {
     WHERE blogger."blogId" = '${blogId}'
     AND blogger."banUserId" = '${banUserId}'`,
     );
+    return result[0] === 1;
   }
 
   async getBanUsersForBlog(

@@ -8,6 +8,7 @@ import { PostsQueryRepository } from '../../../posts/infrastructure/posts.queryR
 import { CommentCreateUseCaseDtoType } from '../dto/commentCreateUseCaseDtoType';
 import { SqlUsersQueryRepository } from '../../../users/infrastructure/sql.users.queryRepository';
 import { SqlPostsQueryRepository } from '../../../posts/infrastructure/sql.posts.queryRepository';
+import { SqlCommentsRepository } from '../../infrastructure/sql.comments.repository';
 
 export class CreateCommentCommand {
   constructor(public inputModel: CommentCreateUseCaseDtoType) {}
@@ -20,7 +21,7 @@ export class CreateCommentUseCase
   constructor(
     private usersQueryRepository: SqlUsersQueryRepository,
     private postsQueryRepository: SqlPostsQueryRepository,
-    private commentsRepository: CommentsRepository,
+    private commentsRepository: SqlCommentsRepository,
   ) {}
 
   async execute(command: CreateCommentCommand): Promise<CommentDtoType | null> {

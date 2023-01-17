@@ -34,6 +34,7 @@ import { UpdatePostCommand } from '../../posts/application/use-cases/update-post
 import { DeletePostCommand } from '../../posts/application/use-cases/delete-post-use-case';
 import { CommentsQueryRepository } from '../../comments/infrastructure/comments.queryRepository';
 import { SqlBlogsQueryRepository } from '../infrastructure/sql.blogs.queryRepository';
+import { SqlCommentsQueryRepository } from '../../comments/infrastructure/sql.comments.queryRepository';
 
 @UseGuards(BearerAuthGuard)
 @Controller('blogger/blogs')
@@ -41,7 +42,7 @@ export class BloggersController {
   constructor(
     private commandBus: CommandBus,
     private blogsQueryRepository: SqlBlogsQueryRepository,
-    private commentsQueryRepository: CommentsQueryRepository,
+    private commentsQueryRepository: SqlCommentsQueryRepository,
   ) {}
 
   @Get()

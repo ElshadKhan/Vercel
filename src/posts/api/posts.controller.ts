@@ -29,13 +29,14 @@ import { UsersQueryRepository } from '../../users/infrastructure/users.queryRepo
 import { SqlUsersQueryRepository } from '../../users/infrastructure/sql.users.queryRepository';
 import { UpdatePostLikesCommand } from '../../likes/application/use-cases/update-post-likes-use-case';
 import { SqlPostsQueryRepository } from '../infrastructure/sql.posts.queryRepository';
+import { SqlCommentsQueryRepository } from '../../comments/infrastructure/sql.comments.queryRepository';
 
 @Controller('posts')
 export class PostsController {
   constructor(
     private commandBus: CommandBus,
     private postsQueryRepository: SqlPostsQueryRepository,
-    private commentsQueryRepository: CommentsQueryRepository,
+    private commentsQueryRepository: SqlCommentsQueryRepository,
     private usersQueryRepository: SqlUsersQueryRepository,
   ) {}
 

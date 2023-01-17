@@ -176,7 +176,7 @@ ON p."blogId" = b."id"
       `SELECT p.*, b."name" AS blogname FROM "Posts" AS p
     LEFT JOIN "Blogs" AS b
     ON p."blogId" = b."id"
-    WHERE "id" = '${id}'`,
+    WHERE p."id" = '${id}'`,
     );
     return {
       id: post[0].id,

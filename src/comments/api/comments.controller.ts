@@ -23,12 +23,13 @@ import { DeleteCommentCommand } from '../application/use-cases/delete-comment-us
 import { DeleteAllCommentsCommand } from '../application/use-cases/delete-all-comments-use-case';
 import { UpdateCommentLikesCommand } from '../../likes/application/use-cases/update-comment-likes-use-case';
 import { CommentLikesUseCasesDtoType } from '../../likes/domain/dto/commentLikesUseCasesDtoType';
+import { SqlCommentsQueryRepository } from '../infrastructure/sql.comments.queryRepository';
 
 @Controller('comments')
 export class CommentsController {
   constructor(
     private commandBus: CommandBus,
-    private commentsQueryRepository: CommentsQueryRepository,
+    private commentsQueryRepository: SqlCommentsQueryRepository,
   ) {}
 
   @UseGuards(SpecialBearerAuthGuard)
