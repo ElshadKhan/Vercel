@@ -261,26 +261,26 @@ export class SqlUsersQueryRepository {
   ): Promise<UsersBusinessType> {
     const skip = getSkipNumber(pageNumber, pageSize);
     const users = await this.dataSource.query(
-      `SELECT blogger.*, blogs."userId" AS blogowner, users."login" AS banuserlogin
+      `SELECT blogger.*, blogs."createdAt", blogs."userId" AS blogowner, users."login" AS banuserlogin
     FROM "BloggerBanUsersInfo" AS blogger
     LEFT JOIN "Blogs" AS blogs
     ON blogs."id" = blogger."blogId"
     LEFT JOIN "Users" AS users
     ON users."id" = blogger."banUserId"
     WHERE blogger."blogId" = '${blogId}'
-    AND UPPER users."login" LIKE UPPER '${searchLoginTerm}'
+    AND UPPER (users."login") LIKE UPPER ('%${searchLoginTerm}%')
     ORDER BY "${sortBy}" ${sortDirection}
     LIMIT ${pageSize} OFFSET ${skip}`,
     );
     const totalCountSql = await this.dataSource.query(
-      `SELECT blogger.*, blogs."userId" AS blogowner, users."login" AS banuserlogin
+      `SELECT count(*)
     FROM "BloggerBanUsersInfo" AS blogger
     LEFT JOIN "Blogs" AS blogs
     ON blogs."id" = blogger."blogId"
     LEFT JOIN "Users" AS users
     ON users."id" = blogger."banUserId"
     WHERE blogger."blogId" = '${blogId}'
-    AND UPPER users."login" LIKE UPPER '${searchLoginTerm}'`,
+    AND UPPER (users."login") LIKE UPPER ('%${searchLoginTerm}%')`,
     );
     const totalCount = +totalCountSql[0].count;
     const items = users.map((u) => ({
