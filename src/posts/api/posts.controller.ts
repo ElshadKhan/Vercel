@@ -90,11 +90,8 @@ export class PostsController {
 
   @UseGuards(SpecialBearerAuthGuard)
   @Get()
-  findAll(
-    @Query() query: QueryValidationType,
-    @CurrentUserId() currentUserId: string,
-  ) {
-    return this.postsQueryRepository.findAll(pagination(query), currentUserId);
+  findAll(@Query() query: QueryValidationType, @Req() req) {
+    return this.postsQueryRepository.findAll(pagination(query), req?.user);
   }
 
   @UseGuards(SpecialBearerAuthGuard)

@@ -33,7 +33,7 @@ export class SqlBlogsQueryRepository {
  AND ban."isBanned" IS false
  ORDER BY "${sortBy}" ${sortDirection}
  LIMIT ${pageSize} OFFSET ${skip}`);
-    const totalCountBlogs = await this.dataSource
+    const totalCountSql = await this.dataSource
       .query(`SELECT count(*) FROM "Blogs" AS blogs
  LEFT JOIN "BlogsBanInfo" AS ban
  ON blogs."id" = ban."blogId"
@@ -41,11 +41,12 @@ export class SqlBlogsQueryRepository {
  AND ban."isBanned" IS false
  ORDER BY "${sortBy}" ${sortDirection}
  LIMIT ${pageSize} OFFSET ${skip}`);
+    const totalCount = +totalCountSql[0].count;
     const blogDto = new BlogsBusinessType(
-      getPagesCounts(totalCountBlogs, pageSize),
+      getPagesCounts(totalCount, pageSize),
       pageNumber,
       pageSize,
-      totalCountBlogs,
+      totalCount,
       blogs.map((b) => ({
         id: b.id,
         name: b.name,
@@ -76,17 +77,18 @@ export class SqlBlogsQueryRepository {
     ORDER BY "${sortBy}" ${sortDirection}
     LIMIT ${pageSize} OFFSET ${skip}`,
     );
-    const totalCountBlogs = await this.dataSource.query(
+    const totalCountSql = await this.dataSource.query(
       `SELECT count(*) FROM "Blogs"
     WHERE LOWER ("name") LIKE LOWER ('%${searchNameTerm}%')
     ORDER BY "${sortBy}" ${sortDirection}
     LIMIT ${pageSize} OFFSET ${skip}`,
     );
+    const totalCount = +totalCountSql[0].count;
     const blogDto = new SaBlogsBusinessType(
-      getPagesCounts(totalCountBlogs, pageSize),
+      getPagesCounts(totalCount, pageSize),
       pageNumber,
       pageSize,
-      totalCountBlogs,
+      totalCount,
       blogs.map((b) => ({
         id: b.id,
         name: b.name,
@@ -128,18 +130,19 @@ export class SqlBlogsQueryRepository {
     ORDER BY "${sortBy}" ${sortDirection}
     LIMIT ${pageSize} OFFSET ${skip}`,
     );
-    const totalCountBlogs = await this.dataSource
+    const totalCountSql = await this.dataSource
       .query(`SELECT count(*) FROM "Blogs" AS blogs
     LEFT JOIN "BlogsBanInfo" AS ban
     ON blogs."id" = ban."blogId" 
     WHERE LOWER ("name") LIKE LOWER ('%${searchNameTerm}%')
     AND "userId" = '${currentUserId}'
     AND ban."isBanned" IS false`);
+    const totalCount = +totalCountSql[0].count;
     const blogDto = new BlogsBusinessType(
-      getPagesCounts(totalCountBlogs, pageSize),
+      getPagesCounts(totalCount, pageSize),
       pageNumber,
       pageSize,
-      totalCountBlogs,
+      totalCount,
       blogs.map((b) => ({
         id: b.id,
         name: b.name,

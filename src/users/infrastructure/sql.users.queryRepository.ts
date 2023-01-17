@@ -272,7 +272,7 @@ export class SqlUsersQueryRepository {
     ORDER BY "${sortBy}" ${sortDirection}
     LIMIT ${pageSize} OFFSET ${skip}`,
     );
-    const totalCount = await this.dataSource.query(
+    const totalCountSql = await this.dataSource.query(
       `SELECT blogger.*, blogs."userId" AS blogowner, users."login" AS banuserlogin
     FROM "BloggerBanUsersInfo" AS blogger
     LEFT JOIN "Blogs" AS blogs
@@ -282,6 +282,7 @@ export class SqlUsersQueryRepository {
     WHERE blogger."blogId" = '${blogId}'
     AND UPPER users."login" LIKE UPPER '${searchLoginTerm}'`,
     );
+    const totalCount = +totalCountSql[0].count;
     const items = users.map((u) => ({
       id: u.banUserId,
       login: u.banuserlogin,
@@ -322,7 +323,7 @@ export class SqlUsersQueryRepository {
     ORDER BY "${sortBy}" ${sortDirection}
     LIMIT ${pageSize} OFFSET ${skip}`,
     );
-    const totalCountUsers = await this.dataSource.query(
+    const totalCountSql = await this.dataSource.query(
       `SELECT count(*) 
     FROM "Users" AS u
     LEFT JOIN "UsersBanInfo" AS b
@@ -331,7 +332,7 @@ export class SqlUsersQueryRepository {
     OR UPPER ("email") LIKE UPPER ('%${searchEmailTerm}%'))
     AND "isBanned" IS ${banStatus}`,
     );
-    const totalCount = +totalCountUsers[0].count;
+    const totalCount = +totalCountSql[0].count;
     const items = users.map((user) => ({
       id: user.id,
       login: user.login,

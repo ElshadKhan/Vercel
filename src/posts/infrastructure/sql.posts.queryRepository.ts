@@ -32,7 +32,7 @@ ON p."blogId" = b."id"
     ORDER BY "${sortBy}" ${sortDirection}
     LIMIT ${pageSize} OFFSET ${skip}`,
     );
-    const totalCountPosts = await this.dataSource.query(
+    const totalCountSql = await this.dataSource.query(
       `SELECT count(*) FROM "Posts" WHERE "isBanned" IS false`,
     );
     if (posts) {
@@ -82,12 +82,13 @@ ON p."blogId" = b."id"
           },
         };
       });
+      const totalCount = +totalCountSql[0].count;
       const items = await Promise.all(promise);
       return {
-        pagesCount: getPagesCounts(totalCountPosts, pageSize),
+        pagesCount: getPagesCounts(totalCount, pageSize),
         page: pageNumber,
         pageSize: pageSize,
-        totalCount: totalCountPosts,
+        totalCount: totalCount,
         items: items,
       };
     }
@@ -109,7 +110,7 @@ ON p."blogId" = b."id"
     ORDER BY "${sortBy}" ${sortDirection}
     LIMIT ${pageSize} OFFSET ${skip}`,
     );
-    const totalCountPosts = await this.dataSource.query(
+    const totalCountSql = await this.dataSource.query(
       `SELECT * FROM "Posts" WHERE "blogId" = '${blogId}' AND "isBanned" IS false`,
     );
     const promise = findPosts.map(async (post) => {
@@ -159,12 +160,13 @@ ON p."blogId" = b."id"
         },
       };
     });
+    const totalCount = +totalCountSql[0].count;
     const items = await Promise.all(promise);
     return {
-      pagesCount: getPagesCounts(totalCountPosts, pageSize),
+      pagesCount: getPagesCounts(totalCount, pageSize),
       page: pageNumber,
       pageSize: pageSize,
-      totalCount: totalCountPosts,
+      totalCount: totalCount,
       items: items,
     };
   }
