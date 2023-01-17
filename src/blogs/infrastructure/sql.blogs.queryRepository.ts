@@ -79,9 +79,7 @@ export class SqlBlogsQueryRepository {
     );
     const totalCountSql = await this.dataSource.query(
       `SELECT count(*) FROM "Blogs"
-    WHERE LOWER ("name") LIKE LOWER ('%${searchNameTerm}%')
-    ORDER BY "${sortBy}" ${sortDirection}
-    LIMIT ${pageSize} OFFSET ${skip}`,
+    WHERE LOWER ("name") LIKE LOWER ('%${searchNameTerm}%')`,
     );
     const totalCount = +totalCountSql[0].count;
     const blogDto = new SaBlogsBusinessType(
