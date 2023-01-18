@@ -48,7 +48,9 @@ export class PostsController {
     @CurrentUserId() currentUserId: string,
   ) {
     const post = await this.postsQueryRepository.findPostById(postId);
-
+    if (!post) {
+      throw new HttpException({}, 404);
+    }
     const permission = await this.usersQueryRepository.getBanUserForBlog(
       currentUserId,
       post.blogId,
