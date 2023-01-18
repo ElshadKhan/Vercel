@@ -171,6 +171,7 @@ export class SqlPostsQueryRepository {
     ON p."blogId" = b."id"
     WHERE p."id" = '${id}'`,
     );
+    if (!post[0]) return null;
     return {
       id: post[0].id,
       title: post[0].title,
