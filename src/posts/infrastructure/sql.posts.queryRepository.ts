@@ -27,8 +27,8 @@ export class SqlPostsQueryRepository {
     const skip = getSkipNumber(pageNumber, pageSize);
     const posts = await this.dataSource.query(
       `SELECT p.*, b."name" AS blogname FROM "Posts" AS p
-LEFT JOIN "Blogs" AS b
-ON p."blogId" = b."id"
+    LEFT JOIN "Blogs" AS b
+    ON p."blogId" = b."id"
     WHERE "isBanned" IS false
     ORDER BY "${sortBy}" ${sortDirection}
     LIMIT ${pageSize} OFFSET ${skip}`,
