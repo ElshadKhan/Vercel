@@ -1,18 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import {
-  Comment,
-  CommentDbTypeWithId,
-} from '../domain/entities/comment.entity';
-import { Model } from 'mongoose';
 import { QueryValidationType } from '../../helpers/middleware/queryValidation';
-import { UserAccountDBType } from '../../users/domain/dto/user.account.dto';
 import {
   getPagesCounts,
   getSkipNumber,
   LikeStatusEnam,
 } from '../../helpers/helpFunctions';
-import { LikesQueryRepository } from '../../likes/infrastructure/likes.queryRepository';
 import { CommentDtoType } from '../application/dto/commentDtoType';
 import {
   CommentsBusinessDtoType,
@@ -20,21 +12,27 @@ import {
 } from './dto/commentBusinessType';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { SqlLikesQueryRepository } from '../../likes/infrastructure/sql.likes.queryRepository';
 
 @Injectable()
 export class SqlCommentsQueryRepository {
-  @InjectModel(Comment.name) private commentModel: Model<CommentDbTypeWithId>;
   constructor(
     @InjectDataSource() protected dataSource: DataSource,
-    private likesRepository: LikesQueryRepository,
+    private likesRepository: SqlLikesQueryRepository,
   ) {}
 
   async findCommentByUserIdAndCommentId(
     id: string,
     userId?: string,
   ): Promise<CommentDtoType | null> {
-    const comment = await this.commentModel.findOne({ id, isBanned: false });
-    if (!comment) return null;
+    const comment = await this.dataSource.query(
+      `SELECT c.*, u."login" FROM "Comments" AS c
+    LEFT JOIN "Users" AS u
+    ON c."userId" = u."id"
+    WHERE c."id" = '${id}'
+    AND c."isBanned" IS false`,
+    );
+    if (!comment[0]) return null;
 
     let myStatus = LikeStatusEnam.None;
 
@@ -56,11 +54,11 @@ export class SqlCommentsQueryRepository {
     );
 
     return {
-      id: comment.id,
-      content: comment.content,
-      userId: comment.commentatorInfo.userId,
-      userLogin: comment.commentatorInfo.userLogin,
-      createdAt: comment.createdAt,
+      id: comment[0].id,
+      content: comment[0].content,
+      userId: comment[0].userId,
+      userLogin: comment[0].login,
+      createdAt: comment[0].createdAt,
       likesInfo: {
         likesCount: likesCount,
         dislikesCount: dislikesCount,
@@ -73,15 +71,14 @@ export class SqlCommentsQueryRepository {
     id: string,
     userId?: string,
   ): Promise<CommentDtoType | null> {
-    const result = await this.dataSource.query(
+    const comment = await this.dataSource.query(
       `SELECT c.*, u."login" FROM "Comments" AS c
     LEFT JOIN "Users" AS u
     ON c."userId" = u."id"
     WHERE c."id" = '${id}'
     AND c."isBanned" IS false`,
     );
-    const comment = await this.commentModel.findOne({ id, isBanned: false });
-    if (!comment) return null;
+    if (!comment[0]) return null;
     let myStatus = LikeStatusEnam.None;
     if (userId) {
       const result = await this.likesRepository.getCommentLikesStatus(
@@ -99,11 +96,11 @@ export class SqlCommentsQueryRepository {
       LikeStatusEnam.Dislike,
     );
     return {
-      id: comment.id,
-      content: comment.content,
-      userId: comment.commentatorInfo.userId,
-      userLogin: comment.commentatorInfo.userLogin,
-      createdAt: comment.createdAt,
+      id: comment[0].id,
+      content: comment[0].content,
+      userId: comment[0].userId,
+      userLogin: comment[0].login,
+      createdAt: comment[0].createdAt,
       likesInfo: {
         likesCount: likesCount,
         dislikesCount: dislikesCount,
@@ -116,22 +113,27 @@ export class SqlCommentsQueryRepository {
     { pageNumber, pageSize, sortBy, sortDirection }: QueryValidationType,
     userId: string,
   ): Promise<CommentsBusinessDtoType | null> {
-    const comment = await this.commentModel.findOne({
-      'postInfo.ownerUserId': userId,
-      isBanned: false,
-    });
-    const findComments = await this.commentModel
-      .find({ 'postInfo.ownerUserId': userId, isBanned: false })
-      .sort([[sortBy, sortDirection]])
-      .skip(getSkipNumber(pageNumber, pageSize))
-      .limit(pageSize)
-      .lean();
-    const totalCountComments = await this.commentModel
-      .find({ 'postInfo.ownerUserId': userId, isBanned: false })
-      .sort([[sortBy, sortDirection]])
-      .count();
-    if (comment) {
-      const promise = findComments.map(async (c) => {
+    const skip = getSkipNumber(pageNumber, pageSize);
+    const comments = await this.dataSource.query(
+      `SELECT c.*, u."login", p."title", p."blogId", b."name" FROM "Comments" AS c
+    LEFT JOIN "Users" AS u
+    ON c."userId" = u."id"
+    LEFT JOIN "Posts" AS p
+    ON c."postId" = p."id"
+    LEFT JOIN "Blogs" AS b
+    ON p."blogId" = b."id"
+    WHERE c."userId" = '${userId}'
+    AND c."isBanned" IS false
+    ORDER BY "${sortBy}" ${sortDirection}
+    LIMIT ${pageSize} OFFSET ${skip}`,
+    );
+    const totalCountSql = await this.dataSource.query(
+      `SELECT count(*) FROM "Comments" AS c
+    WHERE c."userId" = '${userId}'
+    AND c."isBanned" IS false`,
+    );
+    if (comments) {
+      const promise = comments.map(async (c) => {
         let myStatus = LikeStatusEnam.None;
 
         if (userId) {
@@ -160,23 +162,24 @@ export class SqlCommentsQueryRepository {
             myStatus: myStatus,
           },
           commentatorInfo: {
-            userId: c.commentatorInfo.userId,
-            userLogin: c.commentatorInfo.userLogin,
+            userId: c.userId,
+            userLogin: c.login,
           },
           postInfo: {
-            id: c.postInfo.postId,
-            title: c.postInfo.title,
-            blogId: c.postInfo.blogId,
-            blogName: c.postInfo.blogName,
+            id: c.postId,
+            title: c.title,
+            blogId: c.blogId,
+            blogName: c.name,
           },
         };
       });
+      const totalCount = +totalCountSql[0].count;
       const items = await Promise.all(promise);
       return {
-        pagesCount: getPagesCounts(totalCountComments, pageSize),
+        pagesCount: getPagesCounts(totalCount, pageSize),
         page: pageNumber,
         pageSize: pageSize,
-        totalCount: totalCountComments,
+        totalCount: totalCount,
         items: items,
       };
     }
@@ -188,22 +191,23 @@ export class SqlCommentsQueryRepository {
     { pageNumber, pageSize, sortBy, sortDirection }: QueryValidationType,
     userId?: string,
   ): Promise<CommentsBusinessType | null> {
-    const comment = await this.commentModel.findOne({
-      postId: postId,
-      isBanned: false,
-    });
-    const findComments = await this.commentModel
-      .find({ postId: postId, isBanned: false })
-      .sort([[sortBy, sortDirection]])
-      .skip(getSkipNumber(pageNumber, pageSize))
-      .limit(pageSize)
-      .lean();
-    const totalCountComments = await this.commentModel
-      .find({ postId: postId, isBanned: false })
-      .sort([[sortBy, sortDirection]])
-      .count();
-    if (comment) {
-      const promise = findComments.map(async (c) => {
+    const skip = getSkipNumber(pageNumber, pageSize);
+    const comments = await this.dataSource.query(
+      `SELECT c.*, u."login" FROM "Comments" AS c
+    LEFT JOIN "Users" AS u
+    ON c."userId" = u."id"
+    WHERE c."postId" = '${postId}'
+    AND c."isBanned" IS false
+    ORDER BY "${sortBy}" ${sortDirection}
+    LIMIT ${pageSize} OFFSET ${skip}`,
+    );
+    const totalCountSql = await this.dataSource.query(
+      `SELECT count(*) FROM "Comments" AS c
+    WHERE c."postId" = '${postId}'
+    AND c."isBanned" IS false`,
+    );
+    if (comments[0]) {
+      const promise = comments.map(async (c) => {
         let myStatus = LikeStatusEnam.None;
 
         if (userId) {
@@ -225,8 +229,8 @@ export class SqlCommentsQueryRepository {
         return {
           id: c.id,
           content: c.content,
-          userId: c.commentatorInfo.userId,
-          userLogin: c.commentatorInfo.userLogin,
+          userId: c.userId,
+          userLogin: c.login,
           createdAt: c.createdAt,
           likesInfo: {
             likesCount: likesCount,
@@ -235,12 +239,13 @@ export class SqlCommentsQueryRepository {
           },
         };
       });
+      const totalCount = +totalCountSql[0].count;
       const items = await Promise.all(promise);
       return {
-        pagesCount: getPagesCounts(totalCountComments, pageSize),
+        pagesCount: getPagesCounts(totalCount, pageSize),
         page: pageNumber,
         pageSize: pageSize,
-        totalCount: totalCountComments,
+        totalCount: totalCount,
         items: items,
       };
     }

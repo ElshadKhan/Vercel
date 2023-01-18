@@ -18,11 +18,12 @@ import {
   CommentsBusinessDtoType,
   CommentsBusinessType,
 } from './dto/commentBusinessType';
+import { SqlLikesQueryRepository } from '../../likes/infrastructure/sql.likes.queryRepository';
 
 @Injectable()
 export class CommentsQueryRepository {
   @InjectModel(Comment.name) private commentModel: Model<CommentDbTypeWithId>;
-  constructor(private likesRepository: LikesQueryRepository) {}
+  constructor(private likesRepository: SqlLikesQueryRepository) {}
 
   async findCommentByUserIdAndCommentId(
     id: string,

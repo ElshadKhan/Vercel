@@ -35,7 +35,7 @@ export class SqlUsersRepository {
   async updateEmailConfirmation(id: string) {
     const result = await this.dataSource.query(`UPDATE "EmailConfirmation"
     SET "isConfirmed" = true
-    WHERE "userId"= '${id}'`);
+    WHERE "userId" = '${id}'`);
     console.log('UPDATE emailIsConfirmed', result[1] === 1);
     return result[1] === 1;
   }

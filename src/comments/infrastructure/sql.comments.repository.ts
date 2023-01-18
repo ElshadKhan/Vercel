@@ -1,9 +1,3 @@
-import { InjectModel } from '@nestjs/mongoose';
-import {
-  Comment,
-  CommentDbTypeWithId,
-} from '../domain/entities/comment.entity';
-import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { CreateCommentDbType } from '../application/dto/createCommentDbType';
 import { InjectDataSource } from '@nestjs/typeorm';
@@ -12,7 +6,6 @@ import { DataSource } from 'typeorm';
 @Injectable()
 export class SqlCommentsRepository {
   constructor(@InjectDataSource() protected dataSource: DataSource) {}
-  @InjectModel(Comment.name) private commentModel: Model<CommentDbTypeWithId>;
 
   async create(newComment: CreateCommentDbType): Promise<CreateCommentDbType> {
     await this.dataSource.query(
@@ -24,27 +17,31 @@ export class SqlCommentsRepository {
 
   async update(commentId: string, content: string): Promise<boolean> {
     const result = await this.dataSource.query(
-      `UPDATE "Comments" SET "content" WHERE "id" = '${commentId}'`,
+      `UPDATE "Comments" 
+    SET "content" = '${content}'
+    WHERE "id" = '${commentId}'`,
     );
-    return result[0] === 1;
+    return result[1] === 1;
   }
 
   async banUsers(userId: string, value: boolean) {
-    return await this.commentModel.updateMany(
-      { 'commentatorInfo.userId': userId },
-      {
-        isBanned: value,
-      },
+    const result = await this.dataSource.query(
+      `UPDATE "Comments"
+    SET "isBanned" = ${value}
+     WHERE "userId" = '${userId}'`,
     );
+    return result[1] === 1;
   }
 
   async delete(id: string) {
-    const result = await this.commentModel.deleteOne({ id });
-    return result.deletedCount === 1;
+    const result = await this.dataSource.query(
+      `DELETE FROM "Comments" WHERE "id" = '${id}'`,
+    );
+    return result[1] === 1;
   }
 
   async deleteAll() {
-    const result = await this.commentModel.deleteMany({});
-    return result.deletedCount === 1;
+    const result = await this.dataSource.query(`DELETE FROM "Comments"`);
+    return result[1] === 1;
   }
 }

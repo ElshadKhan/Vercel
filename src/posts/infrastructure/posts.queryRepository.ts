@@ -12,10 +12,11 @@ import { PostsBusinessType } from './dto/postBusinessType';
 import { LikesQueryRepository } from '../../likes/infrastructure/likes.queryRepository';
 import { PostDbType, PostDtoType } from '../application/dto/PostDto';
 import { CreatePostBlogIdDto } from '../api/dto/createPostDto';
+import { SqlLikesQueryRepository } from '../../likes/infrastructure/sql.likes.queryRepository';
 
 @Injectable()
 export class PostsQueryRepository {
-  constructor(private likesQueryRepository: LikesQueryRepository) {}
+  constructor(private likesQueryRepository: SqlLikesQueryRepository) {}
   @InjectModel(Post.name) private postModel: Model<PostDbTypeWithId>;
 
   async findAll(

@@ -39,6 +39,7 @@ export class CommentsController {
       id,
       req.user?.id,
     );
+    console.log('Get Comment', result);
     if (!result) {
       throw new HttpException({}, 404);
     }

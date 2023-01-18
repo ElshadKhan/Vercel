@@ -1,32 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { LikeStatusEnam } from '../domain/dto/like-enam.dto';
 import { CommentsLikeDbType, PostsLikeDbType } from '../domain/dto/likeDbType';
-import { InjectModel } from '@nestjs/mongoose';
-import {
-  CommentLike,
-  CommentLikeDbTypeWithId,
-  PostLike,
-  PostLikeDbTypeWithId,
-} from '../domain/entities/like.entity';
-import { Model } from 'mongoose';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class SqlLikesRepository {
-  @InjectModel(CommentLike.name)
-  private commentLikeModel: Model<CommentLikeDbTypeWithId>;
-  @InjectModel(PostLike.name)
-  private postLikeModel: Model<PostLikeDbTypeWithId>;
+  constructor(@InjectDataSource() protected dataSource: DataSource) {}
+
   async createCommentLikeStatus(
     newLikeStatus: CommentsLikeDbType,
   ): Promise<CommentsLikeDbType> {
-    await this.commentLikeModel.create(newLikeStatus);
+    await this.dataSource.query(
+      `INSERT INTO "CommentLikesInfo"("userId", "commentId", "type", "createdAt", "isBanned")
+    VALUES('${newLikeStatus.userId}','${newLikeStatus.commentId}','${newLikeStatus.type}','${newLikeStatus.createdAt}', ${newLikeStatus.isBanned})`,
+    );
     return newLikeStatus;
   }
 
   async createPostLikeStatus(
     newLikeStatus: PostsLikeDbType,
   ): Promise<PostsLikeDbType> {
-    await this.postLikeModel.create(newLikeStatus);
+    await this.dataSource.query(
+      `INSERT INTO "PostLikesInfo"("userId", "postId", "type", "createdAt", "isBanned")
+    VALUES('${newLikeStatus.userId}','${newLikeStatus.postId}','${newLikeStatus.type}','${newLikeStatus.createdAt}', ${newLikeStatus.isBanned})`,
+    );
     return newLikeStatus;
   }
 
@@ -35,11 +33,13 @@ export class SqlLikesRepository {
     userId: string,
     likeStatus: LikeStatusEnam,
   ): Promise<boolean> {
-    const result = await this.commentLikeModel.updateOne(
-      { userId: userId, commentId: commentId },
-      { $set: { type: likeStatus, createdAt: new Date().toISOString() } },
+    const createDate = new Date().toISOString();
+    const result = await this.dataSource.query(
+      `UPDATE "CommentLikesInfo" SET "type" = '${likeStatus}', "createdAt" = '${createDate}'
+    WHERE "userId" = '${userId}'
+    AND "commentId" = '${commentId}'`,
     );
-    return result.matchedCount === 1;
+    return result[1] === 1;
   }
 
   async updatePostLikeStatusComment(
@@ -47,36 +47,38 @@ export class SqlLikesRepository {
     userId: string,
     likeStatus: LikeStatusEnam,
   ): Promise<boolean> {
-    const result = await this.postLikeModel.updateOne(
-      { userId: userId, postId: postId },
-      { $set: { type: likeStatus, createdAt: new Date().toISOString() } },
+    const createDate = new Date().toISOString();
+    const result = await this.dataSource.query(
+      `UPDATE "PostLikesInfo" SET "type" = '${likeStatus}', "createdAt" = '${createDate}'
+    WHERE "userId" = '${userId}'
+    AND "commentId" = '${postId}'`,
     );
-    return result.matchedCount === 1;
+    return result[1] === 1;
   }
 
   async banCommentUsers(userId: string, value: boolean) {
-    return this.commentLikeModel.updateMany(
-      { userId: userId },
-      {
-        isBanned: value,
-      },
+    const result = await this.dataSource.query(
+      `UPDATE "CommentLikesInfo" SET "isBanned" = ${value} WHERE "userId" = '${userId}'`,
     );
+    return result[1] === 1;
   }
 
   async banPostUsers(userId: string, value: boolean) {
-    return this.postLikeModel.updateMany(
-      { userId: userId },
-      {
-        isBanned: value,
-      },
+    const result = await this.dataSource.query(
+      `UPDATE "PostLikesInfo" SET "isBanned" = ${value} WHERE "userId" = '${userId}'`,
     );
+    return result[1] === 1;
   }
 
   async deleteAllCommentLikes() {
-    return this.commentLikeModel.deleteMany({});
+    const result = await this.dataSource.query(
+      `DELETE FROM "CommentLikesInfo"`,
+    );
+    return result[1] === 1;
   }
 
   async deleteAllPostLikes() {
-    return this.postLikeModel.deleteMany({});
+    const result = await this.dataSource.query(`DELETE FROM "PostLikesInfo"`);
+    return result[1] === 1;
   }
 }

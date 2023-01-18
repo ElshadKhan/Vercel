@@ -75,13 +75,13 @@ export class PostsController {
   async findCommentsByPostId(
     @Query() query: QueryValidationType,
     @Param('postId') postId: string,
-    @CurrentUserId() currentUserId: string,
+    @Req() req,
   ) {
     const result =
       await this.commentsQueryRepository.findCommentsByPostIdAndUserId(
         postId,
         pagination(query),
-        currentUserId,
+        req?.user,
       );
     if (!result) {
       throw new HttpException({}, 404);

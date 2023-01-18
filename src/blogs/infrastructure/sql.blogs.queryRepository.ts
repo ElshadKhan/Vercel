@@ -1,21 +1,20 @@
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { getPagesCounts, getSkipNumber } from '../../helpers/helpFunctions';
-import { Blog, BlogDbTypeWithId } from '../domain/entities/blog.entity';
 import { QueryValidationType } from '../../helpers/middleware/queryValidation';
 import {
   BlogsBusinessType,
   SaBlogsBusinessType,
 } from '../domain/dto/blogBusinessType';
-import { CreateBlogDtoType } from '../domain/dto/createBlogDbType';
+import {
+  CreateBlogDbType,
+  CreateBlogDtoType,
+} from '../domain/dto/createBlogDbType';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
 @Injectable()
 export class SqlBlogsQueryRepository {
   constructor(@InjectDataSource() protected dataSource: DataSource) {}
-  @InjectModel(Blog.name) private blogModel: Model<BlogDbTypeWithId>;
 
   async findAllBlogs({
     searchNameTerm,
@@ -169,7 +168,7 @@ export class SqlBlogsQueryRepository {
     );
   }
 
-  async findBlogById(id: string): Promise<Blog> {
+  async findBlogById(id: string): Promise<CreateBlogDbType> {
     const blog = await this.dataSource.query(
       `SELECT blogs.*,  users."login", ban."isBanned", ban."banDate" FROM "Blogs" AS blogs
     LEFT JOIN "BlogsBanInfo" AS ban

@@ -8,6 +8,7 @@ import { LikesQueryRepository } from '../../../likes/infrastructure/likes.queryR
 import { CreatePostUseCaseDto } from '../dto/createPostUseCaseDto';
 import { SqlBlogsQueryRepository } from '../../../blogs/infrastructure/sql.blogs.queryRepository';
 import { SqlPostsRepository } from '../../infrastructure/sql.posts.repository';
+import { SqlLikesQueryRepository } from '../../../likes/infrastructure/sql.likes.queryRepository';
 
 export class CreatePostCommand {
   constructor(public createPostDto: CreatePostUseCaseDto) {}
@@ -18,7 +19,7 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
   constructor(
     private postsRepository: SqlPostsRepository,
     private blogQueryRepository: SqlBlogsQueryRepository,
-    private likesQueryRepository: LikesQueryRepository,
+    private likesQueryRepository: SqlLikesQueryRepository,
   ) {}
 
   async execute(command: CreatePostCommand): Promise<PostDtoType | null> {

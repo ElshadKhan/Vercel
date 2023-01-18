@@ -5,6 +5,8 @@ import { UsersQueryRepository } from '../../../users/infrastructure/users.queryR
 import { LikesRepository } from '../../infrastructure/likes.repository';
 import { PostLikesUseCasesDtoType } from '../../domain/dto/commentLikesUseCasesDtoType';
 import { SqlUsersQueryRepository } from '../../../users/infrastructure/sql.users.queryRepository';
+import { SqlLikesRepository } from '../../infrastructure/sql.likes.repository';
+import { SqlLikesQueryRepository } from '../../infrastructure/sql.likes.queryRepository';
 
 export class UpdatePostLikesCommand {
   constructor(public useCaseDto: PostLikesUseCasesDtoType) {}
@@ -15,9 +17,9 @@ export class UpdatePostLikesUseCase
   implements ICommandHandler<UpdatePostLikesCommand>
 {
   constructor(
-    private likesQueryRepository: LikesQueryRepository,
+    private likesQueryRepository: SqlLikesQueryRepository,
     private usersQueryRepository: SqlUsersQueryRepository,
-    private likesRepository: LikesRepository,
+    private likesRepository: SqlLikesRepository,
   ) {}
 
   async execute(command: UpdatePostLikesCommand): Promise<boolean> {

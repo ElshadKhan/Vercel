@@ -11,12 +11,13 @@ import { PostDbType, PostDtoType } from '../application/dto/PostDto';
 import { CreatePostBlogIdDto } from '../api/dto/createPostDto';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { SqlLikesQueryRepository } from '../../likes/infrastructure/sql.likes.queryRepository';
 
 @Injectable()
 export class SqlPostsQueryRepository {
   constructor(
     @InjectDataSource() protected dataSource: DataSource,
-    private likesQueryRepository: LikesQueryRepository,
+    private likesQueryRepository: SqlLikesQueryRepository,
   ) {}
 
   async findAll(
@@ -37,27 +38,27 @@ ON p."blogId" = b."id"
     );
     if (posts) {
       const promise = posts.map(async (post) => {
-        //let myStatus = LikeStatusEnam.None;
-        // if (userId) {
-        //   const result = await this.likesQueryRepository.getPostLikesStatus(
-        //     post.id,
-        //     userId,
-        //   );
-        //   myStatus = result?.type || LikeStatusEnam.None;
-        // }
-        // const likesCount = await this.likesQueryRepository.getPostLikesCount(
-        //   post.id,
-        //   LikeStatusEnam.Like,
-        // );
-        // const dislikesCount =
-        //   await this.likesQueryRepository.getPostDislikesCount(
-        //     post.id,
-        //     LikeStatusEnam.Dislike,
-        //   );
-        // const lastLikes = await this.likesQueryRepository.getPostLastLikes(
-        //   post.id,
-        //   LikeStatusEnam.Like,
-        // );
+        let myStatus = LikeStatusEnam.None;
+        if (userId) {
+          const result = await this.likesQueryRepository.getPostLikesStatus(
+            post.id,
+            userId,
+          );
+          myStatus = result?.type || LikeStatusEnam.None;
+        }
+        const likesCount = await this.likesQueryRepository.getPostLikesCount(
+          post.id,
+          LikeStatusEnam.Like,
+        );
+        const dislikesCount =
+          await this.likesQueryRepository.getPostDislikesCount(
+            post.id,
+            LikeStatusEnam.Dislike,
+          );
+        const lastLikes = await this.likesQueryRepository.getPostLastLikes(
+          post.id,
+          LikeStatusEnam.Like,
+        );
         return {
           id: post.id,
           title: post.title,
@@ -67,18 +68,14 @@ ON p."blogId" = b."id"
           blogName: post.blogname,
           createdAt: post.createdAt,
           extendedLikesInfo: {
-            likesCount: 0,
-            dislikesCount: 0,
-            myStatus: LikeStatusEnam.None,
-            newestLikes: [],
-            // likesCount: likesCount,
-            // dislikesCount: dislikesCount,
-            // myStatus: myStatus,
-            // newestLikes: lastLikes.slice(0, 3).map((p) => ({
-            //   addedAt: p.createdAt,
-            //   userId: p.userId,
-            //   login: p.login,
-            // })),
+            likesCount: likesCount,
+            dislikesCount: dislikesCount,
+            myStatus: myStatus,
+            newestLikes: lastLikes.slice(0, 3).map((p) => ({
+              addedAt: p.createdAt,
+              userId: p.userId,
+              login: p.login,
+            })),
           },
         };
       });
@@ -114,28 +111,28 @@ ON p."blogId" = b."id"
       `SELECT * FROM "Posts" WHERE "blogId" = '${blogId}' AND "isBanned" IS false`,
     );
     const promise = findPosts.map(async (post) => {
-      // let myStatus = LikeStatusEnam.None;
-      //
-      // if (userId) {
-      //   const result = await this.likesQueryRepository.getPostLikesStatus(
-      //     post.id,
-      //     userId,
-      //   );
-      //   myStatus = result?.type || LikeStatusEnam.None;
-      // }
-      // const likesCount = await this.likesQueryRepository.getPostLikesCount(
-      //   post.id,
-      //   LikeStatusEnam.Like,
-      // );
-      // const dislikesCount =
-      //   await this.likesQueryRepository.getPostDislikesCount(
-      //     post.id,
-      //     LikeStatusEnam.Dislike,
-      //   );
-      // const lastLikes = await this.likesQueryRepository.getPostLastLikes(
-      //   post.id,
-      //   LikeStatusEnam.Like,
-      // );
+      let myStatus = LikeStatusEnam.None;
+
+      if (userId) {
+        const result = await this.likesQueryRepository.getPostLikesStatus(
+          post.id,
+          userId,
+        );
+        myStatus = result?.type || LikeStatusEnam.None;
+      }
+      const likesCount = await this.likesQueryRepository.getPostLikesCount(
+        post.id,
+        LikeStatusEnam.Like,
+      );
+      const dislikesCount =
+        await this.likesQueryRepository.getPostDislikesCount(
+          post.id,
+          LikeStatusEnam.Dislike,
+        );
+      const lastLikes = await this.likesQueryRepository.getPostLastLikes(
+        post.id,
+        LikeStatusEnam.Like,
+      );
       return {
         id: post.id,
         title: post.title,
@@ -145,18 +142,14 @@ ON p."blogId" = b."id"
         blogName: post.blogname,
         createdAt: post.createdAt,
         extendedLikesInfo: {
-          likesCount: 0,
-          dislikesCount: 0,
-          myStatus: LikeStatusEnam.None,
-          newestLikes: [],
-          // likesCount: likesCount,
-          // dislikesCount: dislikesCount,
-          // myStatus: myStatus,
-          // newestLikes: lastLikes.slice(0, 3).map((p) => ({
-          //   addedAt: p.createdAt,
-          //   userId: p.userId,
-          //   login: p.login,
-          // })),
+          likesCount: likesCount,
+          dislikesCount: dislikesCount,
+          myStatus: myStatus,
+          newestLikes: lastLikes.slice(0, 3).map((p) => ({
+            addedAt: p.createdAt,
+            userId: p.userId,
+            login: p.login,
+          })),
         },
       };
     });
@@ -199,28 +192,28 @@ ON p."blogId" = b."id"
     AND "isBanned" IS false`,
     );
     if (post[0]) {
-      // let myStatus = LikeStatusEnam.None;
-      //
-      // if (userId) {
-      //   const result = await this.likesQueryRepository.getPostLikesStatus(
-      //     post.id,
-      //     userId,
-      //   );
-      //   myStatus = result?.type || LikeStatusEnam.None;
-      // }
-      // const likesCount = await this.likesQueryRepository.getPostLikesCount(
-      //   post.id,
-      //   LikeStatusEnam.Like,
-      // );
-      // const dislikesCount =
-      //   await this.likesQueryRepository.getPostDislikesCount(
-      //     post.id,
-      //     LikeStatusEnam.Dislike,
-      //   );
-      // const lastLikes = await this.likesQueryRepository.getPostLastLikes(
-      //   post.id,
-      //   LikeStatusEnam.Like,
-      // );
+      let myStatus = LikeStatusEnam.None;
+
+      if (userId) {
+        const result = await this.likesQueryRepository.getPostLikesStatus(
+          post.id,
+          userId,
+        );
+        myStatus = result?.type || LikeStatusEnam.None;
+      }
+      const likesCount = await this.likesQueryRepository.getPostLikesCount(
+        post.id,
+        LikeStatusEnam.Like,
+      );
+      const dislikesCount =
+        await this.likesQueryRepository.getPostDislikesCount(
+          post.id,
+          LikeStatusEnam.Dislike,
+        );
+      const lastLikes = await this.likesQueryRepository.getPostLastLikes(
+        post.id,
+        LikeStatusEnam.Like,
+      );
       return {
         id: post[0].id,
         title: post[0].title,
@@ -230,18 +223,14 @@ ON p."blogId" = b."id"
         blogName: post[0].blogname,
         createdAt: post[0].createdAt,
         extendedLikesInfo: {
-          likesCount: 0,
-          dislikesCount: 0,
-          myStatus: LikeStatusEnam.None,
-          newestLikes: [],
-          // likesCount: likesCount,
-          // dislikesCount: dislikesCount,
-          // myStatus: myStatus,
-          // newestLikes: lastLikes.slice(0, 3).map((p) => ({
-          //   addedAt: p.createdAt,
-          //   userId: p.userId,
-          //   login: p.login,
-          // })),
+          likesCount: likesCount,
+          dislikesCount: dislikesCount,
+          myStatus: myStatus,
+          newestLikes: lastLikes.slice(0, 3).map((p) => ({
+            addedAt: p.createdAt,
+            userId: p.userId,
+            login: p.login,
+          })),
         },
       };
     }
