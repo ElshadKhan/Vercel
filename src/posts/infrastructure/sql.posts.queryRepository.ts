@@ -197,22 +197,22 @@ export class SqlPostsQueryRepository {
 
       if (userId) {
         const result = await this.likesQueryRepository.getPostLikesStatus(
-          post.id,
+          id,
           userId,
         );
         myStatus = result?.type || LikeStatusEnam.None;
       }
       const likesCount = await this.likesQueryRepository.getPostLikesCount(
-        post.id,
+        id,
         LikeStatusEnam.Like,
       );
       const dislikesCount =
         await this.likesQueryRepository.getPostDislikesCount(
-          post.id,
+          id,
           LikeStatusEnam.Dislike,
         );
       const lastLikes = await this.likesQueryRepository.getPostLastLikes(
-        post.id,
+        id,
         LikeStatusEnam.Like,
       );
       return {
