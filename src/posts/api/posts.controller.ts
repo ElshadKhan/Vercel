@@ -84,7 +84,7 @@ export class PostsController {
       await this.commentsQueryRepository.findCommentsByPostIdAndUserId(
         postId,
         pagination(query),
-        req?.user,
+        req?.user.id,
       );
     if (!result) {
       throw new HttpException({}, 404);
@@ -95,27 +95,17 @@ export class PostsController {
   @UseGuards(SpecialBearerAuthGuard)
   @Get()
   findAll(@Query() query: QueryValidationType, @Req() req) {
-    return this.postsQueryRepository.findAll(pagination(query), req?.user);
+    return this.postsQueryRepository.findAll(pagination(query), req?.user.id);
   }
 
   @UseGuards(SpecialBearerAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req) {
-    if (!req.user) {
-      const result = await this.postsQueryRepository.findOne(id, req.user);
-
-      if (!result) {
-        throw new HttpException({}, 404);
-      }
-      return result;
-    } else {
-      const result = await this.postsQueryRepository.findOne(id, req.user.id);
-
-      if (!result) {
-        throw new HttpException({}, 404);
-      }
-      return result;
+    const result = await this.postsQueryRepository.findOne(id, req?.user.id);
+    if (!result) {
+      throw new HttpException({}, 404);
     }
+    return result;
   }
 
   @Put(':postId/like-status')

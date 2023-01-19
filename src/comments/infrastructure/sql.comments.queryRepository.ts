@@ -225,6 +225,9 @@ export class SqlCommentsQueryRepository {
             c.id,
             userId,
           );
+          console.log('CommentId', c.id);
+          console.log('UserId', userId);
+          console.log('LIKESsTATUS', result);
           myStatus = result?.type || LikeStatusEnam.None;
         }
         const likesCount = await this.likesRepository.getCommentLikesCount(
