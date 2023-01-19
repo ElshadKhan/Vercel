@@ -46,7 +46,10 @@ export const pagination = (query: any): QueryValidationType => {
     }
   }
 
-  const sortBy = typeof query.sortBy === 'string' ? query.sortBy : 'createdAt';
+  let sortBy = typeof query.sortBy === 'string' ? query.sortBy : 'createdAt';
+  if (sortBy === 'blogName') {
+    sortBy = 'name';
+  }
   const sortDirection =
     typeof query.sortDirection === 'string' ? query.sortDirection : 'desc';
   const searchNameTerm =

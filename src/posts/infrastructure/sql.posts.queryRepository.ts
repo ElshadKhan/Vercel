@@ -25,7 +25,7 @@ export class SqlPostsQueryRepository {
   ): Promise<PostsBusinessType> {
     const skip = getSkipNumber(pageNumber, pageSize);
     const posts = await this.dataSource.query(
-      `SELECT p.*, b."name" AS blogname FROM "Posts" AS p
+      `SELECT p.*, b."name" FROM "Posts" AS p
     LEFT JOIN "Blogs" AS b
     ON p."blogId" = b."id"
     WHERE "isBanned" IS false
@@ -65,7 +65,7 @@ export class SqlPostsQueryRepository {
           shortDescription: post.shortDescription,
           content: post.content,
           blogId: post.blogId,
-          blogName: post.blogname,
+          blogName: post.name,
           createdAt: post.createdAt,
           extendedLikesInfo: {
             likesCount: likesCount,
