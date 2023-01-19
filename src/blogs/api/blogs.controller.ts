@@ -5,6 +5,8 @@ import {
   Query,
   HttpException,
   UseGuards,
+  Req,
+  Res,
 } from '@nestjs/common';
 import { BlogsQueryRepository } from '../infrastructure/blogs.queryRepository';
 import { pagination } from '../../helpers/middleware/queryValidation';
@@ -41,18 +43,20 @@ export class BlogsController {
   @UseGuards(SpecialBearerAuthGuard)
   @Get(':blogId/posts')
   async findOneByBlogId(
-    @Param('blogId') blogId: CreatePostBlogIdDto,
+    @Param('blogId') blogId: string,
     @Query() query: any,
-    @CurrentUserId() currentUserId: string,
+    @Req() req,
+    @Res() res,
   ) {
-    const result = await this.postsQueryRepository.findOneByBlogId(
+    const result = await this.blogsQueryRepository.findOne(blogId);
+    if (!result) {
+      throw new HttpException('invalid blog', 404);
+    }
+    const posts = await this.postsQueryRepository.findOneByBlogId(
       blogId,
       pagination(query),
-      currentUserId,
+      req.user?.id,
     );
-    if (!result) {
-      throw new HttpException({}, 404);
-    }
-    return result;
+    return res.status(200).send(posts);
   }
 }

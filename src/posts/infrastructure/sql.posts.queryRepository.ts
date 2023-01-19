@@ -8,7 +8,6 @@ import { QueryValidationType } from '../../helpers/middleware/queryValidation';
 import { PostsBusinessType } from './dto/postBusinessType';
 import { LikesQueryRepository } from '../../likes/infrastructure/likes.queryRepository';
 import { PostDbType, PostDtoType } from '../application/dto/PostDto';
-import { CreatePostBlogIdDto } from '../api/dto/createPostDto';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { SqlLikesQueryRepository } from '../../likes/infrastructure/sql.likes.queryRepository';
@@ -96,7 +95,7 @@ export class SqlPostsQueryRepository {
   }
 
   async findOneByBlogId(
-    blogId: CreatePostBlogIdDto,
+    blogId: string,
     { pageNumber, pageSize, sortBy, sortDirection }: QueryValidationType,
     userId?: string,
   ): Promise<PostsBusinessType> {
