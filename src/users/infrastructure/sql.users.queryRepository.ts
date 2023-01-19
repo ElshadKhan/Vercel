@@ -245,7 +245,9 @@ export class SqlUsersQueryRepository {
     AND blogger."banUserId" = '${banUserId}'
     AND blogger."isBanned" = true`,
     );
-    return result[0] === 1;
+    console.log('Create Comment result', result);
+    if (result[0]) return true;
+    return false;
   }
 
   async getBanUsersForBlog(

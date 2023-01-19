@@ -55,6 +55,7 @@ export class BloggersController {
 
   @Get('comments')
   findAllComments(@Query() query: any, @CurrentUserId() currentUserId) {
+    console.log('CurrentUserId', currentUserId);
     return this.commentsQueryRepository.findAllCommentsCurrentUser(
       pagination(query),
       currentUserId,

@@ -111,35 +111,44 @@ export class SqlCommentsQueryRepository {
 
   async findAllCommentsCurrentUser(
     { pageNumber, pageSize, sortBy, sortDirection }: QueryValidationType,
-    userId: string,
+    ownerUserId: string,
   ): Promise<CommentsBusinessDtoType | null> {
     const skip = getSkipNumber(pageNumber, pageSize);
     const comments = await this.dataSource.query(
-      `SELECT c.*, u."login", p."title", p."blogId", b."name" FROM "Comments" AS c
-    LEFT JOIN "Users" AS u
-    ON c."userId" = u."id"
-    LEFT JOIN "Posts" AS p
-    ON c."postId" = p."id"
-    LEFT JOIN "Blogs" AS b
-    ON p."blogId" = b."id"
-    WHERE р."userId" = '${userId}'
-    AND c."isBanned" IS false
-    ORDER BY "${sortBy}" ${sortDirection}
-    LIMIT ${pageSize} OFFSET ${skip}`,
+      `SELECT comments.*, users."login", posts."userId", posts."title",posts."blogId" , blogs."name"
+            FROM "Comments" AS comments
+            INNER JOIN "Users" AS users
+            ON users."id" = comments."userId"
+            INNER JOIN "Posts" AS posts
+            ON posts."id" = comments."postId"
+            INNER JOIN "Blogs" AS blogs
+            ON blogs."id" = posts."blogId"
+            WHERE posts."userId" = '${ownerUserId}'
+            AND comments."isBanned" IS false
+            ORDER BY "${sortBy}" ${sortDirection}
+            LIMIT ${pageSize} OFFSET ${skip}`,
     );
     const totalCountSql = await this.dataSource.query(
-      `SELECT count(*) FROM "Comments" AS c
-    WHERE c."userId" = '${userId}'
-    AND c."isBanned" IS false`,
+      `SELECT count(*)
+            FROM "Comments" AS comments
+            INNER JOIN "Users" AS users
+            ON users."id" = comments."userId"
+            INNER JOIN "Posts" AS posts
+            ON posts."id" = comments."postId"
+            INNER JOIN "Blogs" AS blogs
+            ON blogs."id" = posts."blogId"
+            WHERE posts."userId" = '${ownerUserId}'
+            AND comments."isBanned" IS false`,
     );
+    console.log('totalCountSql', totalCountSql);
     if (comments[0]) {
       const promise = comments.map(async (c) => {
         let myStatus = LikeStatusEnam.None;
 
-        if (userId) {
+        if (ownerUserId) {
           const result = await this.likesRepository.getCommentLikesStatus(
             c.id,
-            userId,
+            ownerUserId,
           );
           myStatus = result?.type || LikeStatusEnam.None;
         }

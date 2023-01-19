@@ -10,7 +10,7 @@ import { PostDtoType } from '../posts/application/dto/PostDto';
 
 jest.setTimeout(120000);
 
-describe.skip('Blogger (e2e)', () => {
+describe('Blogger (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {

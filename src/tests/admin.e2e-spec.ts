@@ -10,7 +10,7 @@ import { CreateBlogDtoType } from '../blogs/domain/dto/createBlogDbType';
 
 jest.setTimeout(120000);
 
-describe.skip('Admin endpoints (e2e)', () => {
+describe('Admin endpoints (e2e)', () => {
   let app: INestApplication;
   let server: any;
   beforeAll(async () => {

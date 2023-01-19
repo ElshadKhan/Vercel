@@ -16,7 +16,7 @@ const delay = async (delay = 1000) => {
 
 jest.setTimeout(120000);
 
-describe.skip('Auth (e2e)', () => {
+describe('Auth (e2e)', () => {
   let app: INestApplication;
   //let mongoServer: MongoMemoryServer;
   //let blogsController: BlogsController;
