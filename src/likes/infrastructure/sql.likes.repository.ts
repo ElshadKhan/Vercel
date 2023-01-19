@@ -51,7 +51,7 @@ export class SqlLikesRepository {
     const result = await this.dataSource.query(
       `UPDATE "PostLikesInfo" SET "type" = '${likeStatus}', "createdAt" = '${createDate}'
     WHERE "userId" = '${userId}'
-    AND "commentId" = '${postId}'`,
+    AND "postId" = '${postId}'`,
     );
     return result[1] === 1;
   }
