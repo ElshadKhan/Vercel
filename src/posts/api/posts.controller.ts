@@ -84,7 +84,7 @@ export class PostsController {
       await this.commentsQueryRepository.findCommentsByPostIdAndUserId(
         postId,
         pagination(query),
-        req?.user.id,
+        req.user?.id,
       );
     if (!result) {
       throw new HttpException({}, 404);
@@ -95,13 +95,13 @@ export class PostsController {
   @UseGuards(SpecialBearerAuthGuard)
   @Get()
   findAll(@Query() query: QueryValidationType, @Req() req) {
-    return this.postsQueryRepository.findAll(pagination(query), req?.user.id);
+    return this.postsQueryRepository.findAll(pagination(query), req.user?.id);
   }
 
   @UseGuards(SpecialBearerAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req) {
-    const result = await this.postsQueryRepository.findOne(id, req?.user.id);
+    const result = await this.postsQueryRepository.findOne(id, req.user?.id);
     if (!result) {
       throw new HttpException({}, 404);
     }

@@ -37,7 +37,7 @@ export class CommentsController {
   async findOne(@Param('id') id: string, @Req() req) {
     const result = await this.commentsQueryRepository.findCommentById(
       id,
-      req?.user.id,
+      req.user?.id,
     );
     console.log('Get Comment', result);
     if (!result) {
