@@ -110,7 +110,7 @@ export class SqlPostsQueryRepository {
     LIMIT ${pageSize} OFFSET ${skip}`,
     );
     const totalCountSql = await this.dataSource.query(
-      `SELECT * FROM "Posts" WHERE "blogId" = '${blogId}' AND "isBanned" IS false`,
+      `SELECT count(*) FROM "Posts" WHERE "blogId" = '${blogId}' AND "isBanned" IS false`,
     );
     const promise = findPosts.map(async (post) => {
       let myStatus = LikeStatusEnam.None;
