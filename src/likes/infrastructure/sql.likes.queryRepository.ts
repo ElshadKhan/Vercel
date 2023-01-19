@@ -10,7 +10,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { LikeStatusEnam } from '../domain/dto/like-enam.dto';
 
 @Injectable()
 export class SqlLikesQueryRepository {
@@ -24,14 +23,17 @@ export class SqlLikesQueryRepository {
     commentId: string,
     userId: string,
   ): Promise<CommentsLikeDbType | null> {
-    const result = this.dataSource.query(
+    console.log('commentId', commentId);
+    console.log('userId', userId);
+    const result = await this.dataSource.query(
       `SELECT c.*, u."login" FROM "CommentLikesInfo" AS c
     LEFT JOIN "Users" AS u
     ON c."userId" = u."id"
-    WHERE "commentId" = '${commentId} '
+    WHERE "commentId" = '${commentId}'
     AND "userId" = '${userId}'
     AND "isBanned" IS false`,
     );
+    console.log('result', result);
     if (!result[0]) return null;
     return {
       type: result[0].type,
@@ -47,11 +49,11 @@ export class SqlLikesQueryRepository {
     postId: string,
     userId: string,
   ): Promise<PostsLikeDbType | null> {
-    const result = this.dataSource.query(
+    const result = await this.dataSource.query(
       `SELECT p.*, u."login" FROM "PostLikesInfo" AS p
     LEFT JOIN "Users" AS u
     ON p."userId" = u."id"
-    WHERE "postId" = '${postId} '
+    WHERE "postId" = '${postId}'
     AND "userId" = '${userId}'
     AND "isBanned" IS false`,
     );
@@ -107,15 +109,18 @@ export class SqlLikesQueryRepository {
   }
 
   async getPostLastLikes(id: string, like: string): Promise<PostsLikeDbType[]> {
-    const result = this.dataSource.query(
+    console.log('postId', id);
+    console.log('type', like);
+    const result = await this.dataSource.query(
       `SELECT p.*, u."login" FROM "PostLikesInfo" AS p
     LEFT JOIN "Users" AS u
     ON p."userId" = u."id"
-    WHERE "postId" = '${id} '
+    WHERE "postId" = '${id}'
     AND "type" = '${like}'
     AND "isBanned" IS false
     ORDER BY "createdAt" DESC`,
     );
+    console.log('result', result);
     return result;
   }
 }

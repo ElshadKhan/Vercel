@@ -44,7 +44,7 @@ export class SqlPostsQueryRepository {
             post.id,
             userId,
           );
-          myStatus = result?.type || LikeStatusEnam.None;
+          myStatus = result[0]?.type || LikeStatusEnam.None;
         }
         const likesCount = await this.likesQueryRepository.getPostLikesCount(
           post.id,
@@ -215,6 +215,7 @@ export class SqlPostsQueryRepository {
         id,
         LikeStatusEnam.Like,
       );
+      console.log('LastLikes', lastLikes);
       return {
         id: post[0].id,
         title: post[0].title,
