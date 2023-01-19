@@ -115,7 +115,7 @@ export class SqlCommentsQueryRepository {
   ): Promise<CommentsBusinessDtoType | null> {
     const skip = getSkipNumber(pageNumber, pageSize);
     const comments = await this.dataSource.query(
-      `SELECT comments.*, users."login", posts."userId", posts."title",posts."blogId" , blogs."name"
+      `SELECT comments.*, users."login", posts."userId" AS postUserId, posts."title",posts."blogId" , blogs."name"
             FROM "Comments" AS comments
             INNER JOIN "Users" AS users
             ON users."id" = comments."userId"
