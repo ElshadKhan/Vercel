@@ -39,12 +39,13 @@ export class SqlPostsQueryRepository {
     if (posts) {
       const promise = posts.map(async (post) => {
         let myStatus = LikeStatusEnam.None;
+        console.log('UserId', userId);
         if (userId) {
           const result = await this.likesQueryRepository.getPostLikesStatus(
             post.id,
             userId,
           );
-          myStatus = result[0]?.type || LikeStatusEnam.None;
+          myStatus = result?.type || LikeStatusEnam.None;
         }
         const likesCount = await this.likesQueryRepository.getPostLikesCount(
           post.id,
@@ -79,8 +80,10 @@ export class SqlPostsQueryRepository {
           },
         };
       });
+      console.log('Promise', promise);
       const totalCount = +totalCountSql[0].count;
       const items = await Promise.all(promise);
+      console.log('items', items);
       return {
         pagesCount: getPagesCounts(totalCount, pageSize),
         page: pageNumber,

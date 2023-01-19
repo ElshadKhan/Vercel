@@ -57,6 +57,7 @@ export class SqlLikesQueryRepository {
     AND "userId" = '${userId}'
     AND "isBanned" IS false`,
     );
+    console.log('PostLikes', result);
     if (!result[0]) return null;
     return {
       type: result[0].type,
