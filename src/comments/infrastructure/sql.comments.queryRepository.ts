@@ -122,7 +122,7 @@ export class SqlCommentsQueryRepository {
     ON c."postId" = p."id"
     LEFT JOIN "Blogs" AS b
     ON p."blogId" = b."id"
-    WHERE c."userId" = '${userId}'
+    WHERE р."userId" = '${userId}'
     AND c."isBanned" IS false
     ORDER BY "${sortBy}" ${sortDirection}
     LIMIT ${pageSize} OFFSET ${skip}`,
@@ -132,7 +132,7 @@ export class SqlCommentsQueryRepository {
     WHERE c."userId" = '${userId}'
     AND c."isBanned" IS false`,
     );
-    if (comments) {
+    if (comments[0]) {
       const promise = comments.map(async (c) => {
         let myStatus = LikeStatusEnam.None;
 

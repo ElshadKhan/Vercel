@@ -242,7 +242,8 @@ export class SqlUsersQueryRepository {
     LEFT JOIN "Users" AS users
     ON users."id" = blogger."banUserId"
     WHERE blogger."blogId" = '${blogId}'
-    AND blogger."banUserId" = '${banUserId}'`,
+    AND blogger."banUserId" = '${banUserId}'
+    AND blogger."isBanned" = true`,
     );
     return result[0] === 1;
   }

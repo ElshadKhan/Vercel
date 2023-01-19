@@ -55,7 +55,7 @@ export class PostsController {
       currentUserId,
       post.blogId,
     );
-    if (permission) {
+    if (!permission) {
       throw new HttpException('Forbidden', 403);
     }
     const inputModel = {
