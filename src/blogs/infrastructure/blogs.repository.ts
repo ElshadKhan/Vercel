@@ -1,7 +1,10 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { Blog, BlogDbTypeWithId } from '../domain/entities/blog.entity';
+import {
+  Blog,
+  BlogDbTypeWithId,
+} from '../domain/entities/NO_SQL_entities/blog.entity';
 import { CreateBlogDbType } from '../domain/dto/createBlogDbType';
 import { UpdateBlogOnNewUserRepo } from '../domain/dto/updateBlogDbType';
 import { BanBlogsRepoDto } from '../domain/dto/updateBlogsBindType';

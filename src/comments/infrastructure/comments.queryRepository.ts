@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import {
   Comment,
   CommentDbTypeWithId,
-} from '../domain/entities/comment.entity';
+} from '../domain/entities/NO_SQL_entitity/comment.entity';
 import { Model } from 'mongoose';
 import { QueryValidationType } from '../../helpers/middleware/queryValidation';
 import { UserAccountDBType } from '../../users/domain/dto/user.account.dto';

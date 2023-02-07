@@ -1,4 +1,7 @@
-import { User, UserDbTypeWithId } from '../domain/entities/users.entity';
+import {
+  User,
+  UserDbTypeWithId,
+} from '../domain/entities/NO_SQL_entities/users.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Injectable, Scope } from '@nestjs/common';
@@ -10,7 +13,7 @@ import { LoginUserDto } from '../../auth/domain/dto/login.dto';
 import {
   BloggerUsersBan,
   BloggerUsersBanDocument,
-} from '../domain/entities/blogger.users.blogs.ban.entity';
+} from '../domain/entities/NO_SQL_entities/blogger.users.blogs.ban.entity';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class UsersQueryRepository {

@@ -2,7 +2,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { getPagesCounts, getSkipNumber } from '../../helpers/helpFunctions';
-import { Blog, BlogDbTypeWithId } from '../domain/entities/blog.entity';
+import {
+  Blog,
+  BlogDbTypeWithId,
+} from '../domain/entities/NO_SQL_entities/blog.entity';
 import { QueryValidationType } from '../../helpers/middleware/queryValidation';
 import {
   BlogsBusinessType,

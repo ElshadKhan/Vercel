@@ -1,7 +1,7 @@
 import {
   commentatorInfoType,
   postInfoType,
-} from '../../domain/entities/comment.entity';
+} from '../../domain/entities/NO_SQL_entitity/comment.entity';
 
 export class CreateCommentDbType {
   id: string;

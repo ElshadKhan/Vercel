@@ -6,7 +6,10 @@ import {
   getSkipNumber,
   LikeStatusEnam,
 } from '../../helpers/helpFunctions';
-import { Post, PostDbTypeWithId } from '../domain/entities/post.entity';
+import {
+  Post,
+  PostDbTypeWithId,
+} from '../domain/entities/NO_SQL_entities/post.entity';
 import { QueryValidationType } from '../../helpers/middleware/queryValidation';
 import { PostsBusinessType } from './dto/postBusinessType';
 import { LikesQueryRepository } from '../../likes/infrastructure/likes.queryRepository';

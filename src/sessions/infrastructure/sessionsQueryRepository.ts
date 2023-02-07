@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import {
   Session,
   SessionDbTypeWithId,
-} from '../domain/entities/session.entity';
+} from '../domain/entities/NO_SQL_entities/session.entity';
 import { Model } from 'mongoose';
 
 @Injectable()

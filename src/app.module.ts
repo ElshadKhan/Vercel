@@ -3,15 +3,24 @@ import { UsersService } from './users/application/users.service';
 import { UsersRepository } from './users/infrastructure/users.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { User, UserSchema } from './users/domain/entities/users.entity';
+import {
+  User,
+  UserSchema,
+} from './users/domain/entities/NO_SQL_entities/users.entity';
 import { UsersQueryRepository } from './users/infrastructure/users.queryRepository';
 import { PasswordService } from './helpers/password/password.service';
-import { Blog, BlogSchema } from './blogs/domain/entities/blog.entity';
+import {
+  Blog,
+  BlogSchema,
+} from './blogs/domain/entities/NO_SQL_entities/blog.entity';
 import { BlogsService } from './blogs/application/blogs.service';
 import { BlogsRepository } from './blogs/infrastructure/blogs.repository';
 import { BlogsQueryRepository } from './blogs/infrastructure/blogs.queryRepository';
 import { BlogsController } from './blogs/api/blogs.controller';
-import { Post, PostSchema } from './posts/domain/entities/post.entity';
+import {
+  Post,
+  PostSchema,
+} from './posts/domain/entities/NO_SQL_entities/post.entity';
 import { PostsService } from './posts/application/posts.service';
 import { PostsController } from './posts/api/posts.controller';
 import { PostsRepository } from './posts/infrastructure/posts.repository';
@@ -19,7 +28,7 @@ import { PostsQueryRepository } from './posts/infrastructure/posts.queryReposito
 import {
   Comment,
   CommentSchema,
-} from './comments/domain/entities/comment.entity';
+} from './comments/domain/entities/NO_SQL_entitity/comment.entity';
 import { CommentsController } from './comments/api/comments.controller';
 import { CommentsService } from './comments/application/comments.service';
 import { CommentsQueryRepository } from './comments/infrastructure/comments.queryRepository';
@@ -32,15 +41,15 @@ import {
   CommentLikeSchema,
   PostLike,
   PostLikeSchema,
-} from './likes/domain/entities/like.entity';
+} from './likes/domain/entities/NO_SQL_entity/like.entity';
 import {
   Session,
   SessionSchema,
-} from './sessions/domain/entities/session.entity';
+} from './sessions/domain/entities/NO_SQL_entities/session.entity';
 import {
   BloggerUsersBan,
   BloggerUsersBanSchema,
-} from './users/domain/entities/blogger.users.blogs.ban.entity';
+} from './users/domain/entities/NO_SQL_entities/blogger.users.blogs.ban.entity';
 import { SessionsRepository } from './sessions/infrastructure/sessionsRepository';
 import { SessionsQueryRepository } from './sessions/infrastructure/sessionsQueryRepository';
 import { SessionsService } from './sessions/application/sessions.service';
@@ -110,6 +119,18 @@ import { SqlCommentsRepository } from './comments/infrastructure/sql.comments.re
 import { SqlCommentsQueryRepository } from './comments/infrastructure/sql.comments.queryRepository';
 import { SqlBlogsRepository } from './blogs/infrastructure/sql.blogs.repository';
 import { SqlBlogsQueryRepository } from './blogs/infrastructure/sql.blogs.queryRepository';
+import { UserSql } from './users/domain/entities/SQL_entities/users.sql.entity';
+import { UserBanInfoSql } from './users/domain/entities/SQL_entities/usersBanInfo.sql.entity';
+import { BlogSql } from './blogs/domain/entities/SQL_entities/blogs.sql.entity';
+import { BlogBanInfoSql } from './blogs/domain/entities/SQL_entities/blogsBanInfo.sql.entity';
+import { BloggerBanUsersInfoSql } from './blogs/domain/entities/SQL_entities/bloggerBanUsersInfo.sql.entity';
+import { PostSql } from './posts/domain/entities/SQL_entities/posts.sql.entity';
+import { PostLikeSql } from './likes/domain/entities/SQL_entities/postlike.sql.entity';
+import { CommentSql } from './comments/domain/entities/SQL_entities/comments.sql.entity';
+import { CommentLikeSql } from './likes/domain/entities/SQL_entities/commentlike.sql.entity';
+import { SessionSql } from './sessions/domain/entities/SQL_entities/sessions.sql.entity';
+import { PasswordConfirmationSql } from './auth/domain/entities/SQL_entities/password.sql.entity';
+import { EmailConfirmationSql } from './auth/domain/entities/SQL_entities/email.sql.entity';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -120,6 +141,21 @@ const schemas = [
   { name: PostLike.name, schema: PostLikeSchema },
   { name: Session.name, schema: SessionSchema },
   { name: BloggerUsersBan.name, schema: BloggerUsersBanSchema },
+];
+
+const sqlSchemas = [
+  UserSql,
+  UserBanInfoSql,
+  BlogSql,
+  BlogBanInfoSql,
+  BloggerBanUsersInfoSql,
+  PostSql,
+  PostLikeSql,
+  CommentSql,
+  CommentLikeSql,
+  SessionSql,
+  PasswordConfirmationSql,
+  EmailConfirmationSql,
 ];
 
 const authUseCases = [
@@ -177,7 +213,6 @@ const likesUseCases = [
   DeleteAllPostLikesUseCase,
   DeleteAllCommentLikesUseCase,
 ];
-
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -185,14 +220,14 @@ const likesUseCases = [
       type: 'postgres',
       host: process.env.PG_HOST || 'localhost',
       port: 5432,
-      username: process.env.PG_USERNAME || 'nodejs',
+      username: process.env.PG_USERNAME || 'postgres',
       password: process.env.PG_PASSWORD || 'password',
       database: process.env.PG_DATABASE || 'ItIncubatorNest',
-      autoLoadEntities: false,
-      synchronize: false,
-      ssl: true,
+      autoLoadEntities: true,
+      synchronize: true,
+      entities: sqlSchemas,
+      // ssl: true,
     }),
-    // TypeOrmModule.forFeature(),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({

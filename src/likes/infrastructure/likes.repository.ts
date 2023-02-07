@@ -6,7 +6,7 @@ import {
   CommentLikeDbTypeWithId,
   PostLike,
   PostLikeDbTypeWithId,
-} from '../domain/entities/like.entity';
+} from '../domain/entities/NO_SQL_entity/like.entity';
 import { LikeStatusEnam } from '../domain/dto/like-enam.dto';
 import { CommentsLikeDbType, PostsLikeDbType } from '../domain/dto/likeDbType';
 

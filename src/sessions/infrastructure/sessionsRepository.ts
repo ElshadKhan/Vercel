@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 import {
   Session,
   SessionDbTypeWithId,
-} from '../domain/entities/session.entity';
+} from '../domain/entities/NO_SQL_entities/session.entity';
 
 @Injectable()
 export class SessionsRepository {

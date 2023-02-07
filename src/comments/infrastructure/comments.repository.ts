@@ -3,7 +3,7 @@ import {
   Comment,
   commentatorInfoType,
   CommentDbTypeWithId,
-} from '../domain/entities/comment.entity';
+} from '../domain/entities/NO_SQL_entitity/comment.entity';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { CreateCommentDbType } from '../application/dto/createCommentDbType';

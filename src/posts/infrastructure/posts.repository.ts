@@ -1,7 +1,10 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { Post, PostDbTypeWithId } from '../domain/entities/post.entity';
+import {
+  Post,
+  PostDbTypeWithId,
+} from '../domain/entities/NO_SQL_entities/post.entity';
 import { CreatePostDbType } from '../application/dto/createPostDb';
 
 @Injectable()
