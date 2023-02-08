@@ -226,7 +226,7 @@ const likesUseCases = [
       autoLoadEntities: true,
       synchronize: true,
       entities: sqlSchemas,
-      ssl: true,
+      // ssl: true,
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
