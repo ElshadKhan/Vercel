@@ -8,14 +8,14 @@ export class UserBanInfoSql {
   user: UserSql;
 
   @PrimaryColumn()
-  userId: number;
+  userId: string;
 
-  @Column()
+  @Column({ default: false })
   isBanned: boolean;
 
-  @Column()
+  @Column({ default: null })
   banReason: string;
 
-  @Column()
+  @Column({ default: null })
   banDate: Date;
 }

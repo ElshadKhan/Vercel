@@ -8,7 +8,7 @@ export class PasswordConfirmationSql {
   user: UserSql;
 
   @PrimaryColumn()
-  userId: number;
+  userId: string;
 
   @Column()
   confirmationCode: string;

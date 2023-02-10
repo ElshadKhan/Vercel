@@ -1,30 +1,66 @@
 import { Injectable, Scope } from '@nestjs/common';
-import { DataSource } from 'typeorm';
-import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { UserAccountDBType } from '../domain/dto/user.account.dto';
 import { BanUsersFactory } from '../api/dto/update-user-banStatus-dto';
 import { BanBloggerUsersModel } from '../api/dto/ban-bloger-users-input-dto';
+import { UserSql } from '../domain/entities/SQL_entities/users.sql.entity';
+import { EmailConfirmationSql } from '../../auth/domain/entities/SQL_entities/email.sql.entity';
+import { PasswordConfirmationSql } from '../../auth/domain/entities/SQL_entities/password.sql.entity';
+import { UserBanInfoSql } from '../domain/entities/SQL_entities/usersBanInfo.sql.entity';
 
 @Injectable({ scope: Scope.DEFAULT })
-export class SqlUsersRepository {
+export class TypeOrmUsersRepository {
   constructor(
+    @InjectRepository(UserSql) private usersSqlRepository: Repository<UserSql>,
+    @InjectRepository(UserBanInfoSql)
+    private userBanInfoSqlRepository: Repository<UserBanInfoSql>,
+    @InjectRepository(EmailConfirmationSql)
+    private emailConfirmationSqlRepository: Repository<EmailConfirmationSql>,
+    @InjectRepository(PasswordConfirmationSql)
+    private passwordConfirmationSqlRepository: Repository<PasswordConfirmationSql>,
     @InjectDataSource()
     protected dataSource: DataSource,
   ) {}
 
   async create(user: UserAccountDBType) {
-    await this.dataSource.query(`INSERT INTO "Users"(
-    "id", "login", "email", "passwordHash", "createdAt")
-    VALUES ('${user.id}', '${user.accountData.login}', '${user.accountData.email}', '${user.accountData.passwordHash}', '${user.accountData.createdAt}')`);
-    await this.dataSource.query(`INSERT INTO public."EmailConfirmation"(
-    "userId", "confirmationCode", "expirationDate", "isConfirmed")
-    VALUES ('${user.id}', '${user.emailConfirmation.confirmationCode}', '${user.emailConfirmation.expirationDate}', '${user.emailConfirmation.isConfirmed}')`);
-    await this.dataSource.query(`INSERT INTO public."PasswordConfirmation"(
-    "userId", "confirmationCode", "expirationDate", "isConfirmed")
-    VALUES ('${user.id}', '${user.passwordConfirmation.confirmationCode}', '${user.passwordConfirmation.expirationDate}', '${user.passwordConfirmation.isConfirmed}')`);
-    await this.dataSource.query(`INSERT INTO public."UsersBanInfo"(
-    "userId", "isBanned", "banReason", "banDate")
-    VALUES ('${user.id}', '${user.banInfo.isBanned}', ${user.banInfo.banReason}, ${user.banInfo.banDate})`);
+    const newUser = {
+      id: user.id,
+      login: user.accountData.login,
+      email: user.accountData.email,
+      passwordHash: user.accountData.passwordHash,
+      createdAt: new Date(user.accountData.createdAt),
+    };
+
+    await this.usersSqlRepository.save(newUser);
+
+    const newUserBanInfo = {
+      userId: user.id,
+      isBanned: user.banInfo.isBanned,
+      banReason: user.banInfo.banReason,
+      banDate: user.banInfo.banDate,
+    };
+
+    await this.userBanInfoSqlRepository.save(newUserBanInfo);
+
+    const emailConfirmationInfo = {
+      userId: user.id,
+      confirmationCode: user.emailConfirmation.confirmationCode,
+      expirationDate: user.emailConfirmation.expirationDate,
+      isConfirmed: user.emailConfirmation.isConfirmed,
+    };
+
+    await this.emailConfirmationSqlRepository.save(emailConfirmationInfo);
+
+    const passwordConfirmationInfo = {
+      userId: user.id,
+      confirmationCode: user.passwordConfirmation.confirmationCode,
+      expirationDate: user.passwordConfirmation.expirationDate,
+      isConfirmed: user.passwordConfirmation.isConfirmed,
+    };
+
+    await this.passwordConfirmationSqlRepository.save(passwordConfirmationInfo);
+
     return user;
   }
 
@@ -35,7 +71,6 @@ export class SqlUsersRepository {
     console.log('UPDATE emailIsConfirmed', result[1] === 1);
     return result[1] === 1;
   }
-
   async updatePasswordConfirmation(id: string) {
     const result = await this.dataSource.query(`UPDATE "PasswordConfirmation"
     SET "isConfirmed" = true
@@ -43,7 +78,6 @@ export class SqlUsersRepository {
     console.log('UPDATE passwordIsConfirmed', result[1] === 1);
     return result[1] === 1;
   }
-
   async updateEmailResendingCode(id: string, code: string) {
     const result = await this.dataSource.query(`UPDATE "EmailConfirmation"
     SET "confirmationCode" = '${code}'
@@ -51,7 +85,6 @@ export class SqlUsersRepository {
     console.log('UPDATE emailConfirmationCode', result[1] === 1);
     return result[1] === 1;
   }
-
   async updatePasswordResendingCode(id: string, code: string) {
     const result = await this.dataSource.query(`UPDATE "PasswordConfirmation"
     SET "confirmationCode" = '${code}'
@@ -59,7 +92,6 @@ export class SqlUsersRepository {
     console.log('UPDATE passwordConfirmationCode', result[1] === 1);
     return result[1] === 1;
   }
-
   async updatePassword(id: string, passwordHash: string) {
     const result = await this.dataSource.query(`UPDATE "Users"
     SET "passwordHash" = '${passwordHash}'

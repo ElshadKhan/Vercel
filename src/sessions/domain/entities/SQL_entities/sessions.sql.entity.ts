@@ -7,7 +7,7 @@ export class SessionSql {
   user: UserSql;
 
   @PrimaryColumn()
-  userId: number;
+  userId: string;
 
   @Column()
   deviceId: string;

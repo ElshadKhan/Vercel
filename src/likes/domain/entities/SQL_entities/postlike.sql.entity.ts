@@ -9,13 +9,13 @@ export class PostLikeSql {
   user: UserSql;
 
   @PrimaryColumn()
-  userId: number;
+  userId: string;
 
   @ManyToOne(() => PostSql)
   post: PostSql;
 
   @Column()
-  postId: number;
+  postId: string;
 
   @Column({
     type: 'enum',
@@ -27,6 +27,6 @@ export class PostLikeSql {
   @Column()
   createdAt: Date;
 
-  @Column()
+  @Column({ default: false })
   isBanned: boolean;
 }

@@ -8,7 +8,7 @@ export class EmailConfirmationSql {
   user: UserSql;
 
   @PrimaryColumn()
-  userId: number;
+  userId: string;
 
   @Column()
   confirmationCode: string;

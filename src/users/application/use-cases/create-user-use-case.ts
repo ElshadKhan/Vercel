@@ -6,6 +6,7 @@ import { add } from 'date-fns';
 import { UsersRepository } from '../../infrastructure/users.repository';
 import { PasswordService } from '../../../helpers/password/password.service';
 import { SqlUsersRepository } from '../../infrastructure/sql.users.repository';
+import { TypeOrmUsersRepository } from '../../infrastructure/typeOrm.users.repository';
 
 export class CreateUserCommand {
   constructor(public inputModel: CreateUserDto) {}
@@ -14,7 +15,7 @@ export class CreateUserCommand {
 @CommandHandler(CreateUserCommand)
 export class CreateUserUseCase implements ICommandHandler<CreateUserCommand> {
   constructor(
-    private usersRepository: SqlUsersRepository,
+    private usersRepository: TypeOrmUsersRepository,
     private passwordService: PasswordService,
   ) {}
 

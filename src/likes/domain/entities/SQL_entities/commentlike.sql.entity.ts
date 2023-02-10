@@ -9,13 +9,13 @@ export class CommentLikeSql {
   user: UserSql;
 
   @PrimaryColumn()
-  userId: number;
+  userId: string;
 
   @ManyToOne(() => CommentSql)
   comment: CommentSql;
 
   @Column()
-  commentId: number;
+  commentId: string;
 
   @Column({
     type: 'enum',
@@ -27,6 +27,6 @@ export class CommentLikeSql {
   @Column()
   createdAt: Date;
 
-  @Column()
+  @Column({ default: false })
   isBanned: boolean;
 }

@@ -1,14 +1,14 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class UserSql {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryColumn()
+  id: string;
 
   @Column()
   login: string;
 
-  @Column()
+  @Column({ unique: true, type: 'character varying' })
   email: string;
 
   @Column()

@@ -1,16 +1,10 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { UserSql } from '../../../../users/domain/entities/SQL_entities/users.sql.entity';
 
 @Entity()
 export class BlogSql {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryColumn()
+  id: string;
 
   @Column()
   name: string;
@@ -29,5 +23,5 @@ export class BlogSql {
   user: UserSql;
 
   @Column()
-  userId: number;
+  userId: string;
 }

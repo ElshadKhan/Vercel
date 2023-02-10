@@ -16,18 +16,18 @@ export class BloggerBanUsersInfoSql {
   blog: BlogSql;
 
   @PrimaryColumn()
-  blogId: number;
+  blogId: string;
 
   @OneToOne(() => UserSql)
   @JoinColumn()
   banUser: UserSql;
 
-  @Column()
+  @Column({ default: false })
   isBanned: boolean;
 
-  @Column()
+  @Column({ default: null })
   banReason: string;
 
-  @Column()
+  @Column({ default: null })
   banDate: Date;
 }

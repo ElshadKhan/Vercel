@@ -8,11 +8,11 @@ export class BlogBanInfoSql {
   blog: BlogSql;
 
   @PrimaryColumn()
-  blogId: number;
+  blogId: string;
 
-  @Column()
+  @Column({ default: false })
   isBanned: boolean;
 
-  @Column()
+  @Column({ default: null })
   banDate: Date;
 }

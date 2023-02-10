@@ -1,23 +1,23 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { UserSql } from '../../../../users/domain/entities/SQL_entities/users.sql.entity';
 import { PostSql } from '../../../../posts/domain/entities/SQL_entities/posts.sql.entity';
 
 @Entity()
 export class CommentSql {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   id: number;
 
   @ManyToOne(() => UserSql)
   user: UserSql;
 
   @Column()
-  userId: number;
+  userId: string;
 
   @ManyToOne(() => PostSql)
   post: PostSql;
 
   @Column()
-  postId: number;
+  postId: string;
 
   @Column()
   content: string;
@@ -25,6 +25,6 @@ export class CommentSql {
   @Column()
   createdAt: Date;
 
-  @Column()
+  @Column({ default: false })
   isBanned: boolean;
 }

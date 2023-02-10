@@ -131,6 +131,7 @@ import { CommentLikeSql } from './likes/domain/entities/SQL_entities/commentlike
 import { SessionSql } from './sessions/domain/entities/SQL_entities/sessions.sql.entity';
 import { PasswordConfirmationSql } from './auth/domain/entities/SQL_entities/password.sql.entity';
 import { EmailConfirmationSql } from './auth/domain/entities/SQL_entities/email.sql.entity';
+import { TypeOrmUsersRepository } from './users/infrastructure/typeOrm.users.repository';
 
 const schemas = [
   { name: User.name, schema: UserSchema },
@@ -225,9 +226,10 @@ const likesUseCases = [
       database: process.env.PG_DATABASE || 'ItIncubatorNest',
       autoLoadEntities: true,
       synchronize: true,
-      entities: sqlSchemas,
+      // entities: sqlSchemas,
       // ssl: true,
     }),
+    TypeOrmModule.forFeature(sqlSchemas),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -262,6 +264,7 @@ const likesUseCases = [
     // UsersService,
     UsersRepository,
     SqlUsersRepository,
+    TypeOrmUsersRepository,
     UsersQueryRepository,
     SqlUsersQueryRepository,
     // BlogsService,
